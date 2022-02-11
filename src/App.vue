@@ -1,6 +1,7 @@
 <template>
   <ion-app>
     <ion-router-outlet />
+    <ion-loading v-if="$store.state.isAppWaiting" message="منتظر باشید"></ion-loading>
   </ion-app>
 </template>
 

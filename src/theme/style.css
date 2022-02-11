@@ -1,0 +1,156 @@
+@font-face {
+  font-family: Vazir;
+  src: url('../../node_modules/vazir-font/dist/Vazir-Regular.eot');
+  src: url('../../node_modules/vazir-font/dist/Vazir-Regular.eot?#iefix') format('embedded-opentype'),
+       url('../../node_modules/vazir-font/dist/Vazir-Regular.woff2') format('woff2'),
+       url('../../node_modules/vazir-font/dist/Vazir-Regular.woff') format('woff'),
+       url('../../node_modules/vazir-font/dist/Vazir-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: Vazir;
+  src: url('../../node_modules/vazir-font/dist/Vazir-Bold.eot');
+  src: url('../../node_modules/vazir-font/dist/Vazir-Bold.eot?#iefix') format('embedded-opentype'),
+       url('../../node_modules/vazir-font/dist/Vazir-Bold.woff2') format('woff2'),
+       url('../../node_modules/vazir-font/dist/Vazir-Bold.woff') format('woff'),
+       url('../../node_modules/vazir-font/dist/Vazir-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: Vazir;
+  src: url('../../node_modules/vazir-font/dist/Vazir-Black.eot');
+  src: url('../../node_modules/vazir-font/dist/Vazir-Black.eot?#iefix') format('embedded-opentype'),
+       url('../../node_modules/vazir-font/dist/Vazir-Black.woff2') format('woff2'),
+       url('../../node_modules/vazir-font/dist/Vazir-Black.woff') format('woff'),
+       url('../../node_modules/vazir-font/dist/Vazir-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: Vazir;
+  src: url('../../node_modules/vazir-font/dist/Vazir-Medium.eot');
+  src: url('../../node_modules/vazir-font/dist/Vazir-Medium.eot?#iefix') format('embedded-opentype'),
+       url('../../node_modules/vazir-font/dist/Vazir-Medium.woff2') format('woff2'),
+       url('../../node_modules/vazir-font/dist/Vazir-Medium.woff') format('woff'),
+       url('../../node_modules/vazir-font/dist/Vazir-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: Vazir;
+  src: url('../../node_modules/vazir-font/dist/Vazir-Light.eot');
+  src: url('../../node_modules/vazir-font/dist/Vazir-Light.eot?#iefix') format('embedded-opentype'),
+       url('../../node_modules/vazir-font/dist/Vazir-Light.woff2') format('woff2'),
+       url('../../node_modules/vazir-font/dist/Vazir-Light.woff') format('woff'),
+       url('../../node_modules/vazir-font/dist/Vazir-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: Vazir;
+  src: url('../../node_modules/vazir-font/dist/Vazir-Thin.eot');
+  src: url('../../node_modules/vazir-font/dist/Vazir-Thin.eot?#iefix') format('embedded-opentype'),
+       url('../../node_modules/vazir-font/dist/Vazir-Thin.woff2') format('woff2'),
+       url('../../node_modules/vazir-font/dist/Vazir-Thin.woff') format('woff'),
+       url('../../node_modules/vazir-font/dist/Vazir-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+html {
+  direction: rtl;
+}
+h1, h2, h3, h4, h5, h6, p, b, span, label, input, textarea, div {
+  font-family: 'Vazir';
+}
+.text-center {
+  text-align: center !important;
+}
+.text-right {
+  text-align: right !important;
+}
+.text-left {
+  text-align: left !important;
+}
+.space {
+  margin: 0.5rem;
+}
+.space-2 {
+  margin: 1rem;
+}
+.space-3 {
+  margin: 1.5rem;
+}
+.space-4 {
+  margin: 2rem;
+}
+.space-5 {
+  margin: 2.5rem;
+}
+.space-v {
+  margin: 0.5rem 0;
+}
+.space-2-v {
+  margin: 1rem 0;
+}
+.space-3-v {
+  margin: 1.5rem 0;
+}
+.space-4-v {
+  margin: 2rem 0;
+}
+.space-5-v {
+  margin: 2.5rem 0;
+}
+.space-h {
+  margin: 0 0.5rem;
+}
+.space-2-h {
+  margin: 0 1rem;
+}
+.space-3-h {
+  margin: 0 1.5rem;
+}
+.space-4-h {
+  margin: 0 2rem;
+}
+.space-5-h {
+  margin: 0 2.5rem;
+}
+.flex {
+  display: flex !important;
+  flex-direction: row;
+}
+.flex-row {
+  flex-direction: row;
+}
+.flex-column {
+  flex-direction: column;
+}
+.justify-content-center {
+  justify-content: center;
+}
+.justify-content-around {
+  justify-content: space-around;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
+.justify-content-left {
+  justify-content: left;
+}
+.justify-content-right {
+  justify-content: right;
+}
+.align-items-center {
+  align-items: center;
+}
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%); 		
+  }
+  100% {
+    transform: translateX(-100%); 
+  }
+}
