@@ -1,6 +1,7 @@
 <template>
   <ion-app>
-    <ion-router-outlet />
+    <!-- <ion-router-outlet /> -->
+    <router-view/>
     <ion-loading v-if="$store.state.isAppWaiting" message="منتظر باشید"></ion-loading>
   </ion-app>
 </template>
@@ -13,7 +14,7 @@ export default defineComponent({
   name: 'App',
   components: {
     IonApp,
-    IonRouterOutlet
+    // IonRouterOutlet
   }
 });
 </script>
