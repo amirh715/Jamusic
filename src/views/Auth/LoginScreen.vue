@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <ion-card>
+  <div class="flex flex-column justify-content-center align-items-center" style="height: 100vh;">
+    <ion-card style="width: 70%">
       <ion-card-header>
         <h3 class="text-center">ورود</h3>
       </ion-card-header>
