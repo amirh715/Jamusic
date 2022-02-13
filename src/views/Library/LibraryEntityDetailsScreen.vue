@@ -4,7 +4,7 @@
       <ion-icon
         :icon="bugOutline"
         size="small"
-        @click="$router.push({ name: 'NewReport', query: { reportedEntityId: entityId } })"
+        @click="$router.push({ name: 'NewReport', query: { reportedEntityId: entityId, reportedEntityTitle: entity.title } })"
       ></ion-icon>
     </ion-toolbar>
   </ion-header>
@@ -27,9 +27,9 @@
                   width: '10rem',
                   height: '10rem',
                 }"></div> -->
-                <ion-thumbnail v-else style="width: 10rem; height: 10rem;">
-                  <img :src="image" />
-                </ion-thumbnail>
+              <ion-thumbnail v-else style="width: 10rem; height: 10rem;">
+                <img :src="image || 'assets/icon/icon.png'" />
+              </ion-thumbnail>
             </div>
             <div
               style="width: 100%"
@@ -68,7 +68,7 @@
             </div>
           </div>
           <!-- artwork details (rendered if entity is an artwork) -->
-          <div v-if="isAlbum || isTrack">
+          <div v-if="isArtwork">
             <artwork-details :artwork="entity" />
           </div>
         </div>
@@ -81,11 +81,9 @@
       </ion-card-content>
     </ion-card>
     <!-- artist artworks list (rendered if entity is an artist) -->
-    <ion-card style="height: fit-content">
+    <ion-card  v-if="isArtist" style="height: fit-content">
       <ion-card-content>
-        <artist-artworks-list v-if="isArtist"
-          :artistId="entity.id"
-        />
+        <artist-artworks-list :artistId="entity.id" />
       </ion-card-content>
     </ion-card>
     <!-- track player (rendered if entity is a track) -->
@@ -94,6 +92,12 @@
         <track-player
           :trackId="entity.id"
         />
+      </ion-card-content>
+    </ion-card>
+    <!-- track lyrcis card (rendered if entity is a track and has lyrics) -->
+    <ion-card v-if="isTrack && entity.lyrics">
+      <ion-card-content>
+        <track-lyrics :lyrics="entity.lyrics" />
       </ion-card-content>
     </ion-card>
   </ion-content>
@@ -107,6 +111,7 @@ import { bugOutline } from 'ionicons/icons';
 import AlbumTracksList from '@/components/Library/AlbumTracksList.vue';
 import ArtistArtworksList from '@/components/Library/ArtistArtworksList.vue';
 import TrackPlayer from '@/components/Library/TrackPlayer.vue';
+import TrackLyrics from '@/components/Library/TrackLyrics.vue';
 import ArtworkDetails from '@/components/Library/ArtworkDetails.vue';
 
 export default defineComponent({
@@ -116,6 +121,7 @@ export default defineComponent({
     ArtistArtworksList,
     TrackPlayer,
     ArtworkDetails,
+    TrackLyrics,
   },
   data() {
     const entityId = this.$route.query.id;
@@ -138,25 +144,30 @@ export default defineComponent({
     isTrack() {
       return this.entity && this.entity.type === 'T';
     },
+    isArtwork() {
+      return this.isAlbum || this.isTrack;
+    }
   },
   methods: {
+    async fetchEntity() {
+      try {
+        this.entityLoading = true;
+        this.entity = await LibraryService.getLibraryEntityById(this.entityId);
+      } catch(err) {
+        console.log(err);
+      } finally {
+        this.entityLoading = false;
+      }
+    },
     async fetchImage() {
       try {
+        this.imageLoading = true;
         const imageBlob = await LibraryService.getLibraryEntityImageById(this.entityId);
         this.image = URL.createObjectURL(imageBlob);
       } catch(err) {
         console.log(err);
       } finally {
         this.imageLoading = false;
-      }
-    },
-    async fetchEntity() {
-      try {
-        this.entity = await LibraryService.getLibraryEntityById(this.entityId);
-      } catch(err) {
-        console.log(err);
-      } finally {
-        this.entityLoading = false;
       }
     },
   },

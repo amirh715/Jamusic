@@ -1,12 +1,13 @@
 <template>
-  <ion-toolbar>
-    <b class="text-center">جستجو</b>
-  </ion-toolbar>
 
   <ion-content>
-
+    <ion-toolbar>
+      <b class="text-center">جستجو</b>
+    </ion-toolbar>
     <ion-searchbar
+      class="text-center"
       v-model="searchTerm"
+      placeholder="جستجو کنید..."
       @input="searchTermChanged"
     ></ion-searchbar>
 
