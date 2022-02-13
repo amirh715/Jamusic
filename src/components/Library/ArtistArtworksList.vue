@@ -1,6 +1,7 @@
 <template>
-  <ion-slides>
-    <ion-slide>
+
+  <swiper>
+    <swiper-slide>
       <ion-list style="width: 100%">
         <ion-list-header class="space-v">آلبوم ها</ion-list-header>
         <ion-item
@@ -9,8 +10,8 @@
           @click="goToLibraryEntity(item.id)"
         >
           <div>
-            <ion-thumbnail v-if="false">
-              <img :src="item.image" />
+            <ion-thumbnail v-if="item.image">
+              <img :src="URL.createObjectURL(item.image)" />
             </ion-thumbnail>
             <ion-skeleton-text
               v-else
@@ -22,8 +23,8 @@
           <library-entity-rate :rate="item.rate" />
         </ion-item>
       </ion-list>
-    </ion-slide>
-    <ion-slide>
+    </swiper-slide>
+    <swiper-slide>
       <ion-list style="width: 100%;">
         <ion-list-header class="space-v">تک آهنگ ها</ion-list-header>
         <ion-item
@@ -32,8 +33,8 @@
           @click="goToLibraryEntity(item.id)"
         >
           <div>
-            <ion-thumbnail v-if="false">
-              <img :src="item.image" />
+            <ion-thumbnail v-if="item.image">
+              <img :src="URL.createObjectURL(item.image)" />
             </ion-thumbnail>
             <ion-skeleton-text
               v-else
@@ -45,18 +46,28 @@
           <library-entity-rate :rate="item.rate" />
         </ion-item>
       </ion-list>
-    </ion-slide>
-  </ion-slides>
+    </swiper-slide>
+  </swiper>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import * as _ from 'lodash';
 import { LibraryService } from '@/services/LibraryService';
 import { GetLibraryEntitiesByFilters } from '@/classes/Library/commands/GetLibraryEntitiesByFiltersDTO';
 import LibraryEntityRate from '@/components/Library/LibraryEntityRate.vue';
+import { Swiper } from 'swiper/types';
+import { ArtworkDetailsDTO } from '@/classes/Library/query/ArtworkDetailsDTO';
 
 export default defineComponent({
+  setup() {
+    const swiper = ref(null);
+    const onSwiper = (swiperInstance: Swiper) => { swiper.value = swiperInstance; };
+    return {
+      onSwiper,
+      swiper,
+    };
+  },
   name: 'artist-artworks-list',
   components: {
     LibraryEntityRate,
@@ -91,10 +102,15 @@ export default defineComponent({
       }
     },
     async fetchArtworksImages() {
-      try {
-        console.log('err');
-      } catch(err) {
-        console.log(err);
+      for(const artwork of (this.artworks as ArtworkDetailsDTO[])) {
+        try {
+          const blob = await LibraryService.getLibraryEntityImageById(artwork.id);
+          artwork.image = blob;
+        } catch(err) {
+          // if(err.request.status === 404) {
+            
+          // }
+        }
       }
     },
     async goToLibraryEntity(id: string) {
@@ -105,8 +121,9 @@ export default defineComponent({
       }
     },
   },
-  mounted() {
-    this.fetchArtworks();
+  async mounted() {
+    await this.fetchArtworks();
+    await this.fetchArtworksImages();
   },
 })
 </script>
