@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <ion-slides>
-      <ion-slide>
+  <div style="dir: ltr">
+    <swiper @swiper="onSwiper" style="height: 100vh;" loop>
+      <swiper-slide>
         <ion-card>
           <ion-card-content>
             <label>شماره موبایل</label>
             <ion-input
               type="tel"
+              v-model="mobile"
+              placeholder="۰۹۱۲۴۹۷۴۱۶۳"
             />
             <div class="flex justify-content-center">
               <ion-button @click="submitRequest">
@@ -14,25 +16,26 @@
               </ion-button>
             </div>
           </ion-card-content>
-          <ion-card-subtitle>
-            <p class="text-center">کد بازنشانی رمز برای شما پیامک خواهد شد.</p>
-          </ion-card-subtitle>
         </ion-card>
-      </ion-slide>
-      <ion-slide>
+      </swiper-slide>
+      <swiper-slide>
         <ion-card>
           <ion-card-content>
             <label>کد بازنشانی رمز</label>
             <ion-input
               type="number"
+              v-model="resetCode"
             />
+            {{resetCode}}
             <label>رمز جدید</label>
             <ion-input
               type="password"
+              v-model="newPassword"
             />
             <label>تکرار رمز جدید</label>
             <ion-input
               type="password"
+              v-model="newPasswordAgain"
             />
             <div class="flex justify-content-center">
               <ion-button @click="submitReset">
@@ -41,19 +44,40 @@
             </div>
           </ion-card-content>
         </ion-card>
-      </ion-slide>
-    </ion-slides>
+      </swiper-slide>
+    </swiper>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 import { toastController } from '@ionic/vue'
 import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import '@ionic/vue/css/ionic-swiper.css';
+import { Swiper as SwiperJs } from 'swiper/types';
 
 export default defineComponent({
+  setup() {
+    const swiper = ref(null);
+    const onSwiper = (swiperInstance: SwiperJs) => {
+      // swiperInstance.allowSlideNext = false;
+      // swiperInstance.allowSlidePrev = false;
+      swiperInstance.allowTouchMove = false;
+      swiper.value = swiperInstance;
+    };
+    return {
+      onSwiper,
+      swiper,
+    };
+  },
+  components: {
+    Swiper,
+    SwiperSlide,
+  },
   data() {
     return {
       mobile: '',
@@ -69,7 +93,7 @@ export default defineComponent({
       try {
         await this.$store.dispatch(
           ACTION_TYPES.REQUEST_PASSWORD_RESET,
-          { mobile: this.mobile }
+          this.mobile,
         );
         const toast = await toastController.create({
           message: 'کد بازنشانی رمز اکانت برای شما پیامک شد.',
@@ -78,9 +102,10 @@ export default defineComponent({
           duration: 4000,
         });
         await toast.present();
+        this.swiper.slideNext();
       } catch(err) {
         const toast = await toastController.create({
-          message: err.message,
+          message: err.response.data.message,
           icon: closeCircleOutline,
           color: 'danger',
           duration: 4000,
@@ -88,13 +113,33 @@ export default defineComponent({
         await toast.present();
       }
     },
-    // async submitReset() {
-    //   try {
-
-    //   } catch(err) {
-
-    //   }
-    // },
+    async submitReset() {
+      try {
+        await this.$store.dispatch(ACTION_TYPES.RESET_PASSWORD,
+          {
+            mobile: this.mobile,
+            code: this.resetCode,
+            newPassword: this.newPassword,
+          }
+        );
+        const toast = await toastController.create({
+          message: 'رمز اکانت شما بازنشانی شد. لطفا وارد شوید.',
+          icon: checkmarkCircleOutline,
+          color: 'success',
+          duration: 4000,
+        });
+        await toast.present();
+        await this.$router.push({ name: 'Login' });
+      } catch(err) {
+          const toast = await toastController.create({
+          message: err.response.data.message,
+          icon: closeCircleOutline,
+          color: 'danger',
+          duration: 4000,
+        });
+        await toast.present();
+      }
+    },
   },
 })
 </script>
