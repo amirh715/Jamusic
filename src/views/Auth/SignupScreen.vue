@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-column justify-content-center" style="height: 100vh;">
     <div>
       <h3>به جَم ما خوش اومدی :)</h3>
     </div>
