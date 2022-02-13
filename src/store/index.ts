@@ -10,6 +10,7 @@ import { VerifyAccountDTO } from '@/classes/Auth/commands/VerifyAccountDTO';
 import { ResetPasswordDTO } from '@/classes/Auth/commands/ResetPasswordDTO';
 import { RequestPasswordResetDTO } from '@/classes/Auth/commands/RequestPasswordResetDTO';
 import { PlayerManager } from '@/services/PlayerManager';
+import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 
 export default new Vuex.Store({
   state: {
@@ -70,6 +71,7 @@ export default new Vuex.Store({
   actions: {
     async [ACTION_TYPES.LOGIN]({ commit, dispatch }, { mobile, password }): Promise<void> {
       try {
+        commit(COMMIT_TYPES.APP_WAITING, true);
         const dto = new LoginRequestDTO({ mobile, password });
         await AuthService.login(dto);
         commit(COMMIT_TYPES.AUTHENTICATED);
@@ -84,27 +86,35 @@ export default new Vuex.Store({
             await dispatch(ACTION_TYPES.REQUEST_ACCOUNT_VERIFICATION, { mobile });
         }
         return Promise.reject(err);
+      } finally {
+        commit(COMMIT_TYPES.APP_WAITING, false);
       }
     },
     async [ACTION_TYPES.LOGOUT]({ commit }): Promise<void> {
       try {
+        commit(COMMIT_TYPES.APP_WAITING, true);
         commit(COMMIT_TYPES.UNAUTHENTICATED);
         await this.dispatch(ACTION_TYPES.STOP);
         await router.push({ name: 'Signup' });
       } catch(err) {
-        console.log(err);
+        return Promise.reject(err);
+      } finally {
+        commit(COMMIT_TYPES.APP_WAITING, false);
       }
     },
     async [ACTION_TYPES.SIGNUP](
-      { dispatch },
+      { commit, dispatch },
       params: { mobile: string, name: string, password: string }
     ): Promise<void> {
       try {
+        commit(COMMIT_TYPES.APP_WAITING, true);
         const dto = new SignupRequestDTO(params);
         await AuthService.signup(dto);
         await dispatch(ACTION_TYPES.REQUEST_ACCOUNT_VERIFICATION, { mobile: params.mobile });
       } catch(err) {
-        console.log(err);
+        return Promise.reject(err);
+      } finally {
+        commit(COMMIT_TYPES.APP_WAITING, false);
       }
     },
     async [ACTION_TYPES.REQUEST_PASSWORD_RESET](
@@ -112,11 +122,14 @@ export default new Vuex.Store({
       mobile: string
     ): Promise<void> {
       try {
+        commit(COMMIT_TYPES.APP_WAITING, true);
         const dto = new RequestPasswordResetDTO({ mobile });
         await AuthService.requestPasswordReset(dto);
         await router.push({ name: 'ForgotPassword' });
       } catch(err) {
-        console.log(err);
+        return Promise.reject(err);
+      } finally {
+        commit(COMMIT_TYPES.APP_WAITING, false);
       }
     },
     async [ACTION_TYPES.RESET_PASSWORD](
@@ -124,11 +137,14 @@ export default new Vuex.Store({
       params: { mobile: string, code: string, newPassword: string }
     ): Promise<void> {
       try {
+        commit(COMMIT_TYPES.APP_WAITING, true);
         const dto = new ResetPasswordDTO(params);
         await AuthService.resetPassword(dto);
         await router.push({ name: 'Login' });
       } catch(err) {
-        console.log(err);
+        return Promise.reject(err);
+      } finally {
+        commit(COMMIT_TYPES.APP_WAITING, false);
       }
     },
     async [ACTION_TYPES.REQUEST_ACCOUNT_VERIFICATION]({ commit }, { mobile }): Promise<void> {
@@ -137,25 +153,43 @@ export default new Vuex.Store({
         await AuthService.requestAccountVerification(dto);
         await router.push({ name: 'AccountVerification' });
       } catch(err) {
-        console.log(err);
+        return Promise.reject(err);
       }
     },
     async [ACTION_TYPES.VERIFY_ACCOUNT]({ commit }, { mobile, code }): Promise<void> {
       try {
+        commit(COMMIT_TYPES.APP_WAITING, true);
         const dto = new VerifyAccountDTO({ mobile, code });
         await AuthService.verifyAccount(dto);
         await router.push({ name: 'Login' });
       } catch(err) {
-        console.log(err);
+        return Promise.reject(err);
+      } finally {
+        commit(COMMIT_TYPES.APP_WAITING, false);
       }
     },
     async [ACTION_TYPES.PLAY]({ commit }): Promise<void> {
       try {
         await PlayerManager.play();
-        commit(COMMIT_TYPES.PLAYING);
+        commit(
+          COMMIT_TYPES.PLAYING,
+          {
+            currentTrack: PlayerManager.getCurrentTrack(),
+            playQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),
+            playQueue: PlayerManager.getPlayQueue(),
+            currentDuration: PlayerManager.getCurrentDuration(),
+            totalDuration: PlayerManager.getTotalDuration(),
+          }
+        );
       } catch(err) {
-        console.log(err);
+        return Promise.reject(err);
       }
+    },
+    [ACTION_TYPES.ADD_TO_PLAY_QUEUE]({ commit }, trackToAdd: TrackDetailsDTO): void {
+      PlayerManager.addToQueue(trackToAdd);
+    },
+    [ACTION_TYPES.FILL_PLAY_QUEUE]({ commit }, trackToReplace: TrackDetailsDTO[]): void {
+      PlayerManager.fillInQueue(trackToReplace);
     },
     [ACTION_TYPES.PAUSE]({ commit }): void {
       PlayerManager.pause();
