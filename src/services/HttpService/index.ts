@@ -3,6 +3,7 @@ import axios, {
   AxiosInstance,
   AxiosResponse
 } from 'axios';
+import { ApiError } from './ApiError';
 
 class HttpService {
 
@@ -25,34 +26,54 @@ class HttpService {
     : Promise<AxiosResponse> {
       try {
         const p = `${this.config.baseURL}${path}${query || ''}`;
-        const { data } = await this.http.get(p, configg || this.config);
-        return data;
+        return await this.http.get(p, configg || this.config);
       } catch(err) {
         if(err.response) {
-          console.log(err.response.data);
-        } else if(err.request) {
-          console.log(err.request);
-        } else {
-          console.log(err);
+          return Promise.reject(new ApiError({
+            message: err.response.data.message,
+            code: err.response.data.code,
+            description: err.response.data.description,
+          }));
         }
-        return Promise.reject(err);
+        if(err.request) {
+          return Promise.reject(new ApiError({
+            message: 'خطایی در ارتباط با سرور رخ داده است',
+            code: 0,
+            description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
+          }));
+        }
+        return Promise.reject(new ApiError({
+          message: 'خطایی در ارسال درخواست به سرور رخ داده است',
+          code: 0,
+          description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
+        }));
       }
   }
 
   public async post(path: string, formData: FormData)
     : Promise<AxiosResponse> {
       try {
-        const { data } = await this.http.post(`${this.config.baseURL}${path}`, formData);
-        return data;
+        return await this.http.post(`${this.config.baseURL}${path}`, formData);
       } catch(err) {
         if(err.response) {
-          console.log(err.response.data);
-        } else if(err.request) {
-          console.log(err.request);
-        } else {
-          console.log(err);
+          return Promise.reject(new ApiError({
+            message: err.response.data.message,
+            code: err.response.data.code,
+            description: err.response.data.description,
+          }));
         }
-        return Promise.reject(err);
+        if(err.request) {
+          return Promise.reject(new ApiError({
+            message: 'خطایی در ارتباط با سرور رخ داده است',
+            code: 0,
+            description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
+          }));
+        }
+        return Promise.reject(new ApiError({
+          message: 'خطایی در ارسال درخواست به سرور رخ داده است',
+          code: 0,
+          description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
+        }));
       }
   }
 
@@ -63,13 +84,24 @@ class HttpService {
         return data;
       } catch(err) {
         if(err.response) {
-          console.log(err.response.data);
-        } else if(err.request) {
-          console.log(err.request);
-        } else {
-          console.log(err);
+          return Promise.reject(new ApiError({
+            message: err.response.data.message,
+            code: err.response.data.code,
+            description: err.response.data.description,
+          }));
         }
-        return Promise.reject(err);
+        if(err.request) {
+          return Promise.reject(new ApiError({
+            message: 'خطایی در ارتباط با سرور رخ داده است',
+            code: 0,
+            description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
+          }));
+        }
+        return Promise.reject(new ApiError({
+          message: 'خطایی در ارسال درخواست به سرور رخ داده است',
+          code: 0,
+          description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
+        }));
       }
   }
 
@@ -80,13 +112,24 @@ class HttpService {
         return data;
       } catch(err) {
         if(err.response) {
-          console.log(err.response.data);
-        } else if(err.request) {
-          console.log(err.request);
-        } else {
-          console.log(err);
+          return Promise.reject(new ApiError({
+            message: err.response.data.message,
+            code: err.response.data.code,
+            description: err.response.data.description,
+          }));
         }
-        return Promise.reject(err);
+        if(err.request) {
+          return Promise.reject(new ApiError({
+            message: 'خطایی در ارتباط با سرور رخ داده است',
+            code: 0,
+            description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
+          }));
+        }
+        return Promise.reject(new ApiError({
+          message: 'خطایی در ارسال درخواست به سرور رخ داده است',
+          code: 0,
+          description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
+        }));
       }
   }
 
