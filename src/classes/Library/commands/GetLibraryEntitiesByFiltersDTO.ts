@@ -2,12 +2,14 @@ class GetLibraryEntitiesByFilters {
 
   public searchTerm: string;
   public artistId?: string;
+  public type?: string;
   public limit: number;
   public offset: number;
 
   public constructor(_props: {
     searchTerm?: string,
     artistId?: string,
+    type?: string,
     limit?: number,
     offset?: number,
   }) {
