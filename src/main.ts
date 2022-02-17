@@ -38,11 +38,13 @@ import TextBanner from '@/components/common/TextBanner.vue';
 import BackgroundPlaceholder from '@/components/common/BackgroundPlaceholder.vue';
 import NumberDisplayer from '@/components/common/NumberDisplayer.vue';
 import DurationDisplayer from '@/components/common/DurationDisplayer.vue';
+import DateTimeDisplayer from '@/components/common/DateTimeDisplayer.vue';
 
 app.component('TextBanner', TextBanner);
 app.component('BackgroundPlaceholder', BackgroundPlaceholder);
 app.component('NumberDisplayer', NumberDisplayer);
 app.component('DurationDisplayer', DurationDisplayer);
+app.component('DateTimeDisplayer', DateTimeDisplayer);
 
 import {
   IonIcon,
@@ -71,7 +73,20 @@ import {
   IonToast,
   IonInput,
   IonButton,
+  IonRange,
+  IonChip,
+  IonFab,
+  IonFabButton,
+  IonSelect,
+  IonSelectOption,
+  IonTextarea,
+  IonCheckbox,
+  IonPopover,
 } from '@ionic/vue';
+import {
+  Swiper,
+  SwiperSlide,
+} from 'swiper/vue';
 
 app.component('IonIcon', IonIcon);
 app.component('IonFooter', IonFooter);
@@ -99,6 +114,17 @@ app.component('IonSlide', IonSlide);
 app.component('IonToast', IonToast);
 app.component('IonInput', IonInput);
 app.component('IonButton', IonButton);
+app.component('Swiper', Swiper);
+app.component('SwiperSlide', SwiperSlide);
+app.component('IonRange', IonRange);
+app.component('IonChip', IonChip);
+app.component('IonFab', IonFab);
+app.component('IonFabButton', IonFabButton);
+app.component('IonSelect', IonSelect);
+app.component('IonSelectOption', IonSelectOption);
+app.component('IonTextarea', IonTextarea);
+app.component('IonCheckbox', IonCheckbox);
+app.component('IonPopover', IonPopover);
 
 router.isReady().then(() => {
   app.mount('#app');
