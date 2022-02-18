@@ -14,7 +14,6 @@ class LibraryService {
 
   public async getLibraryEntitiesByFilters(dto: GetLibraryEntitiesByFilters): Promise<LibraryEntityDetailsDTO[]> {
     try {
-      console.log('getLibraryEntitiesByFilters');
       let query = dto ? '?' : '';
       _.forOwn((_.omitBy(dto, _.isNil)), (val, key) => query += `${key}=${val}&`);
       const { data } = await HttpService.get('/library/', query);
