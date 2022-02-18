@@ -58,7 +58,7 @@
   font-weight: 100;
   font-style: normal;
 }
-html {
+html, body {
   direction: rtl;
 }
 h1, h2, h3, h4, h5, h6, p, b, span, label, input, textarea, div {
