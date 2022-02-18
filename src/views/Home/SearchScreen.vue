@@ -1,9 +1,17 @@
 <template>
 
-  <ion-content>
+  <ion-header>
     <ion-toolbar>
-      <b class="text-center">جستجو</b>
+      <div class="flex justify-content-between align-items-center">
+        <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
+        <b class="text-center">جستجو</b>
+        <ion-icon style="opacity: 0;" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
+      </div>
     </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+
     <ion-searchbar
       class="text-center"
       v-model="searchTerm"
@@ -49,7 +57,7 @@
 
     <div v-if="showPlaceholder">
       <background-placeholder
-        title="هرچی سرچ کنی اینجا هست :)"
+        title="هرچی سرچ کردی اینجا هست :)"
       />
     </div>
 
@@ -65,6 +73,7 @@ import { DatabaseManager } from '@/services/DatabaseManager'
 import { ISearchHistory } from '@/services/DatabaseManager/ISearchHistory'
 import LibraryEntityListItem from '@/components/Library/LibraryEntityListItem.vue'
 import BackgroundPlaceholder from '@/components/common/BackgroundPlaceholder.vue'
+import { chevronForwardCircleOutline } from 'ionicons/icons';
 
 export default defineComponent({
   components: { LibraryEntityListItem, BackgroundPlaceholder },
@@ -77,6 +86,7 @@ export default defineComponent({
       waitingForInput: false,
       timerId: 0,
       searchHistoryItems: [],
+      chevronForwardCircleOutline,
     }
   },
   computed: {
@@ -139,6 +149,9 @@ export default defineComponent({
       } catch(err) {
         console.log(err);
       }
+    },
+    goBack() {
+      this.$router.push({ name: 'Home' });
     },
   },
   mounted() {
