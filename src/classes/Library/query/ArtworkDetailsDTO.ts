@@ -18,6 +18,7 @@ abstract class ArtworkDetailsDTO extends LibraryEntityDetailsDTO {
     rate: string,
     duration: string,
     image: Blob,
+    imageLoading: boolean,
     recordLabel: string,
     producer: string,
     releaseDate: Date,

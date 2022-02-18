@@ -9,6 +9,7 @@ abstract class LibraryEntityDetailsDTO {
   public rate: number;
   public duration: string;
   public image: Blob;
+  public imageLoading: boolean;
 
   protected constructor(_props: {
     id: string,
@@ -20,6 +21,7 @@ abstract class LibraryEntityDetailsDTO {
     rate: string,
     duration: string,
     image: Blob,
+    imageLoading: boolean,
   }) {
     this.id = _props.id;
     this.type = _props.type;
@@ -30,6 +32,7 @@ abstract class LibraryEntityDetailsDTO {
     this.rate = Number(_props.rate);
     this.duration = _props.duration;
     this.image = _props.image;
+    this.imageLoading = _props.imageLoading;
   }
 
 

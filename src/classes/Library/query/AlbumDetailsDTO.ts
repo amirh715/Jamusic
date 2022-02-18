@@ -1,9 +1,11 @@
+import { toString } from 'lodash';
 import { ArtworkDetailsDTO } from './ArtworkDetailsDTO';
 import { LibraryEntityIdAndTitle } from './LibraryEntityIdAndTitleDTO';
+import { TrackDetailsDTO } from './TrackDetailsDTO';
 
 class AlbumDetailsDTO extends ArtworkDetailsDTO {
 
-  public tracks: LibraryEntityIdAndTitle[];
+  public tracks: TrackDetailsDTO[];
 
   public constructor(_props: {
     id: string,
@@ -15,14 +17,32 @@ class AlbumDetailsDTO extends ArtworkDetailsDTO {
     rate: string,
     duration: string,
     image: Blob,
+    imageLoading: boolean,
     recordLabel: string,
     producer: string,
     releaseDate: Date,
     artist: LibraryEntityIdAndTitle,
-    tracks: LibraryEntityIdAndTitle[],
+    tracks: {
+      id: string,
+      type: string,
+      title: string,
+      description: string,
+      monthlyPlayedCount: string,
+      totalPlayedCount: string,
+      rate: string,
+      duration: string,
+      image: Blob,
+      imageLoading: boolean,
+      recordLabel: string,
+      producer: string,
+      releaseDate: Date,
+      artist: LibraryEntityIdAndTitle,
+      lyrics: string,
+      album: LibraryEntityIdAndTitle,
+    }[],
   }) {
     super(_props);
-    this.tracks = _props.tracks;
+    this.tracks = _props.tracks.map((track) => new TrackDetailsDTO(track));
   }
 
 }

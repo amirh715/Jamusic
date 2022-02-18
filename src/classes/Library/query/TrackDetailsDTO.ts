@@ -16,6 +16,7 @@ class TrackDetailsDTO extends ArtworkDetailsDTO {
     rate: string,
     duration: string,
     image: Blob,
+    imageLoading: boolean,
     recordLabel: string,
     producer: string,
     releaseDate: Date,

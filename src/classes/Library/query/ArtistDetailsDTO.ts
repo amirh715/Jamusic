@@ -14,6 +14,7 @@ class ArtistDetailsDTO extends LibraryEntityDetailsDTO {
     rate: string,
     duration: string,
     image: Blob,
+    imageLoading: boolean,
     instagramId: string,
   }) {
     super(_props);
