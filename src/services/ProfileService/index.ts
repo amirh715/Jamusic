@@ -2,12 +2,13 @@ import * as _ from 'lodash';
 import { HttpService } from '../HttpService';
 import { EditProfileDTO } from '@/classes/Profile/commands/EditProfileDTO';
 import { ProfileDetails } from '@/classes/Profile/query/ProfileDetails';
+import { AuthService } from '../AuthService';
 
 class ProfileService {
 
   public async getMyProfile(): Promise<ProfileDetails> {
     try {
-      const { data } = await HttpService.get('');
+      const { data } = await HttpService.get(`/user/${AuthService.getSubjectId()}`);
       return Promise.resolve(new ProfileDetails(data));
     } catch(err) {
       return Promise.reject(err);

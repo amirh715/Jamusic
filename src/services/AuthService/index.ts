@@ -63,6 +63,7 @@ class AuthService {
       return Promise.resolve();
     } catch(err) {
       console.log(err);
+      return Promise.reject(err);
     }
   }
 
@@ -89,7 +90,7 @@ class AuthService {
       const data = new FormData();
       data.append('mobile', mobile);
       data.append('code', code);
-      await HttpService.put('', data);
+      await HttpService.put('/user/verify-account', data);
       return Promise.resolve();
     } catch(err) {
       return Promise.reject(err);
@@ -103,7 +104,7 @@ class AuthService {
       } = dto;
       const data = new FormData();
       data.append('mobile', mobile);
-      await HttpService.post('', data);
+      await HttpService.post('/user/request-password-reset', data);
       return Promise.resolve();
     } catch(err) {
       return Promise.reject(err);
@@ -121,7 +122,7 @@ class AuthService {
       data.append('mobile', mobile);
       data.append('resetCode', code);
       data.append('newPassword', newPassword);
-      await HttpService.put('', data);
+      await HttpService.put('/user/reset-password', data);
       return Promise.resolve();
     } catch(err) {
       return Promise.reject(err);
@@ -135,7 +136,7 @@ class AuthService {
       } = dto;
       const data = new FormData();
       data.append('id', userId);
-      await HttpService.post('', data);
+      await HttpService.post('/user/request-email-verification', data);
       return Promise.resolve();
     } catch(err) {
       return Promise.reject(err);

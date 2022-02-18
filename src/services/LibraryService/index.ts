@@ -7,11 +7,14 @@ import { PlayedTrackDTO } from '@/classes/Library/commands/PlayedTrackDTO';
 import { GetLibraryEntitiesByFilters } from '@/classes/Library/commands/GetLibraryEntitiesByFiltersDTO';
 import { LibraryEntityDetailsDTO } from '@/classes/Library/query/LibraryEntityDetailsDTO';
 import { LibraryEntityDetailsDTOBuilder } from '@/classes/Library/query/LibraryEntityDetailsDTOBuilder';
+import { map, orderBy } from 'lodash';
+import { RecommendedCollection } from '@/classes/Library/query/RecommendedCollection';
 
 class LibraryService {
 
   public async getLibraryEntitiesByFilters(dto: GetLibraryEntitiesByFilters): Promise<LibraryEntityDetailsDTO[]> {
     try {
+      console.log('getLibraryEntitiesByFilters');
       let query = dto ? '?' : '';
       _.forOwn((_.omitBy(dto, _.isNil)), (val, key) => query += `${key}=${val}&`);
       const { data } = await HttpService.get('/library/', query);
@@ -74,7 +77,7 @@ class LibraryService {
       const data = new FormData();
       data.append('title', title);
       data.append('trackIds', JSON.stringify(trackIds));
-      await HttpService.post('/library/playlist', data);
+      await HttpService.post('/library/playlist/', data);
       return Promise.resolve();
     } catch(err) {
       return Promise.reject(err);
@@ -92,7 +95,7 @@ class LibraryService {
       data.append('id', id);
       data.append('title', title);
       data.append('trackIds', JSON.stringify(trackIds));
-      await HttpService.put('/library/playlist', data);
+      await HttpService.put('/library/playlist/', data);
       return Promise.resolve();
     } catch(err) {
       return Promise.reject(err);
@@ -101,8 +104,8 @@ class LibraryService {
 
   public async getAllOfMyPlaylists(): Promise<PlaylistDetailsDTO[]> {
     try {
-      const { data } = await HttpService.get('/library/playlist');
-      return _.forOwn(data, v => new PlaylistDetailsDTO(v));
+      const { data } = await HttpService.get('/library/playlist/');
+      return orderBy(map(data, (item) => new PlaylistDetailsDTO(item)), 'createdAt', 'desc');
     } catch(err) {
       return Promise.reject(err);
     }
@@ -110,8 +113,17 @@ class LibraryService {
 
   public async getPlaylistById(id: string): Promise<PlaylistDetailsDTO> {
     try {
-      const { data } = await HttpService.get('/library/playlist');
+      const { data } = await HttpService.get(`/library/playlist/${id}`);
       return new PlaylistDetailsDTO(data);
+    } catch(err) {
+      return Promise.reject(err);
+    }
+  }
+
+  public async getAllCollections() {
+    try {
+      const { data } = await HttpService.get('/library/collections/');
+      return map(data, (collection) => new RecommendedCollection(collection));
     } catch(err) {
       return Promise.reject(err);
     }
@@ -121,7 +133,7 @@ class LibraryService {
     try {
       const data = new FormData();
       data.append('id', id);
-      await HttpService.delete('/library/playlist', data);
+      await HttpService.delete('/library/playlist/', data);
       return Promise.resolve();
     } catch(err) {
       return Promise.reject(err);
