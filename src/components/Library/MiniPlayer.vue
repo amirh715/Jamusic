@@ -1,5 +1,5 @@
 <template>
-  <div class="flex" style="background-color: grey; height: 3.5rem">
+  <div class="flex" style="height: 3.5rem; backdrop-filter: blur(20px);">
     <div @click="$emit('titleTapped')" style="width: 80%">
       <text-banner
         :text="title"
