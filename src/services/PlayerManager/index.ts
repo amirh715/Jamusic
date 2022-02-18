@@ -21,6 +21,7 @@ class PlayerManager extends EventTarget {
 
   public constructor() {
     super();
+    this.queue = [];
   }
 
   private static initHowl(): Howl {
@@ -29,9 +30,9 @@ class PlayerManager extends EventTarget {
 
   public async play(): Promise<void> {
     try {
+      if(!this.currentTrack) return Promise.reject(new Error('Current track is not present'));
       this.currentTrack = this.queue[this.currentQueueIndex];
       const blob = await LibraryService.getTrackAudioById(this.currentTrack.id);
-      
       this.howler = new Howl({
         src: URL.createObjectURL(blob),
         format: ['mp3'],
@@ -129,6 +130,11 @@ class PlayerManager extends EventTarget {
 
   public setVolume(volume: number): void {
     this.howler.volume(volume, this.soundId);
+  }
+
+  public addToQueue(trackToAdd: TrackDetailsDTO): void {
+    const index = this.queue.length;
+    this.queue[index] = trackToAdd;
   }
 
   public fillInQueue(tracks: TrackDetailsDTO[]): void {
