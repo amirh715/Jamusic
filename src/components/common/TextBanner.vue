@@ -1,6 +1,8 @@
 <template>
   <div :style="divStyle">
-    <p :style="pStyle">{{text}}</p>
+    <div :style="pStyle">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -8,10 +10,10 @@
 /* Move it (define the animation) */
 @keyframes scroll-left {
   0% {
-  transform: translateX(100%); 		
+    transform: translateX(100%); 		
   }
   100% {
-  transform: translateX(-100%); 
+    transform: translateX(-100%); 
   }
 }
 </style>
@@ -32,6 +34,7 @@ export default defineComponent({
   computed: {
     divStyle() {
       return {
+        width: '100%',
         height: '50px',
         overflow: 'hidden',
         position: 'relative',
