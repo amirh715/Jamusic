@@ -94,7 +94,7 @@ export default new Vuex.Store({
       try {
         commit(COMMIT_TYPES.APP_WAITING, true);
         commit(COMMIT_TYPES.UNAUTHENTICATED);
-        await this.dispatch(ACTION_TYPES.STOP);
+        // await this.dispatch(ACTION_TYPES.STOP);
         await router.push({ name: 'Signup' });
       } catch(err) {
         return Promise.reject(err);
@@ -188,8 +188,8 @@ export default new Vuex.Store({
     [ACTION_TYPES.ADD_TO_PLAY_QUEUE]({ commit }, trackToAdd: TrackDetailsDTO): void {
       PlayerManager.addToQueue(trackToAdd);
     },
-    [ACTION_TYPES.FILL_PLAY_QUEUE]({ commit }, trackToReplace: TrackDetailsDTO[]): void {
-      PlayerManager.fillInQueue(trackToReplace);
+    [ACTION_TYPES.FILL_PLAY_QUEUE]({ commit }, tracksToReplace: TrackDetailsDTO[]): void {
+      PlayerManager.fillInQueue(tracksToReplace);
     },
     [ACTION_TYPES.PAUSE]({ commit }): void {
       PlayerManager.pause();
