@@ -11,8 +11,8 @@
             <ion-icon :icon="reportStatusIcon" :color="reportStatusColor"></ion-icon>
             <ion-label><b>{{reportStatusDisplayValue}}</b></ion-label>
           </ion-chip>
-          <p>
-            تاریخ گزارش:‌ <date-time-displayer :value="report.createdAt" />
+          <p style="width: 50%">
+            تاریخ گزارش:‌ <date-time-displayer :value="report.createdAt" format="jYYYY/jMM/jDD" />
           </p>
         </div>
       </div>
