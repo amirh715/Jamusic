@@ -4,7 +4,7 @@
       v-for="i in 5"
       :key="i"
       :icon="icons[i]"
-      style="margin: auto 0.1rem"
+      :style="{margin: 'auto 0.1rem', fontSize: size}"
     ></ion-icon>
   </div>
 </template>
