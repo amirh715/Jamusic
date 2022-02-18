@@ -1,10 +1,16 @@
 <template>
   
-  <ion-content>
-    
+  <ion-header>
     <ion-toolbar>
-      <b>گزارش اشکال</b>
+      <div class="flex justify-content-between align-items-center">
+        <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
+        <b>گزارش اشکال</b>
+        <ion-icon :icon="chevronForwardCircleOutline" style="opacity: 0;" size="large" class="space-h"></ion-icon>
+      </div>
     </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
 
     <ion-card>
       <ion-card-content>
@@ -65,10 +71,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { sendOutline, checkmarkCircleOutline, closeCircleOutline, bugOutline, listOutline } from 'ionicons/icons'
+import {
+  sendOutline,
+  checkmarkCircleOutline,
+  closeCircleOutline,
+  bugOutline,
+  listOutline,
+  chevronForwardCircleOutline
+} from 'ionicons/icons'
 import { ReportService } from '@/services/ReportService';
 import { CreateNewReportDTO } from '@/classes/Report/commands/CreateNewReportDTO';
 import { toastController, ToastOptions } from '@ionic/vue';
+import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 
 export default defineComponent({
   data() {
@@ -82,11 +96,12 @@ export default defineComponent({
       closeCircleOutline,
       bugOutline,
       listOutline,
+      chevronForwardCircleOutline,
     };
   },
   methods: {
     async submit() {
-      await this.$router.push({ name: 'MyReports' });
+      this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
       let options: ToastOptions;
       try {
         const dto = new CreateNewReportDTO({
@@ -96,22 +111,29 @@ export default defineComponent({
         await ReportService.createNewReport(dto);
         options = {
           message: 'گزارش شما ثبت شد. ممنون.',
+          color: 'success',
           icon: checkmarkCircleOutline,
           duration: 4000,
         }
         await this.$router.push({ name: 'MyReports' });
       } catch(err) {
         options = {
-          message: err.response.data.message,
+          message: err.message,
+          color: 'danger',
           icon: closeCircleOutline,
           duration: 4000,
         }
       } finally {
-        await toastController.create(options);
+        this.$store.commit(COMMIT_TYPES.APP_WAITING, false);
+        const toast = await toastController.create(options);
+        toast.present();
       }
     },
     goToMyReports() {
       this.$router.push({ name: 'MyReports' });
+    },
+    goBack() {
+      this.$router.push({ name: 'ProfileInfo' });
     },
   },
 })
