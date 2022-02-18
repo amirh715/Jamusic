@@ -55,6 +55,7 @@ class HttpService {
       try {
         return await this.http.post(`${this.config.baseURL}${path}`, formData);
       } catch(err) {
+        console.log(err.request, err.response);
         if(err.response) {
           return Promise.reject(new ApiError({
             message: err.response.data.message,
@@ -63,6 +64,20 @@ class HttpService {
           }));
         }
         if(err.request) {
+          if(err.request.status === 401) {
+            return Promise.reject(new ApiError({
+              message: 'دسترسی برای شما امکان پذیر نیست',
+              code: 0,
+              description: 'این خطا زمانی ارسال می شود که شما درخواستی دارید که برای شما مجاز نیست.',
+            }));
+          }
+          if(err.request.status === 404) {
+            return Promise.reject(new ApiError({
+              message: 'وجود ندارد',
+              code: 0,
+              description: 'این ',
+            }));
+          }
           return Promise.reject(new ApiError({
             message: 'خطایی در ارتباط با سرور رخ داده است',
             code: 0,
