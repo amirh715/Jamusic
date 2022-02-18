@@ -6,8 +6,6 @@ import SearchScreen from '../views/Home/SearchScreen.vue';
 import LibraryScreen from '../views/Library/LibraryScreen.vue';
 import LibraryEntityDetailsScreen from '../views/Library/LibraryEntityDetailsScreen.vue';
 import PlaylistScreen from '../views/Playlist/PlaylistScreen.vue';
-import MyPlaylistsScreen from '../views/Playlist/MyPlaylistsScreen.vue';
-import PlaylistDetailsScreen from '../views/Playlist/PlaylistDetailsScreen.vue';
 import NewPlaylistScreen from '../views/Playlist/NewPlaylistScreen.vue';
 import EditPlaylistScreen from '../views/Playlist/EditPlaylistScreen.vue';
 import ReportScreen from '../views/Report/ReportScreen.vue';
@@ -17,6 +15,7 @@ import ProfileScreen from '../views/Profile/ProfileScreen.vue';
 import MyProfileInfoScreen from '../views/Profile/MyProfileInfoScreen.vue';
 import EditProfileInfoScreen from '../views/Profile/EditProfileInfoScreen.vue';
 import AboutScreen from '../views/AboutScreen.vue';
+import DesktopLandingScreen from '../views/DesktopLandingScreen.vue';
 import AuthScreen from '../views/Auth/AuthScreen.vue';
 import LoginScreen from '../views/Auth/LoginScreen.vue';
 import SignupScreen from '../views/Auth/SignupScreen.vue';
@@ -54,16 +53,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/playlist',
     component: PlaylistScreen,
     children: [
-      {
-        path: 'my',
-        name: 'MyPlaylists',
-        component: MyPlaylistsScreen,
-      },
-      {
-        path: 'details',
-        name: 'PlaylistDetails',
-        component: PlaylistDetailsScreen,
-      },
       {
         path: 'new',
         name: 'NewPlaylist',
@@ -114,6 +103,11 @@ const routes: Array<RouteRecordRaw> = [
     component: AboutScreen,
   },
   {
+    path: '/landing',
+    name: 'Landing',
+    component: DesktopLandingScreen,
+  },
+  {
     path: '/auth/',
     component: AuthScreen,
     children: [
@@ -151,22 +145,22 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const routesAllowedForUnauthenticatedUsers = [
-    '/auth/login',
-    '/auth/signup',
-    '/auth/forgot-password',
-    '/auth/account-verification',
-  ];
-  routesAllowedForUnauthenticatedUsers.some((value) => value === to.path);
-  if(AuthService.isAuthenticated()) {
-    if(routesAllowedForUnauthenticatedUsers.some((value) => value === to.path))
-      return next({ name: 'Home' });
-  } else {
-    if(!routesAllowedForUnauthenticatedUsers.some((value) => value === to.path))
-      return next({ name: 'Signup' });
-  }
-  next();
-})
+// router.beforeEach((to, from, next) => {
+//   const routesAllowedForUnauthenticatedUsers = [
+//     '/auth/login',
+//     '/auth/signup',
+//     '/auth/forgot-password',
+//     '/auth/account-verification',
+//   ];
+//   routesAllowedForUnauthenticatedUsers.some((value) => value === to.path);
+//   if(AuthService.isAuthenticated()) {
+//     if(routesAllowedForUnauthenticatedUsers.some((value) => value === to.path))
+//       return next({ name: 'Home' });
+//   } else {
+//     if(!routesAllowedForUnauthenticatedUsers.some((value) => value === to.path))
+//       return next({ name: 'Signup' });
+//   }
+//   next();
+// })
 
 export default router
