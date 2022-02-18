@@ -1,10 +1,16 @@
 <template>
   
-  <ion-content>
-
+  <ion-header>
     <ion-toolbar>
-      <b>گزارش های من</b>
+      <div class="flex justify-content-between align-items-center">
+        <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" class="space-h" size="large"></ion-icon>
+        <b>گزارش های من</b>
+        <ion-icon :icon="chevronForwardCircleOutline" style="opacity: 0;" class="space-h" size="large"></ion-icon>
+      </div>
     </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
 
     <div v-if="isLoading">
       <ion-card v-for="i in 4" :key="i">
@@ -37,7 +43,7 @@ import { defineComponent } from 'vue'
 import ReportListItem from '@/components/Report/ReportListItem.vue';
 import { ReportService } from '@/services/ReportService';
 import { toastController } from '@ionic/vue';
-import { closeCircleOutline } from 'ionicons/icons';
+import { closeCircleOutline, chevronForwardCircleOutline } from 'ionicons/icons';
 
 export default defineComponent({
   components: {
@@ -47,7 +53,13 @@ export default defineComponent({
     return {
       myReports: [],
       isLoading: true,
+      chevronForwardCircleOutline,
     };
+  },
+  methods: {
+    goBack() {
+      this.$router.push({ name: 'ProfileInfo' });
+    },
   },
   async mounted() {
     this.isLoading = true;
@@ -55,16 +67,15 @@ export default defineComponent({
       this.myReports = await ReportService.getAllOfMyReports();
     } catch(err) {
       const toast = toastController.create({
-        message: err.response.data.message,
+        message: err.message,
         color: 'danger',
         icon: closeCircleOutline,
         duration: 4000,
       });
       (await toast).present();
+      this.$router.push({ name: 'Profile' });
     } finally {
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 2000);
+      this.isLoading = false;
     }
   },
 })
