@@ -39,12 +39,14 @@ import BackgroundPlaceholder from '@/components/common/BackgroundPlaceholder.vue
 import NumberDisplayer from '@/components/common/NumberDisplayer.vue';
 import DurationDisplayer from '@/components/common/DurationDisplayer.vue';
 import DateTimeDisplayer from '@/components/common/DateTimeDisplayer.vue';
+import MiniPlayer from '@/components/Library/MiniPlayer.vue';
 
 app.component('TextBanner', TextBanner);
 app.component('BackgroundPlaceholder', BackgroundPlaceholder);
 app.component('NumberDisplayer', NumberDisplayer);
 app.component('DurationDisplayer', DurationDisplayer);
 app.component('DateTimeDisplayer', DateTimeDisplayer);
+app.component('MiniPlayer', MiniPlayer);
 
 import {
   IonIcon,
@@ -82,6 +84,9 @@ import {
   IonTextarea,
   IonCheckbox,
   IonPopover,
+  IonRadioGroup,
+  IonRadio,
+  IonLabel,
 } from '@ionic/vue';
 import {
   Swiper,
@@ -125,6 +130,9 @@ app.component('IonSelectOption', IonSelectOption);
 app.component('IonTextarea', IonTextarea);
 app.component('IonCheckbox', IonCheckbox);
 app.component('IonPopover', IonPopover);
+app.component('IonRadioGroup', IonRadioGroup);
+app.component('IonRadio', IonRadio);
+app.component('IonLabel', IonLabel);
 
 router.isReady().then(() => {
   app.mount('#app');
