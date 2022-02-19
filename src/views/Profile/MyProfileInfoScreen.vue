@@ -14,15 +14,16 @@
 
     <div class="flex flex-column">
 
-      <ion-card>
+      <ion-card @click="$router.push({ name: 'EditProfileInfo' })">
         <ion-card-content>
           
           <div class="flex">
 
             <div>
               <ion-thumbnail style="width: 8rem; height: 8rem;">
-                <!-- <img src="assets/icon/icon.png" /> -->
+                <img v-if="!profileImageLoading" :src="profileImage || 'assets/icon/icon.png'" />
                 <ion-skeleton-text
+                  v-else
                   animated
                 />
               </ion-thumbnail>
@@ -82,14 +83,14 @@
           </ion-popover>
           <!--  -->
         </ion-item>
-        <ion-item>
-          <div class="flex" @click="$router.push({ name: 'NewReport' })">
+        <ion-item @click="$router.push({ name: 'NewReport' })">
+          <div class="flex">
             <ion-icon :icon="bugOutline" size="large"></ion-icon>
             <span class="space-h">گزارش اشکال</span>
           </div>
         </ion-item>
-        <ion-item>
-          <div class="flex" @click="openSupportMeDialog">
+        <ion-item @click="openSupportMeDialog">
+          <div class="flex">
             <ion-icon :icon="cafeOutline" size="large"></ion-icon>
             <span class="space-h">حمایت کنید</span>
           </div>
@@ -134,6 +135,8 @@ export default defineComponent({
   data() {
     return {
       profile: null,
+      profileImage: null,
+      profileImageLoading: false,
       showEmailVerificationNotice: true,
       alertCircleOutline,
       informationCircleOutline,
@@ -215,8 +218,11 @@ export default defineComponent({
   async mounted() {
     try {
       this.profile = await ProfileService.getMyProfile();
+      const blob = await ProfileService.getMyProfileImage();
+      this.profileImage = blob ? URL.createObjectURL(blob) : null;
     } catch(err) {
-      // await this.$router.push({ name: 'Home' });
+      if(err.request.status === 404) return;
+      await this.$router.push({ name: 'Home' });
       const toast = await toastController.create({
         message: err.message,
         color: 'danger',
