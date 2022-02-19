@@ -1,28 +1,32 @@
 <template>
-  <div class="swiper-no-swiping" style="overflow-x: auto; overflow-y: hidden; white-space: nowrap;">
+  <div>
     <slot name="title"></slot>
-    <div :class="scrollDirection === 'vertical' ? 'flex flex-column' : 'flex flex-row'">
-      <div
-        v-for="collections in 20" :key="collections"
-        :style="{width: size || '5rem', height: size || '5rem', margin: '0 0.2rem'}"
-      >
-        <ion-thumbnail
-          :style="{
-            width: size || '5rem', height: size || '5rem',
-            borderRadius: collectionBorderRadius || '4px'
-          }">
-          <div v-show="!collections.imageLoading">
-            <img
-              :src="collections.image || 'assets/icon/icon.png'"
+    <div
+      @click="$emit('tapped', collection)"
+      style="overflow-x: auto; overflow-y: hidden; white-space: nowrap;"
+      class="swiper-no-swiping"
+      :class="scrollDirection === 'vertical' ? 'flex flex-column' : 'flex flex-row'">
+        <div
+          v-for="collection in 20" :key="collection"
+          :style="{width: size || '5rem', height: size || '5rem', margin: '0 0.2rem'}"
+        >
+          <ion-thumbnail
+            :style="{
+              width: size || '5rem', height: size || '5rem',
+              borderRadius: collectionBorderRadius || '4px'
+            }">
+            <div v-show="!collection.imageLoading">
+              <img
+                :src="collection.image || 'assets/images/Fadaei.jpg'"
+              />
+              <slot name="content"></slot>
+            </div>
+            <ion-skeleton-text
+              v-show="collection.imageLoading"
+              animated
             />
-            <slot name="content"></slot>
-          </div>
-          <ion-skeleton-text
-            v-show="collections.imageLoading"
-            animated
-          />
-        </ion-thumbnail>
-      </div>
+          </ion-thumbnail>
+        </div>
     </div>
   </div>
 </template>
@@ -33,17 +37,12 @@ import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
   name: 'collection',
-  emits: ['itemClicked'],
+  emits: ['tapped'],
   props: {
     scrollDirection: Object as PropType<'horizontal' | 'vertical'>,
     size: String,
     collectionBorderRadius: String,
     collections: Object as PropType<RecommendedCollection>,
-  },
-  methods: {
-    onItemClicked(item: RecommendedCollection) {
-      this.$emit('itemClicked', item);
-    },
   },
 })
 </script>
