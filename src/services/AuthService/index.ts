@@ -7,6 +7,7 @@ import { RequestPasswordResetDTO } from '@/classes/Auth/commands/RequestPassword
 import { ResetPasswordDTO } from '@/classes/Auth/commands/ResetPasswordDTO';
 import { RequestEmailVerificationDTO } from '@/classes/Auth/commands/RequestEmailVerificationDTO';
 import { SignupRequestDTO } from '@/classes/Auth/commands/SignupRequestDTO';
+import { ChangePasswordRequestDTO } from '@/classes/Auth/commands/ChangePasswordRequestDTO';
 
 class AuthService {
 
@@ -62,7 +63,18 @@ class AuthService {
       await HttpService.post('/user/', data);
       return Promise.resolve();
     } catch(err) {
-      console.log(err);
+      return Promise.reject(err);
+    }
+  }
+
+  public async changePassword(dto: ChangePasswordRequestDTO): Promise<void> {
+    try {
+      const data = new FormData();
+      data.append('id', this.getSubjectId());
+      data.append('currentPassword', dto.currentPassword);
+      data.append('newPassword', dto.newPassword);
+      await HttpService.put('/user/change-password', data);
+    } catch(err) {
       return Promise.reject(err);
     }
   }
