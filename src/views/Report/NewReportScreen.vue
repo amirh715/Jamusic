@@ -35,23 +35,27 @@
               cancel-text="بیخیال"
               ok-text="برو"
               title="نوع گزارش"
+              @ionChange="v$.reportType.$touch"
               style="width: 8rem">
                 <ion-select-option value="TECHNICAL">
                   <span>فنی</span>
                 </ion-select-option>
-                <ion-select-option value="CONTENT">
+                <ion-select-option value="CONTEsNT">
                   <span>محتوایی</span>
                 </ion-select-option>
             </ion-select>
           </div>
+          <error-displayer :errors="v$.reportType.$errors" />
           <label class="space-v">متن گزارش</label>
           <ion-textarea
             v-model="message"
+            @change="v$.message.$touch"
             placeholder="لطفا مشکلی که با آن روبرو شده اید را دقیق و با جزئیات شرح دهید..."
             rows="7"
           />
+          <error-displayer :errors="v$.message.$errors" />
           <div>
-            <ion-button @click="submit">
+            <ion-button @click="submit" :disabled="v$.$invalid">
               <ion-icon :icon="sendOutline"></ion-icon>
             </ion-button>
           </div>
@@ -83,8 +87,20 @@ import { ReportService } from '@/services/ReportService';
 import { CreateNewReportDTO } from '@/classes/Report/commands/CreateNewReportDTO';
 import { toastController, ToastOptions } from '@ionic/vue';
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
+import { useVuelidate } from '@vuelidate/core';
+import { helpers } from '@vuelidate/validators';
+import { Report } from '@/validators';
 
 export default defineComponent({
+  setup() {
+    return { v$: useVuelidate() }
+  },
+  validations() {
+    return {
+      reportType: { reportType: helpers.withMessage(() => 'نوع گزارش را مشخص کنید.', Report.type) },
+      message: { message: helpers.withMessage(() => 'متن گزارش باید بین ۲۰ تا ۲۰۰ کاراکتر باشد.', Report.message)},
+    };
+  },
   data() {
     return {
       reportType: '',
@@ -101,6 +117,7 @@ export default defineComponent({
   },
   methods: {
     async submit() {
+      if(this.v$.$invalid) return;
       this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
       let options: ToastOptions;
       try {
