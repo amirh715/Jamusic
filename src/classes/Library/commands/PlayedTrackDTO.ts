@@ -5,10 +5,10 @@ class PlayedTrackDTO {
 
   public constructor(_props: {
     trackId: string,
-    playedAt: Date,
+    playedAt?: Date,
   }) {
     this.trackId = _props.trackId;
-    this.playedAt = _props.playedAt;
+    this.playedAt = _props.playedAt || new Date();
   }
 
 }
