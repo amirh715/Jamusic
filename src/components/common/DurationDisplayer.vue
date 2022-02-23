@@ -5,33 +5,60 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import * as _ from 'lodash'
+import { defineComponent, PropType } from 'vue'
+import { floor } from 'lodash'
 
 export default defineComponent({
   name: 'duration-displayer',
   props: {
     durationInSec: Number,
+    writeStyle: Object as PropType<'clock' | 'text'>,
   },
   computed: {
     displayValue() {
-      const hour = "ساعت";
-      const minute = "دقیقه";
-      const sec = "ثانیه";
+      let hour = 0;
+      let min = 0;
+      let sec = 0;
       let hourPart = '';
       let minPart = '';
       let secPart = '';
+      
       if(this.durationInSec < 60) {
-        secPart = `${this.durationInSec} ${sec}`;
+        sec = floor(this.durationInSec);
       } else if(this.durationInSec < 3600) {
-        minPart = `${_.floor((this.durationInSec / 60)).toString()} ${minute}`;
+        min = floor(this.durationInSec / 60);
+        sec = floor(this.durationInSec % 60);
       } else if(this.durationInSec < 86400) {
-        hourPart = `${_.floor((this.durationInSec / 3600)).toString()} ${hour} و`;
-        minPart = `${(this.durationInSec % 3600).toString()} ${minute}`;
+        hour = floor(this.durationInSec / 3600);
+        min = floor(this.durationInSec % 3600);
+        sec = floor(this.min % 3600);
       } else {
-        return 'N/A';
+        return 'حداکثر مقدار قابل استفاده کمتر از ۸۶۴۰۰ ثانیه است.';
       }
-      return `${hourPart} ${minPart} ${secPart}`;
+
+      switch(this.writeStyle) {
+        case 'clock':
+          if(hour > 0) hourPart = hour < 10 ? `0${hour}:` : `${hour}:`;
+          minPart = min < 10 ? `0${min}:` : `${min}:`;
+          secPart = sec < 10 ? `0${sec}` : `${sec}`;
+          break;
+        case 'text':
+          if(hour > 0) {
+            hourPart = `${hour} ساعت ${min > 0 && ' و '}`;
+          }
+          if(min > 0) {
+            minPart = `${min} دقیقه ${sec > 0 && ' و '}`;
+          }
+          if(sec > 0) {
+            secPart = `${sec} ثانیه`;
+          }
+          break;
+        default:
+          if(hour > 0) hourPart = hour < 10 ? `0${hour}:` : `${hour}:`;
+          minPart = min < 10 ? `0${min}:` : `${min}:`;
+          secPart = sec < 10 ? `0${sec}` : `${sec}`;
+      }
+      return `${hourPart}${minPart}${secPart}`;
     },
   },
 })
