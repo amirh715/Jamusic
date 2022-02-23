@@ -1,6 +1,9 @@
 <template>
 
-  <swiper>
+  <swiper
+    :grabCursor="true"
+    dir="rtl"
+  >
     <swiper-slide>
       <ion-list style="width: 100%">
         <ion-list-header class="space-v">آلبوم ها</ion-list-header>
