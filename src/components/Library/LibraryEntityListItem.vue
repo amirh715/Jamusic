@@ -1,5 +1,5 @@
 <template>
-  <ion-item @click="tapped">
+  <ion-item @click="tapped" :color="color">
     <div>
       <ion-skeleton-text
         v-if="imageLoading"
@@ -47,8 +47,16 @@ export default defineComponent({
     imageLoading: Boolean,
     contentLoading: Boolean,
     image: Blob,
+    id: String,
     title: String,
     rate: Number,
+  },
+  computed: {
+    color() {
+      return this.$store.state.player.currentTrack &&
+        this.$store.state.player.currentTrack.id === this.id &&
+        'primary';
+    }
   },
   methods: {
     tapped() {

@@ -24,6 +24,7 @@
         v-for="item in fetchedItems"
         :key="item.id"
         @tapped="itemTapped({ entityId: item.id, entityTitle: item.title })"
+        :id="item.id"
         :title="item.title"
         :rate="item.rate"
         :imageLoading="false"
