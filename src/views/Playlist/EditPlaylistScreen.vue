@@ -1,10 +1,16 @@
 <template>
-  
-  <ion-content>
 
+  <ion-header>
     <ion-toolbar>
-      <b>تغییر پلی لیست {{title}}</b>
+      <div class="flex justify-content-between align-items-center">
+        <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
+        <b>تغییر پلی لیست {{title}}</b>
+        <ion-icon :icon="chevronForwardCircleOutline" size="large" class="space-h" style="opacity: 0;"></ion-icon>
+      </div>
     </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
 
     <ion-card>
       <ion-card-content>
@@ -31,7 +37,7 @@
           />
         </div>
         <div class="flex justify-content-center space-v">
-          <ion-button>
+          <ion-button @click="submit">
             <span class="space-h">برو</span>
           </ion-button>
         </div>
@@ -51,7 +57,7 @@ import { LibraryService } from '@/services/LibraryService';
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 import { toastController } from '@ionic/vue';
 import { map } from 'lodash';
-import { closeCircleOutline } from 'ionicons/icons';
+import { closeCircleOutline, chevronForwardCircleOutline } from 'ionicons/icons';
 import { GetLibraryEntitiesByFilters } from '@/classes/Library/commands/GetLibraryEntitiesByFiltersDTO';
 
 export default defineComponent({
@@ -60,9 +66,11 @@ export default defineComponent({
     return {
       playlistId: this.$route.query.id,
       title: '',
+      searchTerm: '',
       selectedTracks: [],
       tracks: [],
       loading: false,
+      chevronForwardCircleOutline,
     };
   },
   methods: {
@@ -75,7 +83,7 @@ export default defineComponent({
           trackIds: map(this.tracks, (item: TrackDetailsDTO) => item.id),
         });
         await LibraryService.editPlaylist(dto);
-        await this.$router.push({ name: 'MyPlaylists' });
+        await this.$router.push({ name: 'Home' });
       } catch(err) {
         const toast = await toastController.create({
           message: err.message,
@@ -98,6 +106,9 @@ export default defineComponent({
       } catch(err) {
         console.log(err);
       }
+    },
+    goBack() {
+      this.$router.push({ name: 'Home' });
     },
   },
   async mounted() {
