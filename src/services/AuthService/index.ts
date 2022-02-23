@@ -141,11 +141,11 @@ class AuthService {
     }
   }
 
-  public async requestEmailVerification(dto: RequestEmailVerificationDTO): Promise<void> {
+  public async requestEmailVerification(): Promise<void> {
     try {
       const {
         userId,
-      } = dto;
+      } = new RequestEmailVerificationDTO({ userId: this.getSubjectId() });
       const data = new FormData();
       data.append('id', userId);
       await HttpService.post('/user/request-email-verification', data);
