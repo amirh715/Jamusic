@@ -4,7 +4,8 @@
       v-for="i in 5"
       :key="i"
       :icon="icons[i]"
-      :style="{margin: 'auto 0.1rem', fontSize: size}"
+      :color="color[i]"
+      :style="{margin: 'auto 0.1rem', fontSize: size || '1.2rem'}"
     ></ion-icon>
   </div>
 </template>
@@ -44,6 +45,13 @@ export default defineComponent({
       }
       return iconNames;
     },
-  }
+    color() {
+      let iconColors = [];
+      for(let i = 1; i < 6; i++) {
+        iconColors[i] = this.icons[i] === this.star ? 'primary' : '';
+      }
+      return iconColors;
+    },
+  },
 })
 </script>
