@@ -4,7 +4,7 @@
     <ion-toolbar>
       <div class="flex justify-content-between align-items-center">
         <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
-        <b>پروفایل</b>
+        <b>پروفایل من</b>
         <ion-icon :icon="chevronForwardCircleOutline" style="opacity: 0;" size="large" class="space-h"></ion-icon>
       </div>
     </ion-toolbar>
@@ -29,9 +29,9 @@
               </ion-thumbnail>
             </div>
 
-            <div style="width: 100%" class="flex flex-column justify-content-center align-items-center">
+            <div style="width: 100%" class="flex flex-column justify-content-center align-items-center dir-ltr">
               <h1>{{profile && profile.name}}</h1>
-              <b class="space-v">{{profile && profile.mobile}}</b>
+              <number-displayer :value="profile && profile.mobile" />
               <b>{{profile && profile.email}}</b>
             </div>
 
@@ -42,7 +42,7 @@
 
       <ion-list>
         <ion-item
-          v-if="profile && profile.email && !profile.isEmailVerified && showEmailVerificationNotice"
+          v-if="profile && profile.email && !profile.isEmailVerified"
           @click="openEmailVerificationConfirmationDialog"
           color="warning"
         >
@@ -126,10 +126,12 @@ import {
   logInOutline,
   closeCircleOutline,
   chevronForwardCircleOutline,
+  checkmarkCircleOutline,
 } from 'ionicons/icons';
-import { AlertButton, alertController, toastController } from '@ionic/vue';
+import { AlertButton, alertController, toastController, ToastOptions } from '@ionic/vue';
 import { ProfileService } from '@/services/ProfileService';
 import { ACTION_TYPES } from '@/store/ACTION_TYPES';
+import { AuthService } from '@/services/AuthService';
 
 export default defineComponent({
   data() {
@@ -148,6 +150,7 @@ export default defineComponent({
       cafeOutline,
       logInOutline,
       chevronForwardCircleOutline,
+      checkmarkCircleOutline,
     };
   },
   methods: {
@@ -160,8 +163,9 @@ export default defineComponent({
     async openEmailVerificationConfirmationDialog() {
       const okButton: AlertButton = {
         text: 'ادامه می دهم',
-        handler: () => {
+        handler: async () => {
           this.showEmailVerificationNotice = false;
+          this.requestEmailVerification();
         },
       }
       const cancelButton: AlertButton = {
@@ -174,6 +178,28 @@ export default defineComponent({
         buttons: [cancelButton, okButton],
       });
       alert.present();
+    },
+    async requestEmailVerification() {
+      let toastOptions: ToastOptions;
+      try {
+        await AuthService.requestEmailVerification();
+        toastOptions = {
+          message: 'یک لینک برای تایید به ایمیل شما ارسال شد.',
+          icon: checkmarkCircleOutline,
+          color: 'success',
+          duration: 4000,
+        }
+      } catch(err) {
+        toastOptions = {
+          message: err.message,
+          icon: closeCircleOutline,
+          color: 'danger',
+          duration: 4000,
+        }
+      } finally {
+        const toast = await toastController.create(toastOptions);
+        await toast.present();
+      }
     },
     async openSupportMeDialog() {
       const okButton: AlertButton = {
@@ -218,11 +244,21 @@ export default defineComponent({
   async mounted() {
     try {
       this.profile = await ProfileService.getMyProfile();
+    } catch(err) {
+      await this.$router.push({ name: 'Home' });
+      const toast = await toastController.create({
+        message: err.message,
+        color: 'danger',
+        icon: closeCircleOutline,
+        duration: 4000,
+      });
+      await toast.present();
+    }
+    try {
       const blob = await ProfileService.getMyProfileImage();
       this.profileImage = blob ? URL.createObjectURL(blob) : null;
     } catch(err) {
       if(err.request.status === 404) return;
-      await this.$router.push({ name: 'Home' });
       const toast = await toastController.create({
         message: err.message,
         color: 'danger',
