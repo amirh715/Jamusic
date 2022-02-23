@@ -29,7 +29,6 @@ export default defineComponent({
     animationSpeed: String,
     height: String,
     background: String,
-    textStyle: Object,
   },
   computed: {
     divStyle() {
@@ -46,7 +45,6 @@ export default defineComponent({
         width: '100%',
         height: '100%',
         margin: 0,
-        ...this.textStyle,
         'line-height': '50px',
         /* Starting position */
         transform: `${this.animate ? 'translateX(100%)' : ''}`,
