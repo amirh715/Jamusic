@@ -8,6 +8,7 @@ import LibraryEntityDetailsScreen from '../views/Library/LibraryEntityDetailsScr
 import PlaylistScreen from '../views/Playlist/PlaylistScreen.vue';
 import NewPlaylistScreen from '../views/Playlist/NewPlaylistScreen.vue';
 import EditPlaylistScreen from '../views/Playlist/EditPlaylistScreen.vue';
+import PlaylistDetailsScreen from '../views/Playlist/PlaylistDetailsScreen.vue';
 import ReportScreen from '../views/Report/ReportScreen.vue';
 import NewReportScreen from '../views/Report/NewReportScreen.vue';
 import MyReportsScreen from '../views/Report/MyReportsScreen.vue';
@@ -16,6 +17,7 @@ import MyProfileInfoScreen from '../views/Profile/MyProfileInfoScreen.vue';
 import EditProfileInfoScreen from '../views/Profile/EditProfileInfoScreen.vue';
 import AboutScreen from '../views/AboutScreen.vue';
 import DesktopLandingScreen from '../views/DesktopLandingScreen.vue';
+import WelcomeScreen from '../views/Welcome/WelcomeScreen.vue';
 import AuthScreen from '../views/Auth/AuthScreen.vue';
 import LoginScreen from '../views/Auth/LoginScreen.vue';
 import SignupScreen from '../views/Auth/SignupScreen.vue';
@@ -57,6 +59,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'new',
         name: 'NewPlaylist',
         component: NewPlaylistScreen,
+      },
+      {
+        path: 'details',
+        name: 'PlaylistDetails',
+        component: PlaylistDetailsScreen,
       },
       {
         path: 'edit',
@@ -108,6 +115,11 @@ const routes: Array<RouteRecordRaw> = [
     component: DesktopLandingScreen,
   },
   {
+    path: '/welcome',
+    name: 'Welcome',
+    component: WelcomeScreen,
+  },
+  {
     path: '/auth/',
     component: AuthScreen,
     children: [
@@ -145,22 +157,40 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   const routesAllowedForUnauthenticatedUsers = [
-//     '/auth/login',
-//     '/auth/signup',
-//     '/auth/forgot-password',
-//     '/auth/account-verification',
-//   ];
-//   routesAllowedForUnauthenticatedUsers.some((value) => value === to.path);
-//   if(AuthService.isAuthenticated()) {
-//     if(routesAllowedForUnauthenticatedUsers.some((value) => value === to.path))
-//       return next({ name: 'Home' });
-//   } else {
-//     if(!routesAllowedForUnauthenticatedUsers.some((value) => value === to.path))
-//       return next({ name: 'Signup' });
-//   }
-//   next();
-// })
+// authentication checks
+router.beforeEach((to, from, next) => {
+  const routesAllowedForUnauthenticatedUsers = [
+    '/auth/login',
+    '/auth/signup',
+    '/auth/forgot-password',
+    '/auth/account-verification',
+    '/welcome',
+  ];
+  const isRouteAllowedForUnauthenticatedUsers = routesAllowedForUnauthenticatedUsers.some((value) => value === to.path);
+  if(AuthService.isAuthenticated()) {
+    if(isRouteAllowedForUnauthenticatedUsers)
+      return next({ name: 'Home' });
+  } else {
+    if(!isRouteAllowedForUnauthenticatedUsers)
+      return next({ name: 'Welcome' });
+  }
+  next();
+})
+
+// client checks
+import { UAParser } from 'ua-parser-js';
+router.beforeEach((to, from, next) => {
+  const client = UAParser(navigator.userAgent);
+  const routesAllowedForNonMobileClients = ['/landing'];
+  const isRouteForNonMobileClients = routesAllowedForNonMobileClients.some((value) => value === to.path);
+  if(client.device.type === 'mobile') {
+    if(isRouteForNonMobileClients)
+      return next({ name: 'Login' });
+  } else {
+    if(!isRouteForNonMobileClients)
+      return next({ name: 'Landing' });
+  }
+  next();
+})
 
 export default router
