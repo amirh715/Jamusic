@@ -1,3 +1,4 @@
+import { orderBy } from 'lodash';
 import { TrackDetailsDTO } from './TrackDetailsDTO';
 
 class PlaylistDetailsDTO {
@@ -19,7 +20,7 @@ class PlaylistDetailsDTO {
     this.title = _props.title;
     this.createdAt = new Date(_props.createdAt);
     this.lastModifiedAt = new Date(_props.lastModifiedAt);
-    this.tracks = _props.tracks;
+    this.tracks = orderBy(_props.tracks, track => track.title, ['desc']);
   }
 
 }
