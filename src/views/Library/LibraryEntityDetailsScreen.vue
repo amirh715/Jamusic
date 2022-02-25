@@ -1,11 +1,21 @@
 <template>
   <ion-header>
     <ion-toolbar>
-      <ion-icon
-        :icon="bugOutline"
-        size="small"
-        @click="$router.push({ name: 'NewReport', query: { reportedEntityId: entityId, reportedEntityTitle: entity.title } })"
-      ></ion-icon>
+      <div class="flex justify-content-between align-items-center">
+        <ion-icon
+          @click="goBack"
+          :icon="chevronForwardCircleOutline"
+          size="large"
+          class="space-h"
+        ></ion-icon>
+        <b>{{entity && entity.title}}</b>
+        <ion-icon
+          :icon="bugOutline"
+          size="small"
+          class="space-h"
+          @click="$router.push({ name: 'NewReport', query: { reportedEntityId: entityId, reportedEntityTitle: entity.title } })"
+        ></ion-icon>
+      </div>
     </ion-toolbar>
   </ion-header>
   <ion-content>
@@ -28,7 +38,7 @@
                   height: '10rem',
                 }"></div> -->
               <ion-thumbnail v-else style="width: 10rem; height: 10rem;">
-                <img :src="image || 'assets/icon/icon.png'" />
+                <img :src="image || 'assets/images/DiscPlaceholder.png'" />
               </ion-thumbnail>
             </div>
             <div
@@ -51,25 +61,25 @@
               </div>
               <div v-else>
                 <text-banner
-                  :text="entity.title"
-                  :animate="entity.title.length > 10"
-                  :textStyle="{fontWeight: 'bold', fontSize: '1.4rem'}"
-                  animationSpeed="5s"
-                />
+                  :animate="entity.title.length > 8"
+                  animationSpeed="5s">
+                  <h1>{{entity.title}}</h1>
+                </text-banner>
                 <library-entity-rate :rate="entity.rate" class="space-v" />
                 <p>
+                  <number-displayer :value="entity.totalPlayedCount" />
                   بار گوش داده شده
                 </p>
                 <duration-displayer
                   :durationInSec="entity.duration"
-                  style="font-size: 0.9rem"
+                  writeStyle="text"
                 />
               </div>
             </div>
           </div>
           <!-- artwork details (rendered if entity is an artwork) -->
           <div v-if="isArtwork">
-            <artwork-details :artwork="entity" />
+            <artwork-details :artwork="entity" @addToPlaylist="openAddArtworkToPlaylistModal" />
           </div>
         </div>
       </ion-card-content>
@@ -86,14 +96,6 @@
         <artist-artworks-list :artistId="entity.id" />
       </ion-card-content>
     </ion-card>
-    <!-- track player (rendered if entity is a track) -->
-    <ion-card v-if="isTrack">
-      <ion-card-content>
-        <track-player
-          :trackId="entity.id"
-        />
-      </ion-card-content>
-    </ion-card>
     <!-- track lyrcis card (rendered if entity is a track and has lyrics) -->
     <ion-card v-if="isTrack && entity.lyrics">
       <ion-card-content>
@@ -104,22 +106,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Prop } from 'vue'
+import { defineComponent, Prop, PropType } from 'vue'
 import { LibraryService } from '@/services/LibraryService'
 import LibraryEntityRate from '@/components/Library/LibraryEntityRate.vue';
 import { bugOutline } from 'ionicons/icons';
 import AlbumTracksList from '@/components/Library/AlbumTracksList.vue';
 import ArtistArtworksList from '@/components/Library/ArtistArtworksList.vue';
-import TrackPlayer from '@/components/Library/TrackPlayer.vue';
+// import TrackPlayer from '@/components/Library/TrackPlayer.vue';
 import TrackLyrics from '@/components/Library/TrackLyrics.vue';
 import ArtworkDetails from '@/components/Library/ArtworkDetails.vue';
+import { modalController } from '@ionic/vue';
+import SelectPlaylistModal from '@/components/Playlist/SelectPlaylistModal.vue';
+import { PlaylistDetailsDTO } from '@/classes/Library/query/PlaylistDetailsDTO';
+import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
+import { chevronForwardCircleOutline } from 'ionicons/icons';
 
 export default defineComponent({
   components: {
     LibraryEntityRate,
     AlbumTracksList,
     ArtistArtworksList,
-    TrackPlayer,
+    // TrackPlayer,
     ArtworkDetails,
     TrackLyrics,
   },
@@ -132,6 +139,7 @@ export default defineComponent({
       entity: null,
       entityLoading: true,
       bugOutline,
+      chevronForwardCircleOutline,
     }
   },
   computed: {
@@ -170,6 +178,24 @@ export default defineComponent({
         this.imageLoading = false;
       }
     },
+    async openAddArtworkToPlaylistModal() {
+      const modal = await modalController.create({
+        component: SelectPlaylistModal,
+        componentProps: {
+          title: `افزودن ${this.entity.title} به پلی لیست`,
+          trackToAdd: this.entity,
+        },
+        swipeToClose: true,
+      });
+      await modal.present();
+      const selectedPlaylist: PlaylistDetailsDTO = (await modal.onDidDismiss()).data;
+      if(selectedPlaylist) {
+        selectedPlaylist.tracks.push(this.entity);
+      }
+    },
+    goBack() {
+      this.$router.back();
+    }
   },
   mounted() {
     this.fetchEntity();
