@@ -20,7 +20,7 @@
         <ion-label>
           <b>{{item.title}}</b>
         </ion-label>
-        <ion-radio :value="item.id"></ion-radio>
+        <ion-radio :value="item"></ion-radio>
       </ion-item>
     </ion-radio-group>
     <div v-else-if="loadingPlaylists" v-for="i in 5" :key="i" class="flex justify-content-start">
@@ -61,12 +61,14 @@ import { CreateNewPlaylistDTO } from '@/classes/Library/commands/CreateNewPlayli
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 import { EditPlaylistDTO } from '@/classes/Library/commands/EditPlaylistDTO';
+import { ArtworkDetailsDTO } from '@/classes/Library/query/ArtworkDetailsDTO';
+import { AlbumDetailsDTO } from '@/classes/Library/query/AlbumDetailsDTO';
 
 export default defineComponent({
   name: 'select-playlist-modal',
   props: {
     title: String,
-    trackToAdd: TrackDetailsDTO,
+    artworkToAdd: Object as PropType<ArtworkDetailsDTO>,
   },
   data() {
     return {
@@ -78,8 +80,10 @@ export default defineComponent({
     };
   },
   methods: {
-    async selectionChanged(playlist: PlaylistDetailsDTO) {
+    async selectionChanged(event: CustomEvent) {
+      const playlist = event.detail;
       this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
+      let toastOptions: ToastOptions;
       try {
         const trackIds = playlist.tracks.map(track => track.id);
         const dto = new EditPlaylistDTO({
@@ -89,11 +93,24 @@ export default defineComponent({
         });
         await LibraryService.editPlaylist(dto);
         await this.$router.push({ name: 'Home' });
+        toastOptions = {
+          message: 'آهنگ به پلی لیست افزوده شد',
+          icon: checkmarkCircleOutline,
+          color: 'success',
+          duration: 4000,
+        }
       } catch(err) {
-        console.log(err);
+        toastOptions = {
+          message: err.message,
+          icon: closeCircleOutline,
+          color: 'danger',
+          duration: 4000,
+        }
       } finally {
         this.$store.commit(COMMIT_TYPES.APP_WAITING, false);
-        modalController.dismiss(playlist);
+        await modalController.dismiss(playlist);
+        const toast = await toastController.create(toastOptions);
+        await toast.present();
       }
     },
     async openCreateNewPlaylistAlert() {
@@ -133,9 +150,15 @@ export default defineComponent({
     async createNewPlaylist(value) {
       this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
       try {
+        let tracksToAdd: TrackDetailsDTO[];
+        if(this.artworkToAdd instanceof AlbumDetailsDTO)
+          tracksToAdd = (this.artworkToAdd as AlbumDetailsDTO).tracks;
+        else
+          tracksToAdd = [(this.artworkToAdd as TrackDetailsDTO)];
+        console.log(tracksToAdd, this.artworkToAdd);
         const dto = new CreateNewPlaylistDTO({
           title: value.title,
-          trackIds: [this.trackToAdd.id],
+          trackIds: tracksToAdd.map(track => track.id),
         });
         await LibraryService.createNewPlaylist(dto);
         this.$router.push({ name: 'Home' });
@@ -148,15 +171,6 @@ export default defineComponent({
     async closeModal() {
       modalController.dismiss();
     },
-    // async addToPlaylist(playlist: PlaylistDetailsDTO) {
-    //   try {
-
-    //   } catch(err) {
-
-    //   } finally {
-
-    //   }
-    // },
   },
   async mounted() {
     this.loadingPlaylists = true;
