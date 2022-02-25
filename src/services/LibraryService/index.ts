@@ -44,7 +44,7 @@ class LibraryService {
 
   public async getTrackAudioById(id: string): Promise<Blob> {
     try {
-      const { data } = await HttpService.get('/user/', '', { responseType: 'blob' });
+      const { data } = await HttpService.get(`/library/audio/${id}`, '', { responseType: 'blob' });
       return Promise.resolve(new Blob([data]));
     } catch(err) {
       return Promise.reject(err);
@@ -59,7 +59,7 @@ class LibraryService {
       } = dto;
       const data = new FormData();
       data.append('trackId', trackId);
-      data.append('playedAt', playedAt.toUTCString());
+      data.append('playedAt', playedAt.toISOString());
       await HttpService.post('/library/played-track', data);
       return Promise.resolve();
     } catch(err) {
@@ -93,7 +93,9 @@ class LibraryService {
       const data = new FormData();
       data.append('id', id);
       data.append('title', title);
-      data.append('trackIds', JSON.stringify(trackIds));
+      if(dto.trackIds) {
+        data.append('trackIds', JSON.stringify(trackIds));
+      }
       await HttpService.put('/library/playlist/', data);
       return Promise.resolve();
     } catch(err) {
