@@ -31,6 +31,7 @@ class HttpService {
         if(err.response) {
           return Promise.reject(new ApiError({
             message: err.response.data.message,
+            type: err.response.data.type,
             code: err.response.data.code,
             description: err.response.data.description,
           }));
@@ -38,12 +39,14 @@ class HttpService {
         if(err.request) {
           return Promise.reject(new ApiError({
             message: 'خطایی در ارتباط با سرور رخ داده است',
+            type: 'ServerConnectionError',
             code: 0,
             description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
           }));
         }
         return Promise.reject(new ApiError({
           message: 'خطایی در ارسال درخواست به سرور رخ داده است',
+          type: 'ServerConnectionError',
           code: 0,
           description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
         }));
@@ -55,10 +58,10 @@ class HttpService {
       try {
         return await this.http.post(`${this.config.baseURL}${path}`, formData);
       } catch(err) {
-        console.log(err.request, err.response);
         if(err.response) {
           return Promise.reject(new ApiError({
             message: err.response.data.message,
+            type: err.response.data.type,
             code: err.response.data.code,
             description: err.response.data.description,
           }));
@@ -67,6 +70,7 @@ class HttpService {
           if(err.request.status === 401) {
             return Promise.reject(new ApiError({
               message: 'دسترسی برای شما امکان پذیر نیست',
+              type: 'ServerConnectionError',
               code: 0,
               description: 'این خطا زمانی ارسال می شود که شما درخواستی دارید که برای شما مجاز نیست.',
             }));
@@ -74,18 +78,21 @@ class HttpService {
           if(err.request.status === 404) {
             return Promise.reject(new ApiError({
               message: 'وجود ندارد',
+              type: 'ServerConnectionError',
               code: 0,
               description: 'این ',
             }));
           }
           return Promise.reject(new ApiError({
             message: 'خطایی در ارتباط با سرور رخ داده است',
+            type: 'ServerConnectionError',
             code: 0,
             description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
           }));
         }
         return Promise.reject(new ApiError({
           message: 'خطایی در ارسال درخواست به سرور رخ داده است',
+          type: 'ServerConnectionError',
           code: 0,
           description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
         }));
@@ -101,6 +108,7 @@ class HttpService {
         if(err.response) {
           return Promise.reject(new ApiError({
             message: err.response.data.message,
+            type: err.response.data.type,
             code: err.response.data.code,
             description: err.response.data.description,
           }));
@@ -108,12 +116,14 @@ class HttpService {
         if(err.request) {
           return Promise.reject(new ApiError({
             message: 'خطایی در ارتباط با سرور رخ داده است',
+            type: 'ServerConnectionError',
             code: 0,
             description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
           }));
         }
         return Promise.reject(new ApiError({
           message: 'خطایی در ارسال درخواست به سرور رخ داده است',
+          type: 'ServerConnectionError',
           code: 0,
           description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
         }));
@@ -129,6 +139,7 @@ class HttpService {
         if(err.response) {
           return Promise.reject(new ApiError({
             message: err.response.data.message,
+            type: err.response.data.type,
             code: err.response.data.code,
             description: err.response.data.description,
           }));
@@ -136,12 +147,14 @@ class HttpService {
         if(err.request) {
           return Promise.reject(new ApiError({
             message: 'خطایی در ارتباط با سرور رخ داده است',
+            type: 'ServerConnectionError',
             code: 0,
             description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
           }));
         }
         return Promise.reject(new ApiError({
           message: 'خطایی در ارسال درخواست به سرور رخ داده است',
+          type: 'ServerConnectionError',
           code: 0,
           description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
         }));
