@@ -30,7 +30,7 @@
             <ion-thumbnail class="space-v">
               <img
                 v-show="!track.imageLoading"
-                :src="track.image ? URL.createObjectURL(track.image) : 'assets/icon/icon.png'"
+                :src="track.image ? URL.createObjectURL(track.image) : 'assets/images/DiscPlaceholder.png'"
               />
               <ion-skeleton-text
                 v-show="track.imageLoading"
@@ -71,7 +71,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { map, find, remove, intersectionBy, filter } from 'lodash';
+import { map, find, remove, intersectionBy, filter, unionBy } from 'lodash';
 import { CheckboxChangeEventDetail } from '@ionic/core';
 import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 
@@ -80,16 +80,18 @@ export default defineComponent({
   emits: ['selectedTracks', 'loadMore'],
   props: {
     tracks: Object as PropType<TrackDetailsDTO[]>,
+    preSelectedTracks: Object as PropType<TrackDetailsDTO[]>,
     loading: Boolean,
   },
   data() {
     return {
-      selectedTracks: [],
-    };
+      selectedTracks: this.preSelectedTracks || [],
+    }
   },
   computed: {
     // items to show on the list
     listedItems(): Array<CheckboxChangeEventDetail<TrackDetailsDTO>> {
+      console.log('listedItems()');
       // tracks returned from API as a result of user search term (which are not selected)
       const tracksMarkedAsUnchecked: Array<CheckboxChangeEventDetail<TrackDetailsDTO>>
         = map(
@@ -111,7 +113,7 @@ export default defineComponent({
             } as CheckboxChangeEventDetail;
           });
       // list of selected items at the top and tracks at the bottom
-      const itemsToShow = intersectionBy(
+      const itemsToShow = unionBy(
         [...selectedTracksMarkedAsChecked, ...tracksMarkedAsUnchecked],
         (item) => item.value.id
       );
@@ -121,12 +123,17 @@ export default defineComponent({
       return filter(this.selectedTracks, (item) => item instanceof TrackDetailsDTO).length;
     },
   },
+  // watch: {
+  //   selectedTracks(selectedTracks: TrackDetailsDTO[]) {
+      
+  //   },
+  // },
   methods: {
     selectedTracksChanged(track: TrackDetailsDTO, checked: boolean) {
       const isItemAlreadySelected = find(this.selectedTracks, (item: TrackDetailsDTO) => item.id === track.id);
       if(isItemAlreadySelected) {
         if(!checked) {
-          remove(this.selectedTracks, (item: TrackDetailsDTO) => item.id === track.id);
+          this.selectedTracks = remove(this.selectedTracks, (item: TrackDetailsDTO) => item.id === track.id);
           this.$emit('selectedTracks', this.selectedTracks);
         }
       } else {
@@ -139,6 +146,6 @@ export default defineComponent({
     loadMore(ev) {
       this.$emit('loadMore', ev);
     },
-  }
+  },
 })
 </script>
