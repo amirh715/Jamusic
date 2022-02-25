@@ -1,13 +1,13 @@
 <template>
-  <div class="flex flex-column" style="height: 3.5rem; backdrop-filter: blur(20px);">
+  <div v-if="!$store.state.player.isStopped" class="flex flex-column" style="height: 3.5rem; backdrop-filter: blur(20px);">
     <div class="flex" style="height: 95%;">
-      <div @click="$emit('buttonTapped')" class="flex justify-content-center align-items-center" style="width: 20%">
+      <div @click="buttonTapped" class="flex justify-content-center align-items-center" style="width: 20%">
         <ion-icon
           :icon="icon"
           style="font-size: 2.7rem"
         ></ion-icon>
       </div>
-      <div @click="$emit('titleTapped')" class="flex flex-column" style="width: 80%;">
+      <div @click="titleTapped" class="flex flex-column" style="width: 80%;">
         <text-banner :animate="currentTrack.title.length > 15">
           <b>{{currentTrack.title}}</b>
         </text-banner>
@@ -24,10 +24,12 @@ import {
   playCircleOutline,
   pauseCircleOutline,
 } from 'ionicons/icons';
+import { modalController } from '@ionic/vue';
+import MainPlayerModal from './MainPlayerModal.vue';
+import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 
 export default defineComponent({
   name: 'mini-player',
-  emits: ['titleTapped', 'buttonTapped'],
   computed: {
     currentTrack() {
       return this.$store.state.player.currentTrack;
@@ -41,5 +43,19 @@ export default defineComponent({
       return this.$store.state.player.isPlaying ? pauseCircleOutline : playCircleOutline;
     },
   },
+  methods: {
+    async titleTapped() {
+      const modal = await modalController.create({
+        component: MainPlayerModal,
+        swipeToClose: true,
+      });
+      await modal.present();
+    },
+    buttonTapped() {
+      this.$store.dispatch(
+        this.$store.state.player.isPlaying ? ACTION_TYPES.PAUSE : ACTION_TYPES.RESUME
+      );
+    },
+  }
 })
 </script>
