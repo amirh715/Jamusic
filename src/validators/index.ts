@@ -1,9 +1,11 @@
 import { isPossiblePhoneNumber } from 'libphonenumber-js';
+import { email } from '@vuelidate/validators';
 
 const User = {
   name: (value: string) => value.length > 1 && value.length < 80,
   mobile: (value: string) => isPossiblePhoneNumber(value, 'IR'),
   password: (value: string) => value.length > 7 && value.length < 150,
+  email,
 };
 
 const Playlist = {
