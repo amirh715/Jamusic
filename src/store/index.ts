@@ -1,4 +1,4 @@
-import Vuex from 'vuex';
+import { Store } from 'vuex';
 import router from '@/router';
 import { AuthService } from '@/services/AuthService';
 import { LoginRequestDTO } from '@/classes/Auth/commands/LoginRequestDTO';
@@ -12,16 +12,19 @@ import { RequestPasswordResetDTO } from '@/classes/Auth/commands/RequestPassword
 import { PlayerManager } from '@/services/PlayerManager';
 import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 
-export default new Vuex.Store({
+let timerId: number;
+
+export default new Store({
   state: {
     isAuthenticated: false,
     isAppWaiting: false,
+    homeScreenTabIndex: 0,
     player: {
       isPlaying: false,
+      isStopped: true,
       queue: [],
       currentTrack: null,
-      playQueueIndex: 0,
-      playQueue: [],
+      currentQueueIndex: 0,
       currentDuration: 0,
       totalDuration: 0,
       repeat: false,
@@ -46,16 +49,23 @@ export default new Vuex.Store({
     },
     [COMMIT_TYPES.PLAYING](state, {
       currentTrack,
-      playQueueIndex,
-      playQueue,
+      currentQueueIndex,
+      queue,
       currentDuration,
       totalDuration,
     }) {
       state.player.isPlaying = true;
+      state.player.isStopped = false;
+      state.player.queue = queue;
       state.player.currentTrack = currentTrack;
-      state.player.playQueueIndex = playQueueIndex;
-      state.player.playQueue = playQueue;
+      state.player.currentQueueIndex = currentQueueIndex;
       state.player.currentDuration = currentDuration;
+      state.player.totalDuration = totalDuration;
+    },
+    [COMMIT_TYPES.SEEK](state, currentDuration) {
+      state.player.currentDuration = currentDuration;
+    },
+    [COMMIT_TYPES.TOTAL_DURATION](state, totalDuration) {
       state.player.totalDuration = totalDuration;
     },
     [COMMIT_TYPES.PAUSED](state) {
@@ -63,9 +73,15 @@ export default new Vuex.Store({
     },
     [COMMIT_TYPES.STOPPED](state) {
       state.player.isPlaying = false;
+      state.player.isStopped = true;
+      state.player.currentDuration = 0;
+      state.player.totalDuration = 0;
     },
     [COMMIT_TYPES.APP_WAITING](state, isAppWaiting: boolean) {
       state.isAppWaiting = isAppWaiting;
+    },
+    [COMMIT_TYPES.HOME_SCREEN_TAB_INDEX](state, index: number) {
+      state.homeScreenTabIndex = index;
     },
   },
   actions: {
@@ -77,7 +93,6 @@ export default new Vuex.Store({
         commit(COMMIT_TYPES.AUTHENTICATED);
         await router.push({ name: 'Home' });
       } catch(err) {
-        console.log(err);
         // handle unverified account here
         if(err.response && err.response.data) {
           const apiError = err.response.data;
@@ -168,15 +183,52 @@ export default new Vuex.Store({
         commit(COMMIT_TYPES.APP_WAITING, false);
       }
     },
-    async [ACTION_TYPES.PLAY]({ commit }): Promise<void> {
+    async [ACTION_TYPES.PLAY]({ state, commit, dispatch }, trackToAddToQueue?: TrackDetailsDTO): Promise<void> {
       try {
+        if(trackToAddToQueue) {
+          dispatch(ACTION_TYPES.ADD_TO_PLAY_QUEUE, trackToAddToQueue);
+        }
         await PlayerManager.play();
+        PlayerManager.addEventListener('currentTrackChanged', () => {
+          console.log('PlayerManager event: currentTrackChanged');
+          commit(COMMIT_TYPES.STOPPED);
+        });
+        PlayerManager.addEventListener('ended', () => {
+          console.log('PlayerManager event: ended');
+          commit(COMMIT_TYPES.STOPPED);
+        });
         commit(
           COMMIT_TYPES.PLAYING,
           {
             currentTrack: PlayerManager.getCurrentTrack(),
-            playQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),
-            playQueue: PlayerManager.getPlayQueue(),
+            currentQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),
+            queue: PlayerManager.getPlayQueue(),
+            currentDuration: PlayerManager.getCurrentDuration(),
+            totalDuration: PlayerManager.getTotalDuration(),
+          }
+        );
+        setTimeout(() => commit(COMMIT_TYPES.TOTAL_DURATION, PlayerManager.getTotalDuration()), 100);
+        timerId = setInterval(() => {
+          const newDuration = PlayerManager.getCurrentDuration();
+          if(state.player.currentDuration === newDuration) return;
+          commit(
+            COMMIT_TYPES.SEEK,
+            newDuration,
+          );
+        }, 1000);
+      } catch(err) {
+        return Promise.reject(err);
+      }
+    },
+    async [ACTION_TYPES.RESUME]({ commit }): Promise<void> {
+      try {
+        PlayerManager.resume();
+        commit(
+          COMMIT_TYPES.PLAYING,
+          {
+            currentTrack: PlayerManager.getCurrentTrack(),
+            currentQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),
+            queue: PlayerManager.getPlayQueue(),
             currentDuration: PlayerManager.getCurrentDuration(),
             totalDuration: PlayerManager.getTotalDuration(),
           }
@@ -184,6 +236,10 @@ export default new Vuex.Store({
       } catch(err) {
         return Promise.reject(err);
       }
+    },
+    [ACTION_TYPES.SEEK]({ state }, seekPosition: number) {
+      const duration = (seekPosition * state.player.totalDuration) / 100;
+      PlayerManager.seek(duration);
     },
     [ACTION_TYPES.ADD_TO_PLAY_QUEUE]({ commit }, trackToAdd: TrackDetailsDTO): void {
       PlayerManager.addToQueue(trackToAdd);
@@ -198,6 +254,12 @@ export default new Vuex.Store({
     [ACTION_TYPES.STOP]({ commit }): void {
       PlayerManager.stop();
       commit(COMMIT_TYPES.STOPPED);
+    },
+    [ACTION_TYPES.SKIP_BACK]({ commit }): void {
+      PlayerManager.skipBack();
+    },
+    [ACTION_TYPES.SKIP_FORWARD]({ commit }): void {
+      PlayerManager.skipForward();
     },
     [ACTION_TYPES.CHANGE_REPEAT]({ commit }, repeatOn: boolean): void {
       PlayerManager.repeat(repeatOn);
