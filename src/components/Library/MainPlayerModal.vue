@@ -13,7 +13,7 @@
     <div
       class="flex flex-column justify-content-center align-items-center"
       :style="{
-        height: '100%',
+        minHeight: '100%',
       }"
     >
 
@@ -46,16 +46,16 @@
         </ion-popover>
       
         <ion-thumbnail style="width: 20rem; height: 20rem; margin-bottom: 2rem;">
-          <img src="assets/images/Fadaei.jpg" />
+          <img src="assets/images/DiscPlaceholder.png" />
         </ion-thumbnail>
 
         <div class="flex justify-content-center align-items-center space-2-v" style="width: 80%;">
-          <library-entity-rate :rate="3" size="1.5rem" />
+          <library-entity-rate :rate="currentTrack.rate" size="1.5rem" />
         </div>
 
         <div class="flex justify-content-between align-items-center" style="width: 80%;">
           <ion-icon @click="addToPlaylist" style="font-size: 2.5rem;" :icon="addCircleOutline"></ion-icon>
-          <ion-icon @click="showLyrics" style="font-size: 2.5rem;" :icon="documentTextOutline"></ion-icon>
+          <ion-icon @click="showLyrics" :style="{'font-size': '2.5rem', opacity: currentTrack.lyrics ? '1' : '0'}" :icon="documentTextOutline"></ion-icon>
         </div>
         
         <div class="flex justify-content-between align-items-center" style="width: 80%;">
@@ -106,9 +106,7 @@
             }"></ion-icon>
         </div>
 
-        <div>{{$store.state.player.queue}}</div>
-
-        <div v-if="currentTrack.lyrics">
+        <div v-if="currentTrack.lyrics" ref="lyrics" style="width: 80%;">
           <p>{{currentTrack.lyrics}}</p>
         </div>
     
@@ -178,9 +176,8 @@ export default defineComponent({
     },
     canSkipForward() {
       const indexOfThisTrackInQueue = this.$store.state.player.currentQueueIndex;
-      // const queueLength = this.$store.state.player.queue.length;
-      // return indexOfThisTrackInQueue + 1 !== queueLength;
-      return false;
+      const queueLength = this.$store.state.player.queue.length;
+      return indexOfThisTrackInQueue + 1 !== queueLength;
     },
   },
   methods: {
@@ -223,7 +220,7 @@ export default defineComponent({
     },
     showLyrics() {
       if(this.currentTrack.lyrics) {
-        console.log('ff');
+        this.$refs.lyrics.scrollIntoView({ behavior: 'smooth' });
       }
     },
     closeModal() {
