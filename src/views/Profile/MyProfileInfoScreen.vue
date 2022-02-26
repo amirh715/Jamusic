@@ -95,6 +95,12 @@
             <span class="space-h">حمایت کنید</span>
           </div>
         </ion-item>
+        <ion-item @click="deleteSearchHistory">
+          <div class="flex">
+            <ion-icon :icon="searchOutline" size="large"></ion-icon>
+            <span class="space-h">حذف سوابق جستجو</span>
+          </div>
+        </ion-item>
         <ion-item @click="openLogoutDialog">
           <div class="flex">
             <ion-icon :icon="logInOutline" size="large"></ion-icon>
@@ -127,11 +133,14 @@ import {
   closeCircleOutline,
   chevronForwardCircleOutline,
   checkmarkCircleOutline,
+  searchOutline,
 } from 'ionicons/icons';
 import { AlertButton, alertController, toastController, ToastOptions } from '@ionic/vue';
 import { ProfileService } from '@/services/ProfileService';
 import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 import { AuthService } from '@/services/AuthService';
+import { DatabaseManager } from '@/services/DatabaseManager';
+import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 
 export default defineComponent({
   data() {
@@ -151,6 +160,7 @@ export default defineComponent({
       logInOutline,
       chevronForwardCircleOutline,
       checkmarkCircleOutline,
+      searchOutline,
     };
   },
   methods: {
@@ -236,6 +246,31 @@ export default defineComponent({
         buttons: [cancelButton, okButton],
       });
       alert.present();
+    },
+    async deleteSearchHistory() {
+      this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
+      let toastOptions: ToastOptions;
+      try {
+        const history = await DatabaseManager.searchHistory.toArray();
+        await DatabaseManager.searchHistory.bulkDelete(history.map(record => record.id));
+        toastOptions = {
+          message: 'سوابق جستجوی شما پاک شد.',
+          icon: checkmarkCircleOutline,
+          color: 'success',
+          duration: 4000,
+        }
+      } catch(err) {
+        toastOptions = {
+          message: err.message,
+          icon: closeCircleOutline,
+          color: 'danger',
+          duration: 4000,
+        }
+      } finally {
+        this.$store.commit(COMMIT_TYPES.APP_WAITING, false);
+        const toast = await toastController.create(toastOptions);
+        await toast.present();
+      }
     },
     goBack() {
       this.$router.push({ name: 'Home' });
