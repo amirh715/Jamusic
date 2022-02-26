@@ -189,14 +189,6 @@ export default new Store({
           dispatch(ACTION_TYPES.ADD_TO_PLAY_QUEUE, trackToAddToQueue);
         }
         await PlayerManager.play();
-        PlayerManager.addEventListener('currentTrackChanged', () => {
-          console.log('PlayerManager event: currentTrackChanged');
-          commit(COMMIT_TYPES.STOPPED);
-        });
-        PlayerManager.addEventListener('ended', () => {
-          console.log('PlayerManager event: ended');
-          commit(COMMIT_TYPES.STOPPED);
-        });
         commit(
           COMMIT_TYPES.PLAYING,
           {
