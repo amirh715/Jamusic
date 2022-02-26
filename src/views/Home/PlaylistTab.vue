@@ -11,53 +11,58 @@
     <h3 class="text-right space-2">پلی لیست های من</h3>
 
     <ion-card v-for="item in shownPlaylists" :key="item.id">
-      
-      <ion-card-header>
-        <div class="flex justify-content-between align-items-center">
-          <div class="flex align-items-center">
-            <text-banner :animate="item.title.length > 10" style="width: 6rem">
-              <h5>
-                {{item.title}}
-              </h5>
-            </text-banner>
-            <p class="space-h">( <number-displayer :value="item.tracks.length" /> آهنگ )</p>
-          </div>
-          <ion-icon
-            size="large"
-            :icon="ellipsisVerticalOutline"
-            :id="'optionsButton' + item.id"
-          ></ion-icon>
-
-          <ion-popover :trigger="'optionsButton' + item.id" dismiss-on-select :arrow="false">
-            <ion-content>
-              <ion-list>
-                <ion-item @click="goToEditPlaylist(item)">
-                  <ion-icon :icon="pencilOutline"></ion-icon>
-                  <span class="space-h">تغییر</span>
-                </ion-item>
-                <ion-item @click="deletePlaylist(item)" color="danger">
-                  <ion-icon :icon="trashBinOutline"></ion-icon>
-                  <span class="space-h">حذف</span>
-                </ion-item>
-              </ion-list>
-            </ion-content>
-          </ion-popover>
-        </div>
-      </ion-card-header>
 
       <ion-card-content>
-        <div class="flex justify-content-between align-items-center">
-          <div class="flex align-items-center">
-            <span
-              v-for="i in 2" :key="i"
-              style="margin: 0.2rem"
-            >{{item.tracks[i-1] && item.tracks[i-1].title}}</span>
-            <span v-if="item.tracks.length > 2">و...</span>
+
+        <div class="flex">
+
+          <div @click="$router.push({ name: 'PlaylistDetails', query: { id: item.id } })" class="flex flex-column" style="width: 90%">
+
+            <div class="flex align-items-center">
+              <text-banner :animate="item.title.length > 10" style="width: 9rem">
+                <p style="font-size: 1.5rem;">{{item.title}}</p>
+              </text-banner>
+              <p class="space-h">( <number-displayer :value="item.tracks.length" /> آهنگ )</p>
+            </div>
+
+            <div class="flex align-items-center">
+              <span
+                v-for="i in 2" :key="i"
+                style="margin: 0.2rem"
+              >{{item.tracks[i-1] && item.tracks[i-1].title}}</span>
+              <span v-if="item.tracks.length > 2">و...</span>
+            </div>
+
           </div>
-          <div @click="playPlaylist(item)">
-            <ion-icon size="large" :icon="playCircleOutline"></ion-icon>
+
+          <div class="flex flex-column justify-content-between" style="width: 10%">
+            <ion-icon
+              size="large"
+              :icon="ellipsisVerticalOutline"
+              :id="'optionsButton' + item.id"
+            ></ion-icon>
+            <div @click="playPlaylist(item)">
+              <ion-icon size="large" :icon="playCircleOutline"></ion-icon>
+            </div>
           </div>
+
         </div>
+
+        <ion-popover :trigger="'optionsButton' + item.id" dismiss-on-select :arrow="false">
+          <ion-content>
+            <ion-list>
+              <ion-item @click="goToEditPlaylist(item)">
+                <ion-icon :icon="pencilOutline"></ion-icon>
+                <span class="space-h">تغییر</span>
+              </ion-item>
+              <ion-item @click="deletePlaylist(item)" color="danger">
+                <ion-icon :icon="trashBinOutline"></ion-icon>
+                <span class="space-h">حذف</span>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ion-popover>
+
       </ion-card-content>
     </ion-card>
 
@@ -103,7 +108,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { addOutline, closeCircleOutline, playCircleOutline, ellipsisVerticalOutline } from 'ionicons/icons';
+import {
+  addOutline,
+  closeCircleOutline,
+  playCircleOutline,
+  ellipsisVerticalOutline,
+  trashBinOutline,
+  pencilOutline
+} from 'ionicons/icons';
 import { LibraryService } from '@/services/LibraryService';
 import { toastController, alertController } from '@ionic/vue';
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
@@ -120,7 +132,9 @@ export default defineComponent({
       loading: false,
       addOutline,
       playCircleOutline,
-      ellipsisVerticalOutline
+      ellipsisVerticalOutline,
+      trashBinOutline,
+      pencilOutline,
     };
   },
   methods: {
