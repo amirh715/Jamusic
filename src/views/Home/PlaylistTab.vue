@@ -168,6 +168,7 @@ export default defineComponent({
     async playPlaylist(playlist: PlaylistDetailsDTO) {
       try {
         await this.$store.dispatch(ACTION_TYPES.FILL_PLAY_QUEUE, playlist.tracks);
+        await this.$store.dispatch(ACTION_TYPES.PLAY);
       } catch(err) {
         console.log(err);
       }
