@@ -36,7 +36,7 @@
     </swiper>
 
     <div
-      style="position: absolute; bottom: 0; width: 100%; height: 7rem;"
+      :style="{position: 'absolute', bottom: '0', width: '100%', height: isPlayerStopped ? '3.5rem' : '7rem'}"
       id="tab-buttons"
       slot="fixed"
     >
@@ -55,11 +55,11 @@
 
       <div
         class="flex"
-        style="width: 100%; height: 50%;"
+        style="width: 100%; height: 100%;"
       >
         <div @click="tabButtonClicked(0)" style="width: 50%">
           <div style="height: 100%" class="flex justify-content-center align-items-center">
-            <ion-icon size="large" :icon="tabIndex === 1 ? planetOutline : planet"></ion-icon>
+            <ion-icon size="large" :color="tabIndex === 0 ? 'primary' : ''" :icon="tabIndex === 1 ? planetOutline : planet"></ion-icon>
           </div>
         </div>
 
@@ -67,7 +67,7 @@
         
         <div style="width: 50%;" @click="tabButtonClicked(1)">
           <div style="height: 100%" class="flex justify-content-center align-items-center">
-            <ion-icon size="large" :icon="tabIndex === 0 ? albumsOutline : albums"></ion-icon>
+            <ion-icon size="large" :color="tabIndex === 1 ? 'primary' : ''" :icon="tabIndex === 0 ? albumsOutline : albums"></ion-icon>
           </div>
         </div>
       </div>
@@ -122,6 +122,9 @@ export default defineComponent({
   computed: {
     currentTrack() {
       return this.$store.state.player.currentTrack;
+    },
+    isPlayerStopped() {
+      return this.$store.state.player.isStopped;
     },
   },
   methods: {
