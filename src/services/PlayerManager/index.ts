@@ -14,14 +14,13 @@ class PlayerManager extends EventTarget {
   private stopped: boolean;
   private queue: TrackDetailsDTO[];
   private currentQueueIndex: number;
-  private currentDuration: number;
-  private totalDuration: number;
   private durationPlayed: Timer;
   private timerId: number;
 
   public constructor() {
     super();
     this.queue = [];
+    this.currentQueueIndex = 0;
   }
 
   private static initHowl(): Howl {
@@ -162,11 +161,11 @@ class PlayerManager extends EventTarget {
   }
 
   public getCurrentDuration(): number {
-    return this.currentDuration;
+    return this.howler.seek() || 0;
   }
 
   public getTotalDuration(): number {
-    return this.totalDuration;
+    return this.howler.duration() || 0;
   }
 
   public getPlayQueue(): TrackDetailsDTO[] {
