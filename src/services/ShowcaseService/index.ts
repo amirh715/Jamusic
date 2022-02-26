@@ -4,10 +4,10 @@ import { ShowcaseDetails } from '@/classes/Showcase/ShowcaseDetails';
 
 class ShowcaseService {
 
-  public async getShowcases(): Promise<void> {
+  public async getShowcases(): Promise<ShowcaseDetails[]> {
     try {
       const { data } = await HttpService.get('/showcase/');
-      return _.forOwn(data, v => new ShowcaseDetails(v));
+      return (data as ShowcaseDetails[]).map(item => new ShowcaseDetails(item));
     } catch(err) {
       return Promise.reject(err);
     }
