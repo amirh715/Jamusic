@@ -33,6 +33,10 @@ class PlayerManager extends EventTarget {
       if(!this.currentTrack) return Promise.reject(new Error('Current track is not present'));
       this.currentTrack = this.queue[this.currentQueueIndex];
       const blob = await LibraryService.getTrackAudioById(this.currentTrack.id);
+      if(this.howler) {
+        this.howler.stop();
+        this.howler = null;
+      }
       this.howler = new Howl({
         src: URL.createObjectURL(blob),
         format: ['mp3'],
@@ -135,17 +139,22 @@ class PlayerManager extends EventTarget {
   public addToQueue(trackToAdd: TrackDetailsDTO): void {
     const index = this.queue.length;
     this.queue[index] = trackToAdd;
+    this.currentTrack = this.queue[index];
   }
 
   public fillInQueue(tracks: TrackDetailsDTO[]): void {
     if(this.howler) this.stop();
     if(tracks.length > 0) {
       this.queue = tracks;
+      this.currentTrack = this.queue[0];
+      this.currentQueueIndex = 0;
     }
   }
 
   public clearQueue(): void {
     this.queue = [];
+    this.currentQueueIndex = 0;
+    this.currentTrack = null;
   }
 
   public getCurrentTrack(): TrackDetailsDTO {
