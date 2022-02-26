@@ -92,6 +92,10 @@ import {
   Swiper,
   SwiperSlide,
 } from 'swiper/vue';
+import { PlayerManager } from './services/PlayerManager';
+import { LibraryService } from './services/LibraryService';
+import { DatabaseManager } from './services/DatabaseManager';
+import { PlayedTrackDTO } from './classes/Library/commands/PlayedTrackDTO';
 
 app.component('IonIcon', IonIcon);
 app.component('IonFooter', IonFooter);
@@ -133,6 +137,18 @@ app.component('IonPopover', IonPopover);
 app.component('IonRadioGroup', IonRadioGroup);
 app.component('IonRadio', IonRadio);
 app.component('IonLabel', IonLabel);
+
+(async () => {
+  const count = await DatabaseManager.playedTracks.count();
+  if(count > 0) {
+    const records = await DatabaseManager.playedTracks.toArray();
+    for(const record of records) {
+      const dto = new PlayedTrackDTO({ trackId: record.trackId, playedAt: record.playedAt });
+      await LibraryService.playTrack(dto);
+      await DatabaseManager.playedTracks.delete(record.id);
+    }
+  }
+})();
 
 router.isReady().then(() => {
   app.mount('#app');
