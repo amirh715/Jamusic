@@ -2,30 +2,33 @@
   <div>
     <slot name="title"></slot>
     <div
-      @click="$emit('tapped', collection)"
+      @click="$emit('tapped', items)"
       style="overflow-x: auto; overflow-y: hidden; white-space: nowrap;"
       class="swiper-no-swiping"
       :class="scrollDirection === 'vertical' ? 'flex flex-column' : 'flex flex-row'">
         <div
-          v-for="collection in 20" :key="collection"
-          :style="{width: size || '5rem', height: size || '5rem', margin: '0 0.2rem'}"
+          @click="$router.push({ name: 'LibraryEntityDetails', query: { id: item.id } })"
+          v-for="item in items.items" :key="item"
+          :style="{width: size || '5rem', height: size + 2 || '6.5rem', margin: '0 0.2rem'}"
         >
           <ion-thumbnail
             :style="{
               width: size || '5rem', height: size || '5rem',
               borderRadius: collectionBorderRadius || '4px'
             }">
-            <div v-show="!collection.imageLoading">
-              <img
-                :src="collection.image || 'assets/images/Fadaei.jpg'"
-              />
-              <slot name="content"></slot>
+            <div v-if="!item.imageLoading" :style="{
+              width: size || '5rem', maxHeight: size || '5rem'
+              }">
+                <img
+                  :src="item.image || 'assets/images/disc.png'"
+                />
             </div>
             <ion-skeleton-text
-              v-show="collection.imageLoading"
+              v-else
               animated
             />
           </ion-thumbnail>
+          <p style="font-size: 0.9rem; font-weight: bold;">{{item.title}}</p>
         </div>
     </div>
   </div>
@@ -42,7 +45,7 @@ export default defineComponent({
     scrollDirection: Object as PropType<'horizontal' | 'vertical'>,
     size: String,
     collectionBorderRadius: String,
-    collections: Object as PropType<RecommendedCollection>,
+    items: Object as PropType<RecommendedCollection[]>,
   },
 })
 </script>
