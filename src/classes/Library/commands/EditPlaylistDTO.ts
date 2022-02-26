@@ -1,12 +1,12 @@
 class EditPlaylistDTO {
 
   public id: string;
-  public title: string;
+  public title?: string;
   public trackIds?: string[];
 
   public constructor(_props: {
     id: string,
-    title: string,
+    title?: string,
     trackIds?: string[]
   }) {
     this.id = _props.id;

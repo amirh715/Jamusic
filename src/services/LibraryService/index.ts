@@ -92,7 +92,9 @@ class LibraryService {
       } = dto;
       const data = new FormData();
       data.append('id', id);
-      data.append('title', title);
+      if(dto.title) {
+        data.append('title', title);
+      }
       if(dto.trackIds) {
         data.append('trackIds', JSON.stringify(trackIds));
       }
