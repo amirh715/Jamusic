@@ -81,7 +81,7 @@ export default defineComponent({
   },
   methods: {
     async selectionChanged(event: CustomEvent) {
-      const playlist = event.detail;
+      const playlist: PlaylistDetailsDTO = event.detail;
       this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
       let toastOptions: ToastOptions;
       try {
@@ -155,13 +155,13 @@ export default defineComponent({
           tracksToAdd = (this.artworkToAdd as AlbumDetailsDTO).tracks;
         else
           tracksToAdd = [(this.artworkToAdd as TrackDetailsDTO)];
-        console.log(tracksToAdd, this.artworkToAdd);
         const dto = new CreateNewPlaylistDTO({
           title: value.title,
           trackIds: tracksToAdd.map(track => track.id),
         });
         await LibraryService.createNewPlaylist(dto);
         this.$router.push({ name: 'Home' });
+        this.closeModal();
       } catch(err) {
         console.log(err);
       } finally {
