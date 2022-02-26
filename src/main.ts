@@ -139,8 +139,8 @@ app.component('IonRadio', IonRadio);
 app.component('IonLabel', IonLabel);
 
 (async () => {
-  const count = await DatabaseManager.playedTracks.count();
-  if(count > 0) {
+  const unsentPlayedTrackRecordsCount = await DatabaseManager.playedTracks.count();
+  if(unsentPlayedTrackRecordsCount > 0) {
     const records = await DatabaseManager.playedTracks.toArray();
     for(const record of records) {
       const dto = new PlayedTrackDTO({ trackId: record.trackId, playedAt: record.playedAt });
