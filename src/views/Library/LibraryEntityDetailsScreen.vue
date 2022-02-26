@@ -38,7 +38,7 @@
                   height: '10rem',
                 }"></div> -->
               <ion-thumbnail v-else style="width: 10rem; height: 10rem;">
-                <img :src="image || 'assets/images/DiscPlaceholder.png'" />
+                <img :src="image || 'assets/images/disc.png'" />
               </ion-thumbnail>
             </div>
             <div
@@ -183,7 +183,7 @@ export default defineComponent({
         component: SelectPlaylistModal,
         componentProps: {
           title: `افزودن ${this.entity.title} به پلی لیست`,
-          trackToAdd: this.entity,
+          artworkToAdd: this.entity,
         },
         swipeToClose: true,
       });

@@ -13,8 +13,8 @@
           @click="goToLibraryEntity(item.id)"
         >
           <div>
-            <ion-thumbnail v-if="item.image">
-              <img :src="URL.createObjectURL(item.image)" />
+            <ion-thumbnail v-if="!item.imageLoading">
+              <img :src="item.image ? URL.createObjectURL(item.image) : 'assets/images/disc.png'" />
             </ion-thumbnail>
             <ion-skeleton-text
               v-else
@@ -36,8 +36,8 @@
           @click="goToLibraryEntity(item.id)"
         >
           <div>
-            <ion-thumbnail v-if="item.image">
-              <img :src="URL.createObjectURL(item.image)" />
+            <ion-thumbnail v-if="!item.imageLoading">
+              <img :src="item.image ? URL.createObjectURL(item.image) : 'assets/images/disc.png'" />
             </ion-thumbnail>
             <ion-skeleton-text
               v-else
@@ -105,10 +105,11 @@ export default defineComponent({
       }
     },
     async fetchArtworksImages() {
-      for(const artwork of (this.artworks as ArtworkDetailsDTO[])) {
+      for(let i = 0; i < this.artworks.length; i++) {
         try {
-          const blob = await LibraryService.getLibraryEntityImageById(artwork.id);
-          artwork.image = blob;
+          const blob = await LibraryService.getLibraryEntityImageById(this.artwork[i].id);
+          (this.artwork[i] as ArtworkDetailsDTO).image = blob;
+          (this.artwork[i] as ArtworkDetailsDTO).imageLoading = false;
         } catch(err) {
           // if(err.request.status === 404) {
             
