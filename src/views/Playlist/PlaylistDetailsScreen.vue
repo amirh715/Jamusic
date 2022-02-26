@@ -33,6 +33,8 @@
     </ion-list>
   </ion-content>
 
+  <mini-player />
+
 </template>
 
 <script lang="ts">

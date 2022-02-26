@@ -103,6 +103,9 @@
       </ion-card-content>
     </ion-card>
   </ion-content>
+
+  <mini-player />
+
 </template>
 
 <script lang="ts">
