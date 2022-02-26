@@ -1,5 +1,5 @@
 <template>
-  <router-view />
+  <router-view :key="$route.query.id" />
 </template>
 
 <script lang="ts">
