@@ -31,7 +31,7 @@
             </ion-item>
             <ion-item
               v-if="$store.state.player.currentTrack.album"
-              @click="$router.push({ name: 'LibraryEntityDetails', query: { id: $store.state.player.currentTrack.album.id } })"
+              @click="goToAlbum"
               >
                 <ion-icon :icon="discOutline"></ion-icon>
                 <span class="space-h">برو به آلبوم</span>
@@ -46,7 +46,7 @@
         </ion-popover>
       
         <ion-thumbnail style="width: 20rem; height: 20rem; margin-bottom: 2rem;">
-          <img src="assets/images/DiscPlaceholder.png" />
+          <img src="assets/images/disc.png" />
         </ion-thumbnail>
 
         <div class="flex justify-content-center align-items-center space-2-v" style="width: 80%;">
@@ -232,6 +232,10 @@ export default defineComponent({
         name: 'LibraryEntityDetails',
         query: { id: this.$store.state.player.currentTrack.artist.id } 
       });
+    },
+    goToAlbum() {
+      this.$router.push({ name: 'LibraryEntityDetails', query: { id: this.currentTrack.album.id } });
+      this.closeModal();
     },
     async goToNewReport() {
       this.closeModal();
