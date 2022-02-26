@@ -44,7 +44,7 @@
       <div style="border-bottom: 1px solid black; opacity: 0.1;"></div>
       <mini-player
         style="width: 100%; height: 50%;"
-        v-if="!$store.state.player.isPlaying"
+        v-if="!$store.state.player.isStopped"
         :isPlaying="$store.state.player.isPlaying"
         title="Night at the Beach"
         @titleTapped="$router.push({ name: 'LibraryEntityDetails', query: { id: currentTrack.id } })"
@@ -55,7 +55,7 @@
 
       <div
         class="flex"
-        style="width: 100%; height: 100%;"
+        :style="{width: '100%', height: isPlayerStopped ? '100%' : '50%'}"
       >
         <div @click="tabButtonClicked(0)" style="width: 50%">
           <div style="height: 100%" class="flex justify-content-center align-items-center">
