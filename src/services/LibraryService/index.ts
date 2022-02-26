@@ -123,7 +123,7 @@ class LibraryService {
     }
   }
 
-  public async getAllCollections() {
+  public async getAllCollections(): Promise<RecommendedCollection[]> {
     try {
       const { data } = await HttpService.get('/library/collections/');
       return map(data, (collection) => new RecommendedCollection(collection));
