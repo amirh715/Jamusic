@@ -30,10 +30,6 @@
           />
         </div>
         <div>
-          <!-- <playlist-tracks-list
-            :tracks="tracks"
-            :preSelectedTracks="selectedTracks.length > 0 && selectedTracks"
-          /> -->
           <ion-list v-if="loading">
             <ion-item v-for="i in 7" :key="i">
               <ion-skeleton-text
@@ -64,7 +60,7 @@
                   <ion-thumbnail class="space-v">
                     <img
                       v-show="!track.imageLoading"
-                      :src="track.image ? URL.createObjectURL(track.image) : 'assets/images/DiscPlaceholder.png'"
+                      :src="track.image ? URL.createObjectURL(track.image) : 'assets/images/disc.png'"
                     />
                     <ion-skeleton-text
                       v-show="track.imageLoading"
