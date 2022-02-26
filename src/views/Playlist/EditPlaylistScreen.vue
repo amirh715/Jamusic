@@ -131,7 +131,7 @@ export default defineComponent({
       selectedTracks: [],
       tracks: [],
       loading: false,
-      limit: 1,
+      limit: 20,
       offset: 0,
       chevronForwardCircleOutline,
     };
