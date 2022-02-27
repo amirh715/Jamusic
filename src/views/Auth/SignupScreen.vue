@@ -15,7 +15,9 @@
               class="text-center"
               type="tel"
               v-model="mobile"
+              @change="v$.mobile.$touch"
             />
+            <error-displayer :errors="v$.mobile.$errors" />
           </div>
           <div>
             <label>اسم شما</label>
@@ -23,7 +25,9 @@
               class="text-center"
               type="text"
               v-model="name"
+              @change="v$.name.$touch"
             />
+            <error-displayer :errors="v$.name.$errors" />
           </div>
           <div>
             <label>رمز</label>
@@ -32,7 +36,9 @@
               type="password"
               v-model="password"
               @ionFocus="passwordInputFocused"
+              @change="v$.password.$touch"
             />
+            <error-displayer :errors="v$.password.$errors" />
           </div>
           <div>
             <label>تکرار رمز </label>
@@ -41,10 +47,12 @@
               type="password"
               ref="password"
               v-model="passwordAgain"
+              @change="v$.passwordAgain.$touch"
             />
+            <error-displayer :errors="v$.passwordAgain.$errors" />
           </div>
           <div class="flex justify-content-center space-2-v">
-            <ion-button @click="submit">
+            <ion-button @click="submit" :disabled="v$.$invalid">
               <span class="space-2-h">برو</span>
             </ion-button>
           </div>
@@ -68,11 +76,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { alertController } from '@ionic/vue';
+import { alertController, toastController, ToastOptions } from '@ionic/vue';
 import { SignupRequestDTO } from '@/classes/Auth/commands/SignupRequestDTO'
 import { ACTION_TYPES } from '@/store/ACTION_TYPES';
+import { helpers, sameAs } from '@vuelidate/validators';
+import { User } from '@/validators';
+import useVuelidate from '@vuelidate/core';
+import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 
 export default defineComponent({
+  setup() {
+    return { v$: useVuelidate() }
+  },
   data() {
     return {
       mobile: '',
@@ -83,8 +98,17 @@ export default defineComponent({
       showPasswordNotice: true,
     };
   },
+  validations() {
+    return {
+      mobile: { mobile: helpers.withMessage(() => 'شماره موبایل درست نیست.', User.mobile) },
+      name: { name: helpers.withMessage(() => 'اسم شما باید حداقل یک کاراکتر باشد.', User.name) },
+      password: { password: helpers.withMessage(() => 'رمز باید حداقل ۸ کاراکتر باشد.', User.password) },
+      passwordAgain: { passwordAgain: helpers.withMessage(() => 'تکرار رمز با رمز یکسان نیست.', sameAs(this.password)) }
+    }
+  },
   methods: {
     async submit() {
+      let toastOptions: ToastOptions;
       try {
         this.loading = true;
         const dto = new SignupRequestDTO({
@@ -93,10 +117,23 @@ export default defineComponent({
           password: this.password,
         });
         await this.$store.dispatch(ACTION_TYPES.SIGNUP, dto);
+        toastOptions = {
+          message: '',
+          icon: checkmarkCircleOutline,
+          color: 'success',
+          duration: 4000,
+        }
       } catch(err) {
-        console.log(err);
+        toastOptions = {
+          message: err.message,
+          icon: closeCircleOutline,
+          color: 'danger',
+          duration: 4000,
+        }
       } finally {
         this.loading = false;
+        const toast = await toastController.create(toastOptions);
+        await toast.present();
       }
     },
     async passwordInputFocused() {
