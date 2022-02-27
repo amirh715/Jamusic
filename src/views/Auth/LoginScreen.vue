@@ -10,17 +10,25 @@
           <ion-input
             type="tel"
             v-model="mobile"
+            @change="v$.mobile.$touch"
+            placeholder="۰۹۱۲۱۲۳۴۵۶۷"
+            class="text-center"
           />
+          <error-displayer :errors="v$.mobile.$errors" />
         </div>
         <div>
           <label>رمز</label>
           <ion-input
             type="password"
             v-model="password"
+            @change="v$.password.$touch"
+            placeholder="************"
+            class="text-center"
           />
+          <error-displayer :errors="v$.password.$errors" />
         </div>
         <div class="flex justify-content-center space-2-v">
-          <ion-button @click="submit">
+          <ion-button @click="submit" :disabled="v$.$invalid">
             <span class="space-2-h">برو</span>
           </ion-button>
         </div>
@@ -42,8 +50,20 @@ import { defineComponent } from 'vue'
 import { toastController } from '@ionic/vue'
 import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 import { checkmarkOutline, warning } from 'ionicons/icons';
+import useVuelidate from '@vuelidate/core';
+import { User } from '@/validators';
+import { helpers } from '@vuelidate/validators';
 
 export default defineComponent({
+  setup() {
+    return { v$: useVuelidate() }
+  },
+  validations() {
+    return {
+      mobile: { mobile: helpers.withMessage(() => 'شماره موبایل درست نیست.', User.mobile) },
+      password: { password: helpers.withMessage(() => 'رمز باید حداقل ۸ کاراکتر باشد.', User.password) },
+    }
+  },
   data() {
     return {
       mobile: '',
