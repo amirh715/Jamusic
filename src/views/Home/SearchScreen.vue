@@ -56,10 +56,10 @@
       </ion-list>
     </div>
 
-    <div v-if="showPlaceholder">
-      <background-placeholder
-        title="هرچی سرچ کردی اینجا هست :)"
-      />
+    <div
+      v-show="showPlaceholder"
+      style="opacity: 0.2" class="flex justify-content-center align-items-center">
+        <h1>هرچی سرچ کنی اینجاست...</h1><br/>
     </div>
 
   </ion-content>
@@ -75,11 +75,10 @@ import { LibraryService } from '@/services/LibraryService'
 import { DatabaseManager } from '@/services/DatabaseManager'
 import { ISearchHistory } from '@/services/DatabaseManager/ISearchHistory'
 import LibraryEntityListItem from '@/components/Library/LibraryEntityListItem.vue'
-import BackgroundPlaceholder from '@/components/common/BackgroundPlaceholder.vue'
 import { chevronForwardCircleOutline } from 'ionicons/icons';
 
 export default defineComponent({
-  components: { LibraryEntityListItem, BackgroundPlaceholder },
+  components: { LibraryEntityListItem },
   data() {
     return {
       searchTerm: '',
