@@ -35,6 +35,7 @@ class LibraryService {
 
   public async getLibraryEntityImageById(id: string): Promise<Blob> {
     try {
+      console.log('getLibraryEntityImageById');
       const { data } = await HttpService.get(`/library/image/${id}`, '', { responseType: 'blob' });
       return Promise.resolve(new Blob([data]));
     } catch(err) {

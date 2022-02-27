@@ -12,9 +12,9 @@
           :key="item.id"
           @click="goToLibraryEntity(item.id)"
         >
-          <div>
+          <div class="space-v">
             <ion-thumbnail v-if="!item.imageLoading">
-              <img :src="item.image ? URL.createObjectURL(item.image) : 'assets/images/disc.png'" />
+              <img :src="item.image ? toObjectURL(item.image) : 'assets/images/disc.png'" />
             </ion-thumbnail>
             <ion-skeleton-text
               v-else
@@ -35,9 +35,9 @@
           :key="item.id"
           @click="goToLibraryEntity(item.id)"
         >
-          <div>
+          <div class="space-v">
             <ion-thumbnail v-if="!item.imageLoading">
-              <img :src="item.image ? URL.createObjectURL(item.image) : 'assets/images/disc.png'" />
+              <img :src="item.image ? toObjectURL(item.image) : 'assets/images/disc.png'" />
             </ion-thumbnail>
             <ion-skeleton-text
               v-else
@@ -106,14 +106,12 @@ export default defineComponent({
     },
     async fetchArtworksImages() {
       for(let i = 0; i < this.artworks.length; i++) {
+        (this.artworks[i] as ArtworkDetailsDTO).imageLoading = true;
         try {
-          const blob = await LibraryService.getLibraryEntityImageById(this.artwork[i].id);
-          (this.artwork[i] as ArtworkDetailsDTO).image = blob;
-          (this.artwork[i] as ArtworkDetailsDTO).imageLoading = false;
-        } catch(err) {
-          // if(err.request.status === 404) {
-            
-          // }
+          const blob = await LibraryService.getLibraryEntityImageById(this.artworks[i].id);
+          (this.artworks[i] as ArtworkDetailsDTO).image = blob;
+        } finally {
+          (this.artworks[i] as ArtworkDetailsDTO).imageLoading = false;
         }
       }
     },
@@ -124,6 +122,9 @@ export default defineComponent({
         console.log(err);
       }
     },
+    toObjectURL(blob: Blob) {
+      return URL.createObjectURL(blob);
+    }
   },
   async mounted() {
     await this.fetchArtworks();

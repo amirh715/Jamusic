@@ -109,7 +109,7 @@ export default new Store({
       try {
         commit(COMMIT_TYPES.APP_WAITING, true);
         commit(COMMIT_TYPES.UNAUTHENTICATED);
-        // await this.dispatch(ACTION_TYPES.STOP);
+        AuthService.logout();
         await router.push({ name: 'Signup' });
       } catch(err) {
         return Promise.reject(err);
@@ -189,6 +189,12 @@ export default new Store({
           dispatch(ACTION_TYPES.ADD_TO_PLAY_QUEUE, trackToAddToQueue);
         }
         await PlayerManager.play();
+        PlayerManager.addEventListener('end', () => {
+          commit(COMMIT_TYPES.STOPPED);
+        });
+        PlayerManager.addEventListener('play', () => {
+          commit(COMMIT_TYPES.PLAYING);
+        });
         commit(
           COMMIT_TYPES.PLAYING,
           {

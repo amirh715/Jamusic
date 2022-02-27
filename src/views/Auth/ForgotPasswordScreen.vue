@@ -24,9 +24,8 @@
             <label>کد بازنشانی رمز</label>
             <ion-input
               type="number"
-              v-model="resetCode"
+              @input="(ev) => resetCode = ev.target.value"
             />
-            {{resetCode}}
             <label>رمز جدید</label>
             <ion-input
               type="password"
@@ -64,8 +63,6 @@ export default defineComponent({
   setup() {
     const swiper = ref(null);
     const onSwiper = (swiperInstance: SwiperJs) => {
-      // swiperInstance.allowSlideNext = false;
-      // swiperInstance.allowSlidePrev = false;
       swiperInstance.allowTouchMove = false;
       swiper.value = swiperInstance;
     };
@@ -105,7 +102,7 @@ export default defineComponent({
         this.swiper.slideNext();
       } catch(err) {
         const toast = await toastController.create({
-          message: err.response.data.message,
+          message: err.message,
           icon: closeCircleOutline,
           color: 'danger',
           duration: 4000,
@@ -132,7 +129,7 @@ export default defineComponent({
         await this.$router.push({ name: 'Login' });
       } catch(err) {
           const toast = await toastController.create({
-          message: err.response.data.message,
+          message: err.message,
           icon: closeCircleOutline,
           color: 'danger',
           duration: 4000,

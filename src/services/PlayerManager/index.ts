@@ -51,6 +51,7 @@ class PlayerManager extends EventTarget {
         },
         onplay: () => {
           this.durationPlayed.start();
+          this.dispatchEvent(new CustomEvent('play', { detail: this.currentTrack }));
         },
         onpause: () => {
           this.durationPlayed.stop();
@@ -61,6 +62,7 @@ class PlayerManager extends EventTarget {
         onend: () => {
           this.stop();
           this.durationPlayed.reset();
+          this.dispatchEvent(new CustomEvent('end', { detail: this.currentTrack }));
           if(this.isRepeatOn()) {
             this.play();
             return;
@@ -103,6 +105,7 @@ class PlayerManager extends EventTarget {
     if(this.currentQueueIndex + 1 > this.queue.length) return;
     this.currentQueueIndex++;
     this.currentTrack = this.queue[this.currentQueueIndex];
+    this.dispatchEvent(new CustomEvent('skipForward', { detail: this.currentTrack }));
     if(this.isPlaying() && !this.isPaused())
       this.play();
   }
@@ -111,6 +114,7 @@ class PlayerManager extends EventTarget {
     if(this.currentQueueIndex < 1) return;
     this.currentQueueIndex--;
     this.currentTrack = this.queue[this.currentQueueIndex];
+    this.dispatchEvent(new CustomEvent('skipBack', { detail: this.currentTrack }));
     if(this.isPlaying() && !this.isPaused())
       this.play();
   }

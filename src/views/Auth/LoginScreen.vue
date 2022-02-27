@@ -49,7 +49,7 @@
 import { defineComponent } from 'vue'
 import { toastController } from '@ionic/vue'
 import { ACTION_TYPES } from '@/store/ACTION_TYPES';
-import { checkmarkOutline, warning } from 'ionicons/icons';
+import { checkmarkCircleOutline, warning } from 'ionicons/icons';
 import useVuelidate from '@vuelidate/core';
 import { User } from '@/validators';
 import { helpers } from '@vuelidate/validators';
@@ -68,8 +68,6 @@ export default defineComponent({
     return {
       mobile: '',
       password: '',
-      checkmarkOutline,
-      warning,
     };
   },
   methods: {
@@ -77,17 +75,17 @@ export default defineComponent({
       try {
         await this.$store.dispatch(ACTION_TYPES.LOGIN, { mobile: this.mobile, password: this.password });
         const toast = await toastController.create({
-          message: 'خوش اومدید :)',
+          message: 'خوش آمدید :)',
           duration: 3000,
-          icon: this.warning,
+          icon: checkmarkCircleOutline,
           color: 'success',
         });
         toast.present();
       } catch(err) {
         const toast = await toastController.create({
-          message: err.response.data.message,
+          message: err.message,
           duration: 3000,
-          icon: this.warning,
+          icon: warning,
           color: 'danger',
         })
         toast.present();

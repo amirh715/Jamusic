@@ -40,6 +40,7 @@ import NumberDisplayer from '@/components/common/NumberDisplayer.vue';
 import DurationDisplayer from '@/components/common/DurationDisplayer.vue';
 import DateTimeDisplayer from '@/components/common/DateTimeDisplayer.vue';
 import MiniPlayer from '@/components/Library/MiniPlayer.vue';
+import ErrorDisplayer from '@/components/common/ErrorDisplayer.vue';
 
 app.component('TextBanner', TextBanner);
 app.component('BackgroundPlaceholder', BackgroundPlaceholder);
@@ -47,6 +48,7 @@ app.component('NumberDisplayer', NumberDisplayer);
 app.component('DurationDisplayer', DurationDisplayer);
 app.component('DateTimeDisplayer', DateTimeDisplayer);
 app.component('MiniPlayer', MiniPlayer);
+app.component('ErrorDisplayer', ErrorDisplayer);
 
 import {
   IonIcon,
@@ -87,6 +89,7 @@ import {
   IonRadioGroup,
   IonRadio,
   IonLabel,
+  IonText,
 } from '@ionic/vue';
 import {
   Swiper,
@@ -137,6 +140,7 @@ app.component('IonPopover', IonPopover);
 app.component('IonRadioGroup', IonRadioGroup);
 app.component('IonRadio', IonRadio);
 app.component('IonLabel', IonLabel);
+app.component('IonText', IonText);
 
 (async () => {
   const unsentPlayedTrackRecordsCount = await DatabaseManager.playedTracks.count();

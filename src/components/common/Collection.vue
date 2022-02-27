@@ -20,7 +20,7 @@
               width: size || '5rem', maxHeight: size || '5rem'
               }">
                 <img
-                  :src="item.image || 'assets/images/disc.png'"
+                  :src="item.image ? toObjectURL(item.image) : 'assets/images/disc.png'"
                 />
             </div>
             <ion-skeleton-text
@@ -46,6 +46,11 @@ export default defineComponent({
     size: String,
     collectionBorderRadius: String,
     items: Object as PropType<RecommendedCollection[]>,
+  },
+  methods: {
+    toObjectURL(blob: Blob) {
+      return URL.createObjectURL(blob);
+    },
   },
 })
 </script>
