@@ -81,6 +81,10 @@
           <div v-if="isArtwork">
             <artwork-details :artwork="entity" @addToPlaylist="openAddArtworkToPlaylistModal" />
           </div>
+          <!-- artist details (rendered if entity is an artist) -->
+          <div v-if="isArtist && entity.instagramId" class="space-v">
+            <artist-details :instagramId="entity.instagramId" />
+          </div>
         </div>
       </ion-card-content>
     </ion-card>
@@ -115,21 +119,20 @@ import LibraryEntityRate from '@/components/Library/LibraryEntityRate.vue';
 import { bugOutline } from 'ionicons/icons';
 import AlbumTracksList from '@/components/Library/AlbumTracksList.vue';
 import ArtistArtworksList from '@/components/Library/ArtistArtworksList.vue';
-// import TrackPlayer from '@/components/Library/TrackPlayer.vue';
 import TrackLyrics from '@/components/Library/TrackLyrics.vue';
 import ArtworkDetails from '@/components/Library/ArtworkDetails.vue';
 import { modalController } from '@ionic/vue';
 import SelectPlaylistModal from '@/components/Playlist/SelectPlaylistModal.vue';
 import { PlaylistDetailsDTO } from '@/classes/Library/query/PlaylistDetailsDTO';
-import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 import { chevronForwardCircleOutline } from 'ionicons/icons';
+import ArtistDetails from '@/components/Library/ArtistDetails.vue';
 
 export default defineComponent({
   components: {
     LibraryEntityRate,
     AlbumTracksList,
     ArtistArtworksList,
-    // TrackPlayer,
+    ArtistDetails,
     ArtworkDetails,
     TrackLyrics,
   },
