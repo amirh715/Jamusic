@@ -21,7 +21,7 @@
 
             <div>
               <ion-thumbnail style="width: 8rem; height: 8rem;">
-                <img v-if="!profileImageLoading" :src="profileImage || 'assets/icon/icon.png'" />
+                <img v-if="!profileImageLoading" :src="profileImage || 'assets/images/disc.png'" />
                 <ion-skeleton-text
                   v-else
                   animated
