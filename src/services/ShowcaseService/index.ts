@@ -4,10 +4,10 @@ import { ShowcaseDetails } from '@/classes/Showcase/ShowcaseDetails';
 
 class ShowcaseService {
 
-  public async getShowcases(): Promise<ShowcaseDetails[]> {
+  public async getShowcases(options?: { initImageLoadingValue: boolean }): Promise<ShowcaseDetails[]> {
     try {
       const { data } = await HttpService.get('/showcase/');
-      return (data as ShowcaseDetails[]).map(item => new ShowcaseDetails(item));
+      return (data as ShowcaseDetails[]).map(item => new ShowcaseDetails({...item, imageLoading: options && options.initImageLoadingValue || false}));
     } catch(err) {
       return Promise.reject(err);
     }

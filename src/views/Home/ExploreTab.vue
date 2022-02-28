@@ -68,17 +68,19 @@ export default defineComponent({
   methods: {
     showcaseItemTapped(showcase: ShowcaseDetails) {
       ShowcaseService.itemClicked(showcase.id);
-      window.open(showcase.route);
+      window.open(showcase.route, '_self');
     },
   },
   async mounted() {
-    this.showcases = await ShowcaseService.getShowcases();
-    this.collections = await LibraryService.getAllCollections();
+    this.showcases = await ShowcaseService.getShowcases({ initImageLoadingValue: true });
+    this.collections = await LibraryService.getAllCollections({ initImageLoadingValue: true });
     for(let i=0; i<this.showcases.length; i++) {
       try {
         const showcase = this.showcases[i] as ShowcaseDetails;
         this.showcases[i].imageLoading = true;
         this.showcases[i].image = await ShowcaseService.getShowcaseImageById(showcase.id);
+      } catch(err) {
+        continue;
       } finally {
         this.showcases[i].imageLoading = false;
       }
@@ -90,6 +92,8 @@ export default defineComponent({
           const item = collection.items[j];
           this.collections[i].items[j].imageLoading = true;
           this.collections[i].items[j].image = await LibraryService.getLibraryEntityImageById(item.id);
+        } catch(err) {
+          continue;
         } finally {
           this.collections[i].items[j].imageLoading = false;
         }

@@ -124,10 +124,10 @@ class LibraryService {
     }
   }
 
-  public async getAllCollections(): Promise<RecommendedCollection[]> {
+  public async getAllCollections(options?: { initImageLoadingValue: boolean }): Promise<RecommendedCollection[]> {
     try {
       const { data } = await HttpService.get('/library/collections/');
-      return map(data, (collection) => new RecommendedCollection(collection));
+      return map(data, (collection) => new RecommendedCollection({...collection, imageLoading: options && options.initImageLoadingValue || false}));
     } catch(err) {
       return Promise.reject(err);
     }
