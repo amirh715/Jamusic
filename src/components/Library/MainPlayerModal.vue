@@ -46,7 +46,8 @@
         </ion-popover>
       
         <ion-thumbnail style="width: 20rem; height: 20rem; margin-bottom: 2rem;">
-          <img src="assets/images/disc.png" />
+          <ion-skeleton-text v-if="imageLoading" />
+          <img v-else :src="image ? toObjectURL(image) : 'assets/images/disc.png'" />
         </ion-thumbnail>
 
         <div class="flex justify-content-center align-items-center space-2-v" style="width: 80%;">
@@ -61,7 +62,7 @@
         <div class="flex justify-content-between align-items-center" style="width: 80%;">
           <ion-icon
            @click="toggleShuffle"
-           :color="$store.state.player.shuffle && 'primary'"
+           :color="$store.state.player.shuffle ? 'primary' : ''"
            :icon="shuffleOutline"
            style="font-size: 2.5rem;"
            ></ion-icon>
@@ -71,7 +72,7 @@
           </div>
           <ion-icon
             @click="toggleRepeat"
-            :color="$store.state.player.repeat && 'primary'"
+            :color="$store.state.player.repeat ? 'primary' : ''"
             :icon="repeatOutline"
             style="font-size: 2.5rem;"
             ></ion-icon>
@@ -136,6 +137,7 @@ import { modalController } from '@ionic/vue';
 import SelectPlaylistModal from '@/components/Playlist/SelectPlaylistModal.vue';
 import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 import LibraryEntityRate from '@/components/Library/LibraryEntityRate.vue';
+import { LibraryService } from '@/services/LibraryService';
 
 export default defineComponent({
   name: 'main-player-modal',
@@ -144,6 +146,8 @@ export default defineComponent({
   },
   data() {
     return {
+      image: null,
+      imageLoading: false,
       chevronDownCircleOutline,
       playSkipForwardOutline,
       playSkipBackOutline,
@@ -237,6 +241,14 @@ export default defineComponent({
       this.$router.push({ name: 'LibraryEntityDetails', query: { id: this.currentTrack.album.id } });
       this.closeModal();
     },
+    async getImage() {
+      this.imageLoading = true;
+      try {
+        this.image = await LibraryService.getLibraryEntityImageById(this.currentTrack.id);
+      } finally {
+        this.imageLoading = false;
+      }
+    },
     async goToNewReport() {
       this.closeModal();
       this.$router.push({
@@ -247,6 +259,12 @@ export default defineComponent({
         }
       });
     },
+    toObjectURL(blob: Blob) {
+      return URL.createObjectURL(blob);
+    },
+  },
+  mounted() {
+    this.getImage();
   },
 })
 </script>
