@@ -3,7 +3,7 @@
   <ion-header>
     <ion-toolbar>
       <div class="flex justify-content-between align-items-center">
-        <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
+        <ion-icon @click="$router.back()" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
         <b>گزارش اشکال</b>
         <ion-icon :icon="chevronForwardCircleOutline" style="opacity: 0;" size="large" class="space-h"></ion-icon>
       </div>
@@ -148,9 +148,6 @@ export default defineComponent({
     },
     goToMyReports() {
       this.$router.push({ name: 'MyReports' });
-    },
-    goBack() {
-      this.$router.push({ name: 'ProfileInfo' });
     },
   },
 })

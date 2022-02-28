@@ -3,7 +3,7 @@
     <ion-toolbar>
       <div class="flex justify-content-between align-items-center">
         <ion-icon
-          @click="goBack"
+          @click="$router.back()"
           :icon="chevronForwardCircleOutline"
           size="large"
           class="space-h"
@@ -199,9 +199,6 @@ export default defineComponent({
         selectedPlaylist.tracks.push(this.entity);
       }
     },
-    goBack() {
-      this.$router.back();
-    }
   },
   mounted() {
     this.fetchEntity();

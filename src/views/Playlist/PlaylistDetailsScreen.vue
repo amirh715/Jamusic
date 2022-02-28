@@ -3,7 +3,7 @@
   <ion-header>
     <ion-toolbar>
       <div class="flex justify-content-between align-items-center">
-        <ion-icon :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
+        <ion-icon @click="$router.back()" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
         <b>{{playlist && playlist.title}}</b>
         <ion-icon @click="playPlaylist" :icon="playCircleOutline" size="large" class="space-h"></ion-icon>
       </div>
@@ -17,8 +17,8 @@
           <div class="flex justify-content-between align-items-center" style="width: 100%;">
             <div @click="playTrack(track)" class="flex align-items-center" style="width: 90%;">
               <ion-thumbnail class="space-v">
-                <img v-if="!track.imageLoading" :src="track.image || 'assets/images/disc.png'" />
-                <ion-skeleton-text v-else animated />
+                <img v-if="track.image" :src="toObjectURL(track.image) || 'assets/images/disc.png'" />
+                <ion-skeleton-text v-else-if="track.imageLoading" animated />
               </ion-thumbnail>
               <div class="flex flex-column space-h">
                 <b>{{track.title}}</b>
@@ -56,6 +56,7 @@ import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 import { EditPlaylistDTO } from '@/classes/Library/commands/EditPlaylistDTO';
 import { filter } from 'lodash';
+import { PlaylistDetailsDTO } from '@/classes/Library/query/PlaylistDetailsDTO';
 
 export default defineComponent({
   data() {
@@ -125,14 +126,28 @@ export default defineComponent({
         this.$store.commit(COMMIT_TYPES.APP_WAITING, false);
       }
     },
+    toObjectURL(blob: Blob) {
+      return URL.createObjectURL(blob);
+    },
   },
   async mounted() {
     this.loading = true;
     try {
       const playlistId = this.$route.query.id;
       this.playlist = await LibraryService.getPlaylistById(playlistId);
-      if(this.playlist.tracks.length === 0) {
+      const playlistTracksCount = this.playlist.tracks.length;
+      if(playlistTracksCount === 0) {
         this.$router.push({ name: 'EditPlaylist', query: { id: playlistId } });
+      }
+      for(let i=0; i<playlistTracksCount; i++) {
+        try {
+          const track = (this.playlist as PlaylistDetailsDTO).tracks[i];
+          this.playlist.tracks[i].image = await LibraryService.getLibraryEntityImageById(track.id);
+        } catch(err) {
+          continue;
+        } finally {
+          this.playlist.tracks[i].imageLoading = false;
+        }
       }
     } catch(err) {
       this.$router.push({ name: 'Home' });

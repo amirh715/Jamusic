@@ -3,7 +3,7 @@
   <ion-header>
     <ion-toolbar>
       <div class="flex justify-content-between align-items-center">
-        <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" class="space-h" size="large"></ion-icon>
+        <ion-icon @click="$router.back()" :icon="chevronForwardCircleOutline" class="space-h" size="large"></ion-icon>
         <b>گزارش های من</b>
         <ion-icon :icon="chevronForwardCircleOutline" style="opacity: 0;" class="space-h" size="large"></ion-icon>
       </div>
@@ -55,11 +55,6 @@ export default defineComponent({
       isLoading: true,
       chevronForwardCircleOutline,
     };
-  },
-  methods: {
-    goBack() {
-      this.$router.push({ name: 'ProfileInfo' });
-    },
   },
   async mounted() {
     this.isLoading = true;

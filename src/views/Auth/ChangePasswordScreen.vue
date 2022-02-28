@@ -2,7 +2,7 @@
   <ion-header>
     <ion-toolbar>
       <div class="flex justify-content-between">
-        <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
+        <ion-icon @click="$router.back()" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
         <b>تغییر رمز</b>
         <ion-icon :icon="chevronForwardCircleOutline" size="large" style="opacity: 0;" class="space-h"></ion-icon>
       </div>
@@ -103,9 +103,6 @@ export default defineComponent({
         await alert.present();
         this.showPasswordNotice = false;
       }
-    },
-    goBack() {
-      this.$router.push({ name: 'ProfileInfo' });
     },
   },
 })

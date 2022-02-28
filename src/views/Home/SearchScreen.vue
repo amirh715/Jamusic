@@ -3,7 +3,7 @@
   <ion-header>
     <ion-toolbar>
       <div class="flex justify-content-between align-items-center">
-        <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
+        <ion-icon @click="$router.back()" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
         <b class="text-center">جستجو</b>
         <ion-icon style="opacity: 0;" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
       </div>
@@ -151,9 +151,6 @@ export default defineComponent({
       } catch(err) {
         console.log(err);
       }
-    },
-    goBack() {
-      this.$router.push({ name: 'Home' });
     },
   },
   mounted() {
