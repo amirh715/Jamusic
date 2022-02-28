@@ -26,9 +26,7 @@
       dir="rtl"
     >
       <swiper-slide>
-        <explore-tab
-          :collections="collections"
-        />
+        <explore-tab />
       </swiper-slide>
       <swiper-slide>
         <playlist-tab />
@@ -137,16 +135,6 @@ export default defineComponent({
     goToProfile() {
       this.$router.push({ name: 'ProfileInfo' });
     },
-    async fetchCollections() {
-      try {
-        this.collections = await LibraryService.getAllCollections();
-      } catch(err) {
-        console.log(err);
-      }
-    },
-  },
-  async mounted() {
-    await this.fetchCollections();
   },
 })
 </script>
