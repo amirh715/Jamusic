@@ -157,7 +157,9 @@ export default defineComponent({
     },
     searchForPlaylists(searchTerm: string) {
       if(searchTerm) {
-        this.shownPlaylists = filter(this.playlists, (playlist: PlaylistDetailsDTO) => playlist.title === searchTerm);
+        const pattern = `/[%${searchTerm}%]/`;
+        const regex = new RegExp(pattern);
+        this.shownPlaylists = filter(this.playlists, (playlist: PlaylistDetailsDTO) => playlist.title.search(regex));
       } else {
         this.shownPlaylists = this.playlists;
       }

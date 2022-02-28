@@ -6,6 +6,8 @@ const User = {
   mobile: (value: string) => isPossiblePhoneNumber(value, 'IR'),
   password: (value: string) => value.length > 7 && value.length < 150,
   email,
+  passwordResetCode: (value: number) => value > 1110 && value < 10000,
+  accountVerificationCode: (value: number) => value > 1110 && value < 10000,
 };
 
 const Playlist = {

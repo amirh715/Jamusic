@@ -8,10 +8,12 @@
             <ion-input
               type="tel"
               v-model="mobile"
+              inputmode="tel"
               placeholder="۰۹۱۲۴۹۷۴۱۶۳"
+              @change="v$.mobile.$touch"
             />
             <div class="flex justify-content-center">
-              <ion-button @click="submitRequest">
+              <ion-button @click="submitRequest" :disabled="v$.mobile.$invalid">
                 <span class="space-2-h">برو!</span>
               </ion-button>
             </div>
@@ -24,20 +26,28 @@
             <label>کد بازنشانی رمز</label>
             <ion-input
               type="number"
+              inputmode="decimal"
               @input="(ev) => resetCode = ev.target.value"
+              @change="v$.resetCode.$touch"
             />
+            <error-displayer :errors="v$.resetCode.$errors" />
             <label>رمز جدید</label>
             <ion-input
               type="password"
               v-model="newPassword"
+              @change="v$.newPassword.$touch"
+              @ionFocus="newPasswordFocused"
             />
+            <error-displayer :errors="v$.newPassword.$errors" />
             <label>تکرار رمز جدید</label>
             <ion-input
               type="password"
               v-model="newPasswordAgain"
+              @change="v$.newPasswordAgain.$touch"
             />
+            <error-displayer :errors="v$.newPasswordAgain.$errors" />
             <div class="flex justify-content-center">
-              <ion-button @click="submitReset">
+              <ion-button @click="submitReset" :disabled="v$.$invalid">
                 <span class="space-2-h">برو!</span>
               </ion-button>
             </div>
@@ -51,13 +61,16 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { ACTION_TYPES } from '@/store/ACTION_TYPES';
-import { toastController } from '@ionic/vue'
+import { alertController, toastController } from '@ionic/vue'
 import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import '@ionic/vue/css/ionic-swiper.css';
 import { Swiper as SwiperJs } from 'swiper/types';
+import useVuelidate from '@vuelidate/core';
+import { helpers, sameAs } from '@vuelidate/validators';
+import { User } from '@/validators';
 
 export default defineComponent({
   setup() {
@@ -69,11 +82,20 @@ export default defineComponent({
     return {
       onSwiper,
       swiper,
+      v$: useVuelidate(),
     };
   },
   components: {
     Swiper,
     SwiperSlide,
+  },
+  validations() {
+    return {
+      mobile: { mobile: helpers.withMessage(() => 'شماره موبایل درست نیست.', User.mobile) },
+      resetCode: { resetCode: helpers.withMessage(() => 'کد بازنشانی درست نیست.', User.passwordResetCode) },
+      newPassword: { newPassword: helpers.withMessage(() => 'رمز باید حداقل ۸ کاراکتر باشد.', User.password) },
+      newPasswordAgain: { newPasswordAgain: helpers.withMessage(() => 'تکرار رمز با رمز یکسان نیست.', sameAs(this.newPassword)) },
+    }
   },
   data() {
     return {
@@ -81,6 +103,7 @@ export default defineComponent({
       resetCode: '',
       newPassword: '',
       newPasswordAgain: '',
+      showPasswordNotice: true,
       checkmarkCircleOutline,
       closeCircleOutline,
     };
@@ -136,6 +159,20 @@ export default defineComponent({
         });
         await toast.present();
       }
+    },
+    async newPasswordFocused() {
+      if(!this.showPasswordNotice) return;
+      const alert = await alertController.create({
+        header: 'هشدار',
+        message: 'علیرغم اینکه رمز اکانت شما رمزگذاری می شود، برای احتیاط بیشتر از رمز های معمول خود استفاده نکنید.',
+        buttons: [
+          {
+            text: 'باشه',
+          },
+        ],
+      });
+      await alert.present();
+      this.showPasswordNotice = false;
     },
   },
 })
