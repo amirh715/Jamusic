@@ -2,14 +2,13 @@
   <div>
     <slot name="title"></slot>
     <div
-      @click="$emit('tapped', items)"
       style="overflow-x: auto; overflow-y: hidden; white-space: nowrap;"
       class="swiper-no-swiping"
       :class="scrollDirection === 'vertical' ? 'flex flex-column' : 'flex flex-row'">
         <div
-          @click="$router.push({ name: 'LibraryEntityDetails', query: { id: item.id } })"
-          v-for="item in items.items" :key="item"
-          :style="{width: size || '5rem', height: size + 2 || '6.5rem', margin: '0 0.2rem'}"
+          v-for="item in items" :key="item.id"
+          @click="$emit('tapped', item)"
+          :style="{width: size || '5rem', height: size || '6.5rem', margin: '0 0.2rem'}"
         >
           <ion-thumbnail
             :style="{
@@ -28,24 +27,23 @@
               animated
             />
           </ion-thumbnail>
-          <p style="font-size: 0.9rem; font-weight: bold;">{{item.title}}</p>
-        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { RecommendedCollection } from '@/classes/Library/query/RecommendedCollection';
+import { ShowcaseDetails } from '@/classes/Showcase/ShowcaseDetails';
 
 export default defineComponent({
-  name: 'collection',
+  name: 'showcase-collection',
   emits: ['tapped'],
   props: {
     scrollDirection: Object as PropType<'horizontal' | 'vertical'>,
     size: String,
     collectionBorderRadius: String,
-    items: Object as PropType<RecommendedCollection[]>,
+    items: Object as PropType<ShowcaseDetails[]>,
   },
   methods: {
     toObjectURL(blob: Blob) {

@@ -15,7 +15,7 @@ class ShowcaseService {
 
   public async getShowcaseImageById(id: string): Promise<Blob> {
     try {
-      const { data } = await HttpService.get(`/showcase/image/${id}`, '', { responseType: 'json' });
+      const { data } = await HttpService.get(`/showcase/image/${id}`, '', { responseType: 'blob' });
       return Promise.resolve(new Blob([data]));
     } catch(err) {
       return Promise.reject(err);

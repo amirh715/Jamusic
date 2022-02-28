@@ -57,7 +57,7 @@
     </div>
 
     <div
-      v-show="showPlaceholder"
+      v-if="showPlaceholder"
       style="opacity: 0.2" class="flex justify-content-center align-items-center">
         <h1>هرچی سرچ کنی اینجاست...</h1><br/>
     </div>
@@ -102,7 +102,7 @@ export default defineComponent({
       return this.searchTerm.length === 0 && this.searchHistoryItems !== 0;
     },
     showPlaceholder() {
-      return this.searchTerm.length === 0 && this.searchHistoryItems === 0;
+      return this.searchTerm.length === 0 && this.searchHistoryItems.length === 0;
     },
   },
   methods: {

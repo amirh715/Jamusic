@@ -12,14 +12,16 @@
 
       <!-- showcases -->
       <div class="flex flex-column">
-        <collection @tapped="showcaseItemTapped(collection)" size="10rem" :items="showcases" style="margin: 1rem;">
-          <template v-slot:title>
-            <h2 class="text-right">&#128165; ویترین</h2>
-          </template>
-          <template v-slot:content>
-            <h2>Title</h2>
-          </template>
-        </collection>
+        
+        <showcase-collection
+          :items="showcases"
+          @tapped="showcaseItemTapped"
+          size="12rem">
+            <template v-slot:title>
+              <h2 class="text-right space-2">&#128142; ویترین &#128165;</h2>
+            </template>
+        </showcase-collection>
+
       </div>
 
       <!-- collections -->
@@ -49,10 +51,11 @@ import { RecommendedCollection } from '@/classes/Library/query/RecommendedCollec
 import { ShowcaseService } from '@/services/ShowcaseService';
 import { LibraryService } from '@/services/LibraryService';
 import { ShowcaseDetails } from '@/classes/Showcase/ShowcaseDetails';
+import ShowcaseCollection from '@/components/Showcase/ShowcaseCollection.vue';
 
 export default defineComponent({
   name: 'explore-tab',
-  components: { Collection },
+  components: { ShowcaseCollection, Collection, },
   props: {
     loading: Boolean,
   },
@@ -65,22 +68,31 @@ export default defineComponent({
   methods: {
     showcaseItemTapped(showcase: ShowcaseDetails) {
       ShowcaseService.itemClicked(showcase.id);
+      window.open(showcase.route);
     },
   },
   async mounted() {
     this.showcases = await ShowcaseService.getShowcases();
     this.collections = await LibraryService.getAllCollections();
     for(let i=0; i<this.showcases.length; i++) {
-      const showcase = this.showcases[i] as ShowcaseDetails;
-      this.showcases[i].image = ShowcaseService.getShowcaseImageById(showcase.id);
-      this.showcases[i].imageLoading = false;
+      try {
+        const showcase = this.showcases[i] as ShowcaseDetails;
+        this.showcases[i].imageLoading = true;
+        this.showcases[i].image = await ShowcaseService.getShowcaseImageById(showcase.id);
+      } finally {
+        this.showcases[i].imageLoading = false;
+      }
     }
     for(let i=0; i<this.collections.length; i++) {
       const collection = this.collections[i] as RecommendedCollection;
       for(let j=0; j<collection.items.length; j++) {
-        const item = collection.items[j];
-        // this.collections[i].items[j].image = LibraryService.getLibraryEntityImageById(item.id);
-        // this.collections[i].items[j].imageLoading = false;
+        try {
+          const item = collection.items[j];
+          this.collections[i].items[j].imageLoading = true;
+          this.collections[i].items[j].image = await LibraryService.getLibraryEntityImageById(item.id);
+        } finally {
+          this.collections[i].items[j].imageLoading = false;
+        }
       }
     }
   },
