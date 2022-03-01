@@ -15,6 +15,7 @@
     <ion-searchbar
       class="text-center"
       v-model="searchTerm"
+      ref="searchInput"
       placeholder="جستجو کنید..."
       @input="searchTermChanged"
     ></ion-searchbar>
@@ -37,6 +38,7 @@
       class="space-2-v"
       @ionInfinite="fetchMore($event)">
       <ion-infinite-scroll-content
+        loading-text="منتظر باشید..."
         loading-spinner="bubbles">
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
@@ -44,6 +46,7 @@
     <h2 v-show="showNoResultPlaceholder" class="text-center">
       چیزی پیدا نشد :(
     </h2>
+
     <div v-show="showSearchHistory" class="text-center">
       <ion-list style="opacity: 0.5">
         <ion-item
@@ -112,7 +115,12 @@ export default defineComponent({
         limit: this.limit,
         offset: this.offset,
       });
-      this.fetchedItems = await LibraryService.getLibraryEntitiesByFilters(dto);
+      this.fetchedItems.push(await LibraryService.getLibraryEntitiesByFilters(dto));
+    },
+    async fetchMore(ev: CustomEvent) {
+      this.offset += this.limit;
+      await this.fetch();
+      ev.target['complete']();
     },
     async itemTapped(entity: { entityId: string, entityTitle: string }) {
       await this.$router.push({ name: 'LibraryEntityDetails', query: { id: entity.entityId } });
@@ -155,6 +163,8 @@ export default defineComponent({
   },
   mounted() {
     this.fetchSearchHistory();
+    console.log(this.$refs.searchInput.$el);
+    this.$refs.searchInput.$el.focus();
   },
 })
 </script>

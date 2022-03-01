@@ -9,6 +9,7 @@ import { LibraryEntityDetailsDTO } from '@/classes/Library/query/LibraryEntityDe
 import { LibraryEntityDetailsDTOBuilder } from '@/classes/Library/query/LibraryEntityDetailsDTOBuilder';
 import { map, orderBy } from 'lodash';
 import { RecommendedCollection } from '@/classes/Library/query/RecommendedCollection';
+import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 
 class LibraryService {
 
@@ -115,10 +116,16 @@ class LibraryService {
     }
   }
 
-  public async getPlaylistById(id: string): Promise<PlaylistDetailsDTO> {
+  public async getPlaylistById(id: string, options?: { initImageLoadingValue: boolean }): Promise<PlaylistDetailsDTO> {
     try {
       const { data } = await HttpService.get(`/library/playlist/${id}`);
-      return new PlaylistDetailsDTO(data);
+      const playlist = new PlaylistDetailsDTO(data);
+      if(options && data.tracks && data.tracks.length > 0) {
+        for(let i=0; i<playlist.tracks.length; i++) {
+          playlist.tracks[i].imageLoading = options.initImageLoadingValue;
+        }
+      }
+      return playlist;
     } catch(err) {
       return Promise.reject(err);
     }

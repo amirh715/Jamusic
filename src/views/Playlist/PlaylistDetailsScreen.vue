@@ -17,8 +17,8 @@
           <div class="flex justify-content-between align-items-center" style="width: 100%;">
             <div @click="playTrack(track)" class="flex align-items-center" style="width: 90%;">
               <ion-thumbnail class="space-v">
-                <img v-if="track.image" :src="toObjectURL(track.image) || 'assets/images/disc.png'" />
-                <ion-skeleton-text v-else-if="track.imageLoading" animated />
+                <img v-if="!track.imageLoading" :src="track.image ? toObjectURL(track.image) : 'assets/images/disc.png'" />
+                <ion-skeleton-text v-else animated />
               </ion-thumbnail>
               <div class="flex flex-column space-h">
                 <b>{{track.title}}</b>
@@ -134,7 +134,8 @@ export default defineComponent({
     this.loading = true;
     try {
       const playlistId = this.$route.query.id;
-      this.playlist = await LibraryService.getPlaylistById(playlistId);
+      this.playlist = await LibraryService.getPlaylistById(playlistId, { initImageLoadingValue: true });
+      console.log(this.playlist);
       const playlistTracksCount = this.playlist.tracks.length;
       if(playlistTracksCount === 0) {
         this.$router.push({ name: 'EditPlaylist', query: { id: playlistId } });

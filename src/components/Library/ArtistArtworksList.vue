@@ -10,6 +10,7 @@
         <ion-item
           v-for="item in albumsList"
           :key="item.id"
+          :color="currentTrack && currentTrack.album && currentTrack.album.id === item.id ? 'primary' : ''"
           @click="goToLibraryEntity(item.id)"
         >
           <div class="space-v">
@@ -33,6 +34,7 @@
         <ion-item
           v-for="item in singleTracksList"
           :key="item.id"
+          :color="currentTrack && currentTrack.id === item.id ? 'primary' : ''"
           @click="goToLibraryEntity(item.id)"
         >
           <div class="space-v">
@@ -85,6 +87,9 @@ export default defineComponent({
     };
   },
   computed: {
+    currentTrack() {
+      return this.$store.state.player.currentTrack;
+    },
     albumsList() {
       return _.filter(this.artworks, artwork => artwork.type === 'A');
     },

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { orderBy } from 'lodash';
 import { HttpService } from '../HttpService';
 import { ShowcaseDetails } from '@/classes/Showcase/ShowcaseDetails';
 
@@ -7,7 +7,9 @@ class ShowcaseService {
   public async getShowcases(options?: { initImageLoadingValue: boolean }): Promise<ShowcaseDetails[]> {
     try {
       const { data } = await HttpService.get('/showcase/');
-      return (data as ShowcaseDetails[]).map(item => new ShowcaseDetails({...item, imageLoading: options && options.initImageLoadingValue || false}));
+      const results = (data as ShowcaseDetails[])
+        .map(item => new ShowcaseDetails({...item, imageLoading: options && options.initImageLoadingValue || false}));
+      return orderBy(results, ['index'], ['desc']);
     } catch(err) {
       return Promise.reject(err);
     }

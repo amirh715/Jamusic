@@ -27,7 +27,11 @@ import './theme/variables.css';
 // Global styles
 import './theme/style.css';
 
-process.env.baseApiURL = 'http://localhost:4567/api/v1';
+if(process.env.prod) {
+  process.env.baseApiURL = 'https://api.jamusicapp.ir/v1';
+} else {
+  process.env.baseApiURL = 'http://localhost:4567/api/v1';
+}
 
 const app = createApp(App)
   .use(IonicVue)
