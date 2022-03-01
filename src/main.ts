@@ -103,6 +103,8 @@ import { PlayerManager } from './services/PlayerManager';
 import { LibraryService } from './services/LibraryService';
 import { DatabaseManager } from './services/DatabaseManager';
 import { PlayedTrackDTO } from './classes/Library/commands/PlayedTrackDTO';
+import { IPlayedTrack } from './services/DatabaseManager/IPlayedTrack';
+import { TrackDetailsDTO } from './classes/Library/query/TrackDetailsDTO';
 
 app.component('IonIcon', IonIcon);
 app.component('IonFooter', IonFooter);
@@ -156,6 +158,26 @@ app.component('IonText', IonText);
       await DatabaseManager.playedTracks.delete(record.id);
     }
   }
+})();
+
+(async () => {
+  PlayerManager.addEventListener('trackPlayed', async (ev: CustomEvent) => {
+    try {
+      const playedTrack = ev.detail.playedTrack as TrackDetailsDTO;
+      const id = await DatabaseManager.playedTracks.add({
+        trackId: playedTrack.id,
+        playedAt: new Date(),
+      });
+      const dto = new PlayedTrackDTO({
+        trackId: playedTrack.id,
+        playedAt: new Date(),
+      });
+      await LibraryService.playTrack(dto);
+      await DatabaseManager.playedTracks.delete(id);
+    } catch(err) {
+      console.log(err);
+    }
+  });
 })();
 
 router.isReady().then(() => {
