@@ -142,28 +142,19 @@ export default defineComponent({
       }, 1000);
     },
     async fetchSearchHistory() {
-      try {
-        this.searchHistoryItems =
-          await DatabaseManager
-            .searchHistory
-            .limit(10)
-            .reverse()
-            .sortBy('searchedAt');
-      } catch(err) {
-        console.log(err);
-      }
+      this.searchHistoryItems =
+        await DatabaseManager
+          .searchHistory
+          .limit(10)
+          .reverse()
+          .sortBy('searchedAt');
     },
     async searchHistoryItemTapped(entityId: string) {
-      try {
-        await this.$router.push({ name: 'LibraryEntityDetails', query: { id: entityId } });
-      } catch(err) {
-        console.log(err);
-      }
+      await this.$router.push({ name: 'LibraryEntityDetails', query: { id: entityId } });
     },
   },
   mounted() {
     this.fetchSearchHistory();
-    console.log(this.$refs.searchInput.$el);
     this.$refs.searchInput.$el.focus();
   },
 })

@@ -168,37 +168,29 @@ export default defineComponent({
       this.$router.push({ name: 'EditPlaylist', query: { id: playlist.id } });
     },
     async playPlaylist(playlist: PlaylistDetailsDTO) {
-      try {
-        await this.$store.dispatch(ACTION_TYPES.FILL_PLAY_QUEUE, playlist.tracks);
-        await this.$store.dispatch(ACTION_TYPES.PLAY);
-      } catch(err) {
-        console.log(err);
-      }
+      await this.$store.dispatch(ACTION_TYPES.FILL_PLAY_QUEUE, playlist.tracks);
+      await this.$store.dispatch(ACTION_TYPES.PLAY);
     },
     async deletePlaylist(playlist: PlaylistDetailsDTO) {
-      try {
-        const alert = await alertController.create({
-          message: 'آیا می خواهید این پلی لیست را پاک کنید؟',
-          header: 'حذف پلی لیست',
-          buttons: [
-            {
-              text: 'بیخیال',
+      const alert = await alertController.create({
+        message: 'آیا می خواهید این پلی لیست را پاک کنید؟',
+        header: 'حذف پلی لیست',
+        buttons: [
+          {
+            text: 'بیخیال',
+          },
+          {
+            text: 'بله',
+            handler: async () => {
+              this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
+              await LibraryService.deletePlaylist(playlist.id);
+              await this.getAllPlaylists();
+              this.$store.commit(COMMIT_TYPES.APP_WAITING, false);
             },
-            {
-              text: 'بله',
-              handler: async () => {
-                this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
-                await LibraryService.deletePlaylist(playlist.id);
-                await this.getAllPlaylists();
-                this.$store.commit(COMMIT_TYPES.APP_WAITING, false);
-              },
-            },
-          ],
-        });
-        alert.present();
-      } catch(err) {
-        console.log(err);
-      }
+          },
+        ],
+      });
+      alert.present();
     },
   },
   async mounted() {

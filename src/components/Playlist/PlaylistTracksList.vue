@@ -91,7 +91,6 @@ export default defineComponent({
   computed: {
     // items to show on the list
     listedItems(): Array<CheckboxChangeEventDetail<TrackDetailsDTO>> {
-      console.log('listedItems()');
       // tracks returned from API as a result of user search term (which are not selected)
       const tracksMarkedAsUnchecked: Array<CheckboxChangeEventDetail<TrackDetailsDTO>>
         = map(

@@ -160,8 +160,6 @@ export default defineComponent({
       this.profileImageLoading = true;
       try {
         this.profileImage = URL.createObjectURL(await ProfileService.getMyProfileImage());
-      } catch(err) {
-        console.log(err);
       } finally {
         this.profileImageLoading = false;
       }

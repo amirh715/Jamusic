@@ -12,15 +12,16 @@
         >
           <ion-thumbnail
             :style="{
-              width: size || '5rem', height: size || '5rem',
+              width: size || '5rem', height: size || '5rem', maxHeight: size || '5rem',
               borderRadius: collectionBorderRadius || '4px'
             }">
             <div v-if="!item.imageLoading" :style="{
-              width: size || '5rem', maxHeight: size || '5rem'
+              width: size || '5rem', maxHeight: size || '5rem',
               }">
                 <img
                   :src="item.image ? toObjectURL(item.image) : 'assets/images/disc.png'"
                 />
+                <h3 style="position: relative; bottom: 8px; left: 16px;">Show me!!</h3>
             </div>
             <ion-skeleton-text
               v-else

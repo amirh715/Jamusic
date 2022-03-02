@@ -3,6 +3,7 @@ import { Howl } from 'howler';
 import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 import { LibraryService } from '../LibraryService';
 import { Timer } from '@/utils/Timer';
+import { floor } from 'lodash';
 
 class PlayerManager extends EventTarget {
 
@@ -28,60 +29,65 @@ class PlayerManager extends EventTarget {
   }
 
   public async play(): Promise<void> {
-    try {
-      if(!this.currentTrack) return Promise.reject(new Error('Current track is not present'));
-      this.currentTrack = this.queue[this.currentQueueIndex];
-      const blob = await LibraryService.getTrackAudioById(this.currentTrack.id);
-      if(this.howler) {
-        this.howler.stop();
-        this.howler = null;
-      }
-      this.howler = new Howl({
-        src: URL.createObjectURL(blob),
-        format: ['mp3'],
-        html5: true,
-        onload: () => {
-          this.durationPlayed = new Timer();
-          this.timerId = setInterval(() => {
-            if(this.durationPlayed.getDuration() === 7) {
-              this.dispatchEvent(new Event('trackPlayed'));
-              clearInterval(this.timerId);
-            }
-          }, 1000, []);
-        },
-        onplay: () => {
-          this.durationPlayed.start();
-          this.dispatchEvent(new CustomEvent('play', { detail: this.currentTrack }));
-        },
-        onpause: () => {
-          this.durationPlayed.stop();
-        },
-        onstop: () => {
-          this.durationPlayed.stop();
-        },
-        onend: () => {
-          this.stop();
-          this.durationPlayed.reset();
-          this.dispatchEvent(new CustomEvent('end', { detail: this.currentTrack }));
-          if(this.isRepeatOn()) {
-            this.play();
-            return;
-          }
-          if(this.isShuffleOn()) {
-            this.currentQueueIndex = _.random(0, this.queue.length - 1);
-            this.currentTrack = this.queue[this.currentQueueIndex];
-            this.play();
-          }
-        },
-      });
-      
-      this.soundId = this.howler.play();
-      this.stopped = false;
-      return Promise.resolve();
-
-    } catch(err) {
-      console.log(err);
+    if(!this.currentTrack) return Promise.reject(new Error('Current track is not present'));
+    this.currentTrack = this.queue[this.currentQueueIndex];
+    const blob = await LibraryService.getTrackAudioById(this.currentTrack.id);
+    if(this.howler) {
+      this.howler.stop();
+      this.howler = null;
     }
+    this.howler = new Howl({
+      src: URL.createObjectURL(blob),
+      format: ['mp3'],
+      html5: true,
+      onload: () => {
+        this.durationPlayed = new Timer();
+        this.timerId = setInterval(() => {
+          if(this.durationPlayed.getDuration() === 7) {
+            this.dispatchEvent(
+              new CustomEvent(
+                'trackPlayed', {
+                  detail: {
+                    playedTrack: this.currentTrack,
+                  }
+              })
+            );
+            clearInterval(this.timerId);
+          }
+        }, 1000, []);
+      },
+      onplay: () => {
+        this.durationPlayed.start();
+        this.dispatchEvent(new CustomEvent('play'));
+      },
+      onpause: () => {
+        this.durationPlayed.stop();
+      },
+      onstop: () => {
+        this.durationPlayed.stop();
+      },
+      onend: () => {
+        this.stop();
+        this.durationPlayed.reset();
+        this.dispatchEvent(new CustomEvent('end'));
+        if(this.isRepeatOn()) {
+          this.play();
+          return;
+        }
+        if(this.isShuffleOn()) {
+          this.currentQueueIndex = _.random(0, this.queue.length - 1);
+          this.currentTrack = this.queue[this.currentQueueIndex];
+          this.play();
+          return;
+        }
+        this.skipForward();
+      },
+    });
+    
+    this.soundId = this.howler.play();
+    this.stopped = false;
+    return Promise.resolve();
+
   }
 
   public resume(): void {
@@ -105,18 +111,20 @@ class PlayerManager extends EventTarget {
     if(this.currentQueueIndex + 1 > this.queue.length) return;
     this.currentQueueIndex++;
     this.currentTrack = this.queue[this.currentQueueIndex];
-    this.dispatchEvent(new CustomEvent('skipForward', { detail: this.currentTrack }));
-    if(this.isPlaying() && !this.isPaused())
-      this.play();
+    // if(this.isPlaying() && !this.isPaused())
+    this.play();
+    this.dispatchEvent(new CustomEvent('skipForward'));
+    this.dispatchEvent(new CustomEvent('trackChanged'));
   }
 
   public skipBack(): void {
     if(this.currentQueueIndex < 1) return;
     this.currentQueueIndex--;
     this.currentTrack = this.queue[this.currentQueueIndex];
-    this.dispatchEvent(new CustomEvent('skipBack', { detail: this.currentTrack }));
-    if(this.isPlaying() && !this.isPaused())
-      this.play();
+    // if(this.isPlaying() && !this.isPaused())
+    this.play();
+    this.dispatchEvent(new CustomEvent('skipBack'));
+    this.dispatchEvent(new CustomEvent('trackChanged'));
   }
 
   public mute(): void {
@@ -165,11 +173,11 @@ class PlayerManager extends EventTarget {
   }
 
   public getCurrentDuration(): number {
-    return this.howler.seek() || 0;
+    return floor(this.howler.seek()) || 0;
   }
 
   public getTotalDuration(): number {
-    return this.howler.duration() || 0;
+    return floor(this.howler.duration()) || 0;
   }
 
   public getPlayQueue(): TrackDetailsDTO[] {

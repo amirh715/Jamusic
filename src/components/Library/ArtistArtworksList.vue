@@ -99,15 +99,11 @@ export default defineComponent({
   },
   methods: {
     async fetchArtworks() {
-      try {
-        const artistsArtworks = new GetLibraryEntitiesByFilters({
-          artistId: this.artistId,
-          offset: this.offset,
-        });
-        this.artworks = await LibraryService.getLibraryEntitiesByFilters(artistsArtworks);
-      } catch(err) {
-        console.log(err);
-      }
+      const artistsArtworks = new GetLibraryEntitiesByFilters({
+        artistId: this.artistId,
+        offset: this.offset,
+      });
+      this.artworks = await LibraryService.getLibraryEntitiesByFilters(artistsArtworks);
     },
     async fetchArtworksImages() {
       for(let i = 0; i < this.artworks.length; i++) {
@@ -121,11 +117,7 @@ export default defineComponent({
       }
     },
     async goToLibraryEntity(id: string) {
-      try {
-        await this.$router.push({ name: 'LibraryEntityDetails', query: { id } });
-      } catch(err) {
-        console.log(err);
-      }
+      await this.$router.push({ name: 'LibraryEntityDetails', query: { id } });
     },
     toObjectURL(blob: Blob) {
       return URL.createObjectURL(blob);

@@ -121,7 +121,13 @@ export default defineComponent({
         });
         await LibraryService.editPlaylist(dto);
       } catch(err) {
-        console.log(err);
+        const toast = await toastController.create({
+          message: err.message,
+          icon: closeCircleOutline,
+          color: 'danger',
+          duration: 4000,
+        });
+        await toast.present();
       } finally {
         this.$store.commit(COMMIT_TYPES.APP_WAITING, false);
       }
@@ -135,7 +141,6 @@ export default defineComponent({
     try {
       const playlistId = this.$route.query.id;
       this.playlist = await LibraryService.getPlaylistById(playlistId, { initImageLoadingValue: true });
-      console.log(this.playlist);
       const playlistTracksCount = this.playlist.tracks.length;
       if(playlistTracksCount === 0) {
         this.$router.push({ name: 'EditPlaylist', query: { id: playlistId } });

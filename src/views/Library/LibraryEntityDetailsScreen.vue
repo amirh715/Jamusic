@@ -121,10 +121,10 @@ import AlbumTracksList from '@/components/Library/AlbumTracksList.vue';
 import ArtistArtworksList from '@/components/Library/ArtistArtworksList.vue';
 import TrackLyrics from '@/components/Library/TrackLyrics.vue';
 import ArtworkDetails from '@/components/Library/ArtworkDetails.vue';
-import { modalController } from '@ionic/vue';
+import { modalController, toastController } from '@ionic/vue';
 import SelectPlaylistModal from '@/components/Playlist/SelectPlaylistModal.vue';
 import { PlaylistDetailsDTO } from '@/classes/Library/query/PlaylistDetailsDTO';
-import { chevronForwardCircleOutline } from 'ionicons/icons';
+import { chevronForwardCircleOutline, closeCircleOutline } from 'ionicons/icons';
 import ArtistDetails from '@/components/Library/ArtistDetails.vue';
 
 export default defineComponent({
@@ -168,7 +168,14 @@ export default defineComponent({
         this.entityLoading = true;
         this.entity = await LibraryService.getLibraryEntityById(this.entityId);
       } catch(err) {
-        console.log(err);
+        this.$router.back();
+        const toast = await toastController.create({
+          message: err.message,
+          icon: closeCircleOutline,
+          color: 'danger',
+          duration: 4000,
+        });
+        await toast.present();
       } finally {
         this.entityLoading = false;
       }
@@ -178,8 +185,6 @@ export default defineComponent({
         this.imageLoading = true;
         const imageBlob = await LibraryService.getLibraryEntityImageById(this.entityId);
         this.image = URL.createObjectURL(imageBlob);
-      } catch(err) {
-        console.log(err);
       } finally {
         this.imageLoading = false;
       }

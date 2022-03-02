@@ -14,9 +14,15 @@
         <small>{{currentTrack.artist.title}}</small>
       </div>
     </div>
-    <div :style="{width: `${seekPosition}%`, height: '5%', border: '2px solid red'}"></div>
+    <div id="mini-player-seek-line" :style="{width: `${seekPosition}%`, height: '5%'}"></div>
   </div>
 </template>
+
+<style scoped>
+#mini-player-seek-line {
+  border: 2px solid var(--ion-color-primary);
+}
+</style>
 
 <script lang="ts">
 import { defineComponent } from 'vue'

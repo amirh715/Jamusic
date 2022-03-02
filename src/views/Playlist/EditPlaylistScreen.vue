@@ -207,18 +207,14 @@ export default defineComponent({
       this.tracks = await this.searchForTracks(this.searchTerm);
     },
     async searchForTracks(searchTerm: string) {
-      try {
-        const dto = new GetLibraryEntitiesByFilters({
-          searchTerm: searchTerm,
-          limit: this.limit,
-          offset: this.offset,
-          type: 'T',
-        });
-        const results = await LibraryService.getLibraryEntitiesByFilters(dto);
-        return filter(results, (entity) => entity.type === 'T');
-      } catch(err) {
-        console.log(err);
-      }
+      const dto = new GetLibraryEntitiesByFilters({
+        searchTerm: searchTerm,
+        limit: this.limit,
+        offset: this.offset,
+        type: 'T',
+      });
+      const results = await LibraryService.getLibraryEntitiesByFilters(dto);
+      return filter(results, (entity) => entity.type === 'T');
     },
     async loadMore(ev) {
       this.offset += this.limit;

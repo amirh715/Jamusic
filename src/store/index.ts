@@ -71,9 +71,10 @@ export default new Store({
     [COMMIT_TYPES.PAUSED](state) {
       state.player.isPlaying = false;
     },
-    [COMMIT_TYPES.STOPPED](state) {
+    [COMMIT_TYPES.STOPPED](state, currentTrack?: TrackDetailsDTO) {
       state.player.isPlaying = false;
       state.player.isStopped = true;
+      state.player.currentTrack = currentTrack;
       state.player.currentDuration = 0;
       state.player.totalDuration = 0;
     },
@@ -193,7 +194,19 @@ export default new Store({
           commit(COMMIT_TYPES.STOPPED);
         });
         PlayerManager.addEventListener('play', () => {
-          commit(COMMIT_TYPES.PLAYING);
+          commit(COMMIT_TYPES.PLAYING, {
+            currentTrack: PlayerManager.getCurrentTrack(),
+            currentQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),
+            queue: PlayerManager.getPlayQueue(),
+            currentDuration: PlayerManager.getCurrentDuration(),
+            totalDuration: PlayerManager.getTotalDuration(),
+          });
+        });
+        PlayerManager.addEventListener('skipBack', () => {
+          commit(COMMIT_TYPES.STOPPED, PlayerManager.getCurrentTrack());
+        });
+        PlayerManager.addEventListener('skipForward', () => {
+          commit(COMMIT_TYPES.STOPPED, PlayerManager.getCurrentTrack());
         });
         commit(
           COMMIT_TYPES.PLAYING,

@@ -121,8 +121,6 @@ export default defineComponent({
         });
         const results = await LibraryService.getLibraryEntitiesByFilters(dto);
         this.tracks = filter(results, (item) => item instanceof TrackDetailsDTO);
-      } catch(err) {
-        console.log(err);
       } finally {
         this.loading = false;
       }
@@ -137,8 +135,6 @@ export default defineComponent({
         });
         const loadedItems = await LibraryService.getLibraryEntitiesByFilters(dto);
         this.tracks = concat(this.tracks, loadedItems);
-      } catch(err) {
-        console.log(err);
       } finally {
         ev.target.complete();
       }

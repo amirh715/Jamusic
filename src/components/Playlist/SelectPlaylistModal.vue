@@ -81,7 +81,7 @@ export default defineComponent({
   },
   methods: {
     async selectionChanged(event: CustomEvent) {
-      const playlist: PlaylistDetailsDTO = event.detail;
+      const playlist: PlaylistDetailsDTO = event.detail.value;
       this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
       let toastOptions: ToastOptions;
       try {
@@ -163,7 +163,14 @@ export default defineComponent({
         this.$router.push({ name: 'Home' });
         this.closeModal();
       } catch(err) {
-        console.log(err);
+        const toast = await toastController.create({
+          message: err.message,
+          icon: closeCircleOutline,
+          color: 'danger',
+          duration: 4000,
+        });
+        this.closeModal();
+        await toast.present();
       } finally {
         this.$store.commit(COMMIT_TYPES.APP_WAITING, false);
       }
@@ -177,7 +184,14 @@ export default defineComponent({
     try {
       this.playlists = await LibraryService.getAllOfMyPlaylists();
     } catch(err) {
-      console.log(err);
+      const toast = await toastController.create({
+        message: err.message,
+        icon: closeCircleOutline,
+        color: 'danger',
+        duration: 4000,
+      });
+      await toast.present();
+      this.closeModal();
     } finally {
       this.loadingPlaylists = false;
     }
