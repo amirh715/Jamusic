@@ -165,6 +165,7 @@ router.beforeEach((to, from, next) => {
     '/auth/forgot-password',
     '/auth/account-verification',
     '/welcome',
+    '/landing',
   ];
   const isRouteAllowedForUnauthenticatedUsers = routesAllowedForUnauthenticatedUsers.some((value) => value === to.path);
   if(AuthService.isAuthenticated()) {
