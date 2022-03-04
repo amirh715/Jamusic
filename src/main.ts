@@ -148,9 +148,9 @@ app.component('IonLabel', IonLabel);
 app.component('IonText', IonText);
 
 if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then((e) => console.log('Service worker registered', e))
-    .catch((err) => console.log(err));
+  navigator.serviceWorker.register('./service-worker-dev.js')
+    .then((registration) => console.log(registration))
+    .catch(err => console.log(err));
 }
 
 (async () => {

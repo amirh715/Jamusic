@@ -33,7 +33,6 @@ export default defineComponent({
   name: 'App',
   components: {
     IonApp,
-    // IonRouterOutlet
   },
   watch: {
     '$route'(to, from) {
