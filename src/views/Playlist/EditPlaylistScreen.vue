@@ -3,7 +3,7 @@
   <ion-header>
     <ion-toolbar>
       <div class="flex justify-content-between align-items-center">
-        <ion-icon @click="$router.back()" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
+        <ion-icon @click="goBack" :icon="chevronForwardCircleOutline" size="large" class="space-h"></ion-icon>
         <b>تغییر پلی لیست {{title}}</b>
         <ion-icon :icon="chevronForwardCircleOutline" size="large" class="space-h" style="opacity: 0;"></ion-icon>
       </div>
@@ -119,10 +119,8 @@ import { CheckboxChangeEventDetail, toastController } from '@ionic/vue';
 import { filter, find, map, unionBy } from 'lodash';
 import { closeCircleOutline, chevronForwardCircleOutline } from 'ionicons/icons';
 import { GetLibraryEntitiesByFilters } from '@/classes/Library/commands/GetLibraryEntitiesByFiltersDTO';
-import { PlaylistDetailsDTO } from '@/classes/Library/query/PlaylistDetailsDTO';
 
 export default defineComponent({
-  // components: { PlaylistTracksList },
   data() {
     return {
       searchTerm: '',
@@ -220,6 +218,12 @@ export default defineComponent({
       this.offset += this.limit;
       this.tracks.push(await this.searchForTracks(this.searchTerm));
       ev.target.complete();
+    },
+    goBack() {
+      if(this.selectedTracks.length > 0)
+        this.$router.back();
+      else
+        this.$router.push({ name: 'Home' });
     },
   },
   async mounted() {
