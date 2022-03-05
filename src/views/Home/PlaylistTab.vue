@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-column" style="width: 100%; height: 100%; overflow-x: hidden">
+  <div class="flex flex-column" style="width: 100%; height: 100%; min-height: 80vh; margin-bottom: 150px; overflow-x: hidden">
     
     <ion-searchbar
       v-if="playlists.length !== 0"
@@ -72,12 +72,6 @@
       <b  style="opacity: 0.2;">با + اولین پلی لیست خودت رو درست کن :)</b>
     </div>
 
-    <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-      <ion-fab-button @click="$router.push({ name: 'NewPlaylist' })">
-        <ion-icon :icon="addOutline"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
-
     <ion-card v-for="i in 4" :key="i" v-show="loading">
       <ion-card-content>
         <ion-skeleton-text
@@ -109,7 +103,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import {
-  addOutline,
   closeCircleOutline,
   playCircleOutline,
   ellipsisVerticalOutline,
@@ -130,7 +123,6 @@ export default defineComponent({
       playlists: [],
       shownPlaylists: [],
       loading: false,
-      addOutline,
       playCircleOutline,
       ellipsisVerticalOutline,
       trashBinOutline,

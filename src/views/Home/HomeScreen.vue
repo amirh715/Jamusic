@@ -5,7 +5,7 @@
       <div class="flex justify-content-between align-items-center">
         <ion-icon style="opacity: 0" size="large" class="space-h" :icon="personCircleOutline"></ion-icon>
         <div class="flex align-items-center">
-          <img src="assets/icon/favicon.png" style="width: 1.6rem; height: 1.6rem;" />
+          <img src="assets/icons/ios/1024.png" style="width: 1.7rem; height: 1.7rem;" />
         </div>
         <ion-icon
           size="large"
@@ -74,14 +74,20 @@
 
   </ion-content>
 
+  <ion-fab
+    :style="{ marginBottom: !$store.state.player.isStopped ? '7rem' : '3.5rem' }"
+    vertical="bottom" horizontal="start" slot="fixed">
+      <ion-fab-button v-show="showNewPlaylistButton" @click="$router.push({ name: 'NewPlaylist' })">
+        <ion-icon :icon="addOutline"></ion-icon>
+      </ion-fab-button>
+  </ion-fab>
+
 </template>
 
 <style>
-
 #tab-buttons {
   backdrop-filter: blur(20px);
 }
-
 </style>
 
 <script lang="ts">
@@ -90,9 +96,15 @@ import MiniPlayer from '@/components/Library/MiniPlayer.vue'
 import ExploreTab from './ExploreTab.vue';
 import PlaylistTab from './PlaylistTab.vue';
 import { Swiper as SwiperJs } from 'swiper/types';
-import { planetOutline, planet, albumsOutline, albums, personCircleOutline } from 'ionicons/icons'
-import { ACTION_TYPES } from '@/store/ACTION_TYPES';
-import { LibraryService } from '@/services/LibraryService';
+import {
+  planetOutline,
+  planet,
+  albumsOutline,
+  albums,
+  personCircleOutline,
+  addOutline,
+} from 'ionicons/icons'
+import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 
 export default defineComponent({
   setup() {
@@ -113,8 +125,8 @@ export default defineComponent({
   components: { ExploreTab, PlaylistTab, MiniPlayer, },
   data() {
     return {
-      tabIndex: 0,
       collections: [],
+      addOutline,
     }
   },
   computed: {
@@ -124,13 +136,19 @@ export default defineComponent({
     isPlayerStopped() {
       return this.$store.state.player.isStopped;
     },
+    tabIndex() {
+      return this.$store.state.homeScreenTabIndex;
+    },
+    showNewPlaylistButton() {
+      return this.tabIndex === 1;
+    },
   },
   methods: {
     tabButtonClicked(index: number) {
       (this.swiper as SwiperJs).slideTo(index);
     },
     onSlideChange(swiper: SwiperJs) {
-      this.tabIndex = swiper.activeIndex;
+      this.$store.commit(COMMIT_TYPES.HOME_SCREEN_TAB_INDEX, swiper.activeIndex);
     },
     goToProfile() {
       this.$router.push({ name: 'ProfileInfo' });
