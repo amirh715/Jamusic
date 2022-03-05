@@ -67,7 +67,7 @@
     </ion-card>
 
     <!-- placeholder for empty list of playlists  -->
-    <div class="flex flex-column justify-content-center" id="test" v-if="playlists.length == 0 && !loading">
+    <div class="flex flex-column justify-content-center" id="placeholder-background" v-if="playlists.length == 0 && !loading">
       <h3  style="opacity: 0.2;">پلی لیست های شما اینجا خواهند بود</h3>
       <b  style="opacity: 0.2;">با + اولین پلی لیست خودت رو درست کن :)</b>
     </div>
@@ -96,7 +96,7 @@
 </template>
 
 <style scoped>
-#test {
+#placeholder-background {
   width: 100%;
   height: 70vh;
   bottom: 0;
