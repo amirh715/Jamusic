@@ -78,7 +78,7 @@ class HttpService {
           if(err.request.status === 404) {
             return Promise.reject(new ApiError({
               message: 'وجود ندارد',
-              type: 'ServerConnectionError',
+              type: 'NotFoundError',
               code: 0,
               description: 'این ',
             }));

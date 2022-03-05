@@ -290,7 +290,7 @@ export default defineComponent({
       const blob = await ProfileService.getMyProfileImage();
       this.profileImage = blob ? URL.createObjectURL(blob) : null;
     } catch(err) {
-      if(err.request.status === 404) return;
+      if(err.type === 'NotFoundError') return;
       const toast = await toastController.create({
         message: err.message,
         color: 'danger',

@@ -28,4 +28,4 @@ self.addEventListener('install', e => {
       .catch(err => console.log(err))
   );
 });
-self.addEventListener('fetch', (e) => console.log(e));
+self.addEventListener('fetch', (e) => {});

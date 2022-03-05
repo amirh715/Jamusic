@@ -5,7 +5,7 @@
       v-if="playlists.length !== 0"
       @input="searchForPlaylists($event.target.value)"
       class="text-center"
-      placeholder="جستجو کنید..."
+      placeholder="جستجوی پلی لیست ها..."
     />
 
     <h3 class="text-right space-2">پلی لیست های من</h3>
@@ -42,7 +42,7 @@
               :id="'optionsButton' + item.id"
             ></ion-icon>
             <div @click="playPlaylist(item)">
-              <ion-icon size="large" :icon="playCircleOutline"></ion-icon>
+              <ion-icon v-if="item.tracks.length !== 0" :icon="playCircleOutline" size="large"></ion-icon>
             </div>
           </div>
 
@@ -151,7 +151,7 @@ export default defineComponent({
       if(searchTerm) {
         const pattern = `/[%${searchTerm}%]/`;
         const regex = new RegExp(pattern);
-        this.shownPlaylists = filter(this.playlists, (playlist: PlaylistDetailsDTO) => playlist.title.search(regex));
+        this.shownPlaylists = filter(this.playlists, (playlist: PlaylistDetailsDTO) => playlist.title.search(regex) !== -1);
       } else {
         this.shownPlaylists = this.playlists;
       }
