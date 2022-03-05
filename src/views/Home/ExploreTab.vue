@@ -1,6 +1,6 @@
 <template>
   <!-- <ion-content> -->
-    <div class="flex flex-column" style="width: 100%; overflow-x: hidden">
+    <div class="flex flex-column" style="width: 100%; overflow-x: hidden; margin-bottom: 150px;">
 
       <!-- search bar -->
       <div>

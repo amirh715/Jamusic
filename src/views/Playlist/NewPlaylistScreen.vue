@@ -92,7 +92,7 @@ export default defineComponent({
           trackIds: map(this.selectedTracks, (item) => item.id),
         });
         await LibraryService.createNewPlaylist(dto);
-        await this.$router.push({ name: 'MyPlaylists' });
+        await this.$router.push({ name: 'Home' });
         options = {
           message: 'پلی لیست ایجاد شد. :)',
           color: 'success',

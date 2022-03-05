@@ -17,11 +17,13 @@
             }">
             <div v-if="!item.imageLoading" :style="{
               width: size || '5rem', maxHeight: size || '5rem',
+              position: 'relative',
+              textAlign: 'center',
               }">
                 <img
                   :src="item.image ? toObjectURL(item.image) : 'assets/images/disc.png'"
                 />
-                <h3 style="position: relative; bottom: 8px; left: 16px;">Show me!!</h3>
+                <h3 style="position: absolute; top: 8px; right: 16px;">Show me!!</h3>
             </div>
             <ion-skeleton-text
               v-else

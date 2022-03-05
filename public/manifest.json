@@ -2,7 +2,7 @@
   "name": "Jamusic",
   "short_name": "Jamusic",
   "lang": "en-US",
-  "start_url": "https://jamusicapp.ir",
+  "start_url": "http://localhost:8080",
   "scope": "./",
   "display": "standalone",
   "theme_color": "#ffd700",
