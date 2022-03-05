@@ -5,14 +5,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import * as _ from 'lodash';
+import { defineComponent, PropType } from 'vue'
+import { isNil } from 'lodash';
 
 export default defineComponent({
   name: 'number-displayer',
-  props: {
-    value: String || Number,
-  },
+  props: ['value'],
   data() {
     return {
       map: [
@@ -31,7 +29,7 @@ export default defineComponent({
   },
   computed: {
     displayValue() {
-      if (_.isNil(this.value)) return '-';
+      if (isNil(this.value)) return '-';
       const numberInString = this.value.toString();
       let result = '';
       for (let i = 0; i < numberInString.length; i++) {
