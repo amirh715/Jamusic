@@ -68,7 +68,7 @@ export default defineComponent({
         duration: 4000,
       });
       (await toast).present();
-      this.$router.push({ name: 'Profile' });
+      this.$router.push({ name: 'ProfileInfo' });
     } finally {
       this.isLoading = false;
     }

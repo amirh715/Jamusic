@@ -118,7 +118,7 @@ export default defineComponent({
         });
         await this.$store.dispatch(ACTION_TYPES.SIGNUP, dto);
         toastOptions = {
-          message: '',
+          message: 'اکانت شما ایجاد شد.',
           icon: checkmarkCircleOutline,
           color: 'success',
           duration: 4000,

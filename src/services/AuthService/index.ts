@@ -86,7 +86,7 @@ class AuthService {
       } = dto;
       const data = new FormData();
       data.append('mobile', mobile);
-      await HttpService.post('', data);
+      await HttpService.post('/user/request-account-verification', data);
       return Promise.resolve();
     } catch(err) {
       return Promise.reject(err);

@@ -18,7 +18,7 @@
           @tapped="showcaseItemTapped"
           size="12rem">
             <template v-slot:title>
-              <h2 class="text-right space-2">&#128142; ویترین &#128165;</h2>
+              <h2 v-show="showShowcaseTitle" class="text-right space-2">&#128142; ویترین &#128165;</h2>
             </template>
         </showcase-collection>
 
@@ -64,6 +64,11 @@ export default defineComponent({
       showcases: [],
       collections: []
     }
+  },
+  computed: {
+    showShowcaseTitle() {
+      return this.showcases.length > 0;
+    },
   },
   methods: {
     showcaseItemTapped(showcase: ShowcaseDetails) {

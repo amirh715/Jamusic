@@ -23,7 +23,9 @@
               <label class="space-2-h">عنوان</label>
               <ion-input
                 v-model="title"
+                @change="v$.title.$touch"
               />
+              <error-displayer :errors="v$.title.$errors" />
             </div>
 
             <ion-searchbar
@@ -37,11 +39,13 @@
               :tracks="tracks"
               :loading="loading"
               @selectedTracks="(items) => selectedTracks = items"
+              @change="v$.selectedTracks.$touch"
               @loadMore="loadMore"
             />
+            <error-displayer :errors="v$.selectedTracks.$errors" />
 
             <div class="flex justify-content-center space-3-v">
-              <ion-button @click="submit">
+              <ion-button @click="submit" :disabled="v$.$invalid">
                 <span class="space-h">برو</span>
               </ion-button>
             </div>
@@ -67,10 +71,21 @@ import { CreateNewPlaylistDTO } from '@/classes/Library/commands/CreateNewPlayli
 import { GetLibraryEntitiesByFilters } from '@/classes/Library/commands/GetLibraryEntitiesByFiltersDTO';
 import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 import PlaylistTracksList from '@/components/Playlist/PlaylistTracksList.vue';
+import useVuelidate from '@vuelidate/core';
+import { Playlist } from '@/validators';
+import { helpers } from '@vuelidate/validators';
 
 export default defineComponent({
+  setup() {
+    return { v$: useVuelidate() }
+  },
   components: { PlaylistTracksList },
-  // components: { LibraryEntityRate },
+  validations() {
+    return {
+      title: { title: helpers.withMessage(() => 'عنوان پلی لیست باید حداقل یک کاراکتر باشد.', Playlist.title) },
+      selectedTracks: { selectedTracks: helpers.withMessage(() => 'هر پلی لیست می تواند حداکثر ۱۵۰ آهنگ داشته باشد.', Playlist.trackIds) }
+    }
+  },
   data() {
     return {
       title: '',

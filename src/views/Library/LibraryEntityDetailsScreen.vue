@@ -168,6 +168,8 @@ export default defineComponent({
         this.entityLoading = true;
         this.entity = await LibraryService.getLibraryEntityById(this.entityId);
       } catch(err) {
+        console.log('ERROR');
+        console.log(err);
         this.$router.back();
         const toast = await toastController.create({
           message: err.message,

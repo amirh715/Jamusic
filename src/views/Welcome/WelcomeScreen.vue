@@ -5,7 +5,7 @@
       @slideChange="onSlideChange"
       :grabCursor="true"
       dir="rtl"
-      style="height: 100vh;"
+      style="height: 100vh; overflow-y: hidden;"
     >
       <!-- Slide 1 -->
       <swiper-slide>
@@ -34,7 +34,6 @@
               <b v-else>اَپلیکیشن روی گوشی شما نصب شده است. از مرورگر خارج و وارد اَپلیکیشن شوید.</b>
             </div>
             <div v-else>
-              Next
             </div>
           </div>
         </div>
@@ -95,7 +94,6 @@ export default defineComponent({
     const swiper: Ref<Swiper> = ref(null);
     const onSwiper = (instance: Swiper) => {
       swiper.value = instance;
-      // swiper.value.allowTouchMove = false;
     };
     return {
       onSwiper,
@@ -112,10 +110,10 @@ export default defineComponent({
   },
   computed: {
     isAppInstalled() {
-      return !!this.deferredPrompt;
+      return this.isRunningStandalone;
     },
     isRunningStandalone() {
-      return (window.matchMedia('(display-mode: standalone)').matches);
+      return window.matchMedia('(display-mode: standalone)').matches;
     },
   },
   methods: {
@@ -133,7 +131,6 @@ export default defineComponent({
     });
     window.addEventListener('appinstalled', () => {
       this.deferredPrompt = null;
-      this.isAppInstalled = true;
     });
   },
 })

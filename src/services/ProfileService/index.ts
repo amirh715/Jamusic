@@ -3,6 +3,7 @@ import { HttpService } from '../HttpService';
 import { EditProfileDTO } from '@/classes/Profile/commands/EditProfileDTO';
 import { ProfileDetails } from '@/classes/Profile/query/ProfileDetails';
 import { AuthService } from '../AuthService';
+import { ApiError } from '../HttpService/ApiError';
 
 class ProfileService {
 

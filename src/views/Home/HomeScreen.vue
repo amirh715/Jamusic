@@ -5,7 +5,7 @@
       <div class="flex justify-content-between align-items-center">
         <ion-icon style="opacity: 0" size="large" class="space-h" :icon="personCircleOutline"></ion-icon>
         <div class="flex align-items-center">
-          <img src="assets/icons/ios/1024.png" style="width: 1.7rem; height: 1.7rem;" />
+          <img src="assets/icons/ios/1024.png" style="width: 2.5rem; height: 2.5rem;" />
         </div>
         <ion-icon
           size="large"
@@ -105,12 +105,15 @@ import {
   addOutline,
 } from 'ionicons/icons'
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
+import store from '@/store';
 
 export default defineComponent({
   setup() {
-    const swiper = ref(null);
+    const currentTabIndex = store.state.homeScreenTabIndex;
+    const swiper = ref<SwiperJs>(null);
     const onSwiper = (swiperInstance: SwiperJs) => {
       swiper.value = swiperInstance;
+      swiper.value.activeIndex = currentTabIndex;
     };
     return {
       onSwiper,
