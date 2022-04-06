@@ -149,9 +149,11 @@ export default defineComponent({
     },
     searchForPlaylists(searchTerm: string) {
       if(searchTerm) {
-        const pattern = `/[%${searchTerm}%]/`;
-        const regex = new RegExp(pattern);
-        this.shownPlaylists = filter(this.playlists, (playlist: PlaylistDetailsDTO) => playlist.title.search(regex) !== -1);
+        const pattern = `${searchTerm}(.*)`;
+        const regex = new RegExp(pattern, 'i');
+        this.shownPlaylists = filter(this.playlists, (playlist: PlaylistDetailsDTO) => {
+          return regex.test(playlist.title) || filter(playlist.tracks, (track) => regex.test(track.title)).length > 0
+        });
       } else {
         this.shownPlaylists = this.playlists;
       }
