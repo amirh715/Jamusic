@@ -30,7 +30,7 @@
           />
         </div>
         <div>
-          <ion-list v-if="loading">
+          <ion-list v-show="loading">
             <ion-item v-for="i in 7" :key="i">
               <ion-skeleton-text
                 class="space"
@@ -50,7 +50,7 @@
             </ion-item>
           </ion-list>
 
-          <ion-list v-else>
+          <ion-list v-show="!loading">
             <ion-list-header v-show="tracks.length > 0">
               <number-displayer :value="selectedTracks.length" />
             </ion-list-header>

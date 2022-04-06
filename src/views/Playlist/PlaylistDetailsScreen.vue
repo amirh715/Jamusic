@@ -55,7 +55,7 @@ import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 import { EditPlaylistDTO } from '@/classes/Library/commands/EditPlaylistDTO';
-import { filter } from 'lodash';
+import { drop, fill, filter, findIndex } from 'lodash';
 import { PlaylistDetailsDTO } from '@/classes/Library/query/PlaylistDetailsDTO';
 
 export default defineComponent({
@@ -77,12 +77,13 @@ export default defineComponent({
   },
   methods: {
     async playPlaylist() {
-      this.$store.dispatch(ACTION_TYPES.FILL_PLAY_QUEUE, this.playlist.tracks);
-      this.$store.dispatch(ACTION_TYPES.PLAY);
+      this.$store.dispatch(ACTION_TYPES.PLAY, this.playlist.tracks);
     },
     async playTrack(track: TrackDetailsDTO) {
-      await this.$store.dispatch(ACTION_TYPES.ADD_TO_PLAY_QUEUE, track);
-      await this.$store.dispatch(ACTION_TYPES.PLAY);
+      const allTracksInPlaylist = this.playlist.tracks as TrackDetailsDTO[];
+      const selectedTracksIndex = findIndex(allTracksInPlaylist, (t) => t.id === track.id);
+      const tracksToPlay = drop(allTracksInPlaylist, selectedTracksIndex);
+      await this.$store.dispatch(ACTION_TYPES.PLAY, tracksToPlay);
     },
     async openActionSheet(track: TrackDetailsDTO) {
       const actionSheet = await actionSheetController.create({
@@ -117,6 +118,7 @@ export default defineComponent({
         this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
         const dto = new EditPlaylistDTO({
           id: this.playlist.id,
+          title: this.playlist.title,
           trackIds: filter(this.playlist.tracks, track => track.id !== trackToRemove.id),
         });
         await LibraryService.editPlaylist(dto);

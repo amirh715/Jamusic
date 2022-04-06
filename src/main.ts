@@ -27,9 +27,6 @@ import './theme/variables.css';
 // Global styles
 import './theme/style.css';
 
-// process.env.baseApiURL = 'https://api.jamusicapp.ir/v1';
-process.env.baseApiURL = 'http://localhost:4567/v1';
-
 const app = createApp(App)
   .use(IonicVue)
   .use(store)
@@ -176,6 +173,26 @@ if('serviceWorker' in navigator) {
     await LibraryService.playTrack(dto);
     await DatabaseManager.playedTracks.delete(id);
   });
+})();
+
+import { initializeApp } from 'firebase/app';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { onBackgroundMessage } from 'firebase/messaging/sw';
+import { AuthService } from './services/AuthService';
+
+(async () => {
+  try {
+    const app = initializeApp({});
+    const messaging = getMessaging(app);
+    const currentToken = await getToken(messaging, {});
+    if(currentToken) {
+      AuthService.sendFCMToken(currentToken);
+    }
+    onMessage(messaging, (payload) => console.log('onMessage(): ' + payload));
+    onBackgroundMessage(messaging, (payload) => console.log('onBackgroundMessage(): ' + payload));
+  } catch(err) {
+    console.log(err);
+  }
 })();
 
 router.isReady().then(() => {

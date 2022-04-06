@@ -11,7 +11,7 @@
 
   <ion-content>
     <div
-      class="flex flex-column justify-content-center align-items-center"
+      class="flex flex-column align-items-center"
       :style="{
         minHeight: '100%',
       }"
@@ -66,8 +66,10 @@
           :icon="shuffleOutline"
           style="font-size: 2.5rem;"
           ></ion-icon>
-        <div class="text-center">
-          <span style="font-size: 2.5rem;">{{currentTrack.title || ''}}</span><br/>
+        <div class="text-center" style="width: 60%;">
+          <text-banner :animate="currentTrack && currentTrack.title.length > 9" animationSpeed="7s">
+            <span style="font-size: 1.9rem; white-space: nowrap; font-weight: bold;">{{currentTrack.title || ''}}</span><br/>
+          </text-banner>
           <span>{{currentTrack && currentTrack.artist.title}}</span>
         </div>
         <ion-icon
@@ -85,10 +87,10 @@
           @touchend="$refs.range.$el.blur()"
           min="0" max="100">
             <ion-label slot="end" style="min-width: 50px;">
-              <duration-displayer :durationInSec="currentDuration" />
+              <duration-displayer style="font-size: 1.4rem;" :durationInSec="currentDuration" />
             </ion-label>
             <ion-label slot="start" style="min-width: 50px;">
-              <duration-displayer :durationInSec="totalDuration" />
+              <duration-displayer style="font-size: 1.4rem;" :durationInSec="totalDuration" />
             </ion-label>
         </ion-range>
       </div>
@@ -184,7 +186,8 @@ export default defineComponent({
     },
     canSkipBack() {
       const indexOfThisTrackInQueue = this.$store.state.player.currentQueueIndex;
-      return indexOfThisTrackInQueue !== 0;
+      const canReplayCurrentTrack = this.$store.state.player.currentDuration > 6;
+      return indexOfThisTrackInQueue !== 0 || canReplayCurrentTrack;
     },
     canSkipForward() {
       const indexOfThisTrackInQueue = this.$store.state.player.currentQueueIndex;

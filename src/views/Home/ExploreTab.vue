@@ -37,6 +37,7 @@
             <h5 class="text-right">{{collection.title}}</h5>
           </template>
         </collection>
+        {{collections}}
 
       </div>
 
@@ -52,6 +53,7 @@ import { ShowcaseService } from '@/services/ShowcaseService';
 import { LibraryService } from '@/services/LibraryService';
 import { ShowcaseDetails } from '@/classes/Showcase/ShowcaseDetails';
 import ShowcaseCollection from '@/components/Showcase/ShowcaseCollection.vue';
+import { replace, startsWith } from 'lodash';
 
 export default defineComponent({
   name: 'explore-tab',
@@ -73,12 +75,15 @@ export default defineComponent({
   methods: {
     showcaseItemTapped(showcase: ShowcaseDetails) {
       ShowcaseService.itemClicked(showcase.id);
-      window.open(showcase.route, '_self');
+      const isInAppRoute = startsWith(showcase.route, 'https://jamusicapp.ir/');
+      if(isInAppRoute)
+        this.$router.push({ path: replace(showcase.route, 'https://jamusicapp.ir/', '') });
+      else
+        window.open(showcase.route, '_self');
     },
   },
   async mounted() {
     this.showcases = await ShowcaseService.getShowcases({ initImageLoadingValue: true });
-    this.collections = await LibraryService.getAllCollections({ initImageLoadingValue: true });
     for(let i=0; i<this.showcases.length; i++) {
       try {
         const showcase = this.showcases[i] as ShowcaseDetails;
@@ -90,6 +95,7 @@ export default defineComponent({
         this.showcases[i].imageLoading = false;
       }
     }
+    this.collections = await LibraryService.getAllCollections({ initImageLoadingValue: true });
     for(let i=0; i<this.collections.length; i++) {
       const collection = this.collections[i] as RecommendedCollection;
       for(let j=0; j<collection.items.length; j++) {

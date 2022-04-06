@@ -11,6 +11,8 @@ import { ResetPasswordDTO } from '@/classes/Auth/commands/ResetPasswordDTO';
 import { RequestPasswordResetDTO } from '@/classes/Auth/commands/RequestPasswordResetDTO';
 import { PlayerManager } from '@/services/PlayerManager';
 import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
+import { ArtworkDetailsDTO } from '@/classes/Library/query/ArtworkDetailsDTO';
+import { AlbumDetailsDTO } from '@/classes/Library/query/AlbumDetailsDTO';
 
 let timerId: number;
 
@@ -71,10 +73,14 @@ export default new Store({
     [COMMIT_TYPES.PAUSED](state) {
       state.player.isPlaying = false;
     },
-    [COMMIT_TYPES.STOPPED](state, currentTrack?: TrackDetailsDTO) {
+    [COMMIT_TYPES.STOPPED](state, payload: {
+      currentTrack?: TrackDetailsDTO,
+      currentQueueIndex?: number
+    }) {
       state.player.isPlaying = false;
       state.player.isStopped = true;
-      state.player.currentTrack = currentTrack;
+      state.player.currentTrack = payload.currentTrack;
+      state.player.currentQueueIndex = payload.currentQueueIndex;
       state.player.currentDuration = 0;
       state.player.totalDuration = 0;
     },
@@ -184,16 +190,24 @@ export default new Store({
         commit(COMMIT_TYPES.APP_WAITING, false);
       }
     },
-    async [ACTION_TYPES.PLAY]({ state, commit, dispatch }, trackToAddToQueue?: TrackDetailsDTO): Promise<void> {
+    async [ACTION_TYPES.PLAY]({ state, commit, dispatch }, artworkToPlay?: ArtworkDetailsDTO): Promise<void> {
       try {
-        if(trackToAddToQueue) {
-          dispatch(ACTION_TYPES.ADD_TO_PLAY_QUEUE, trackToAddToQueue);
+        if(artworkToPlay instanceof AlbumDetailsDTO) {
+          dispatch(ACTION_TYPES.FILL_PLAY_QUEUE, artworkToPlay.tracks);
+        } else if(artworkToPlay instanceof TrackDetailsDTO) {
+          dispatch(ACTION_TYPES.FILL_PLAY_QUEUE, [artworkToPlay]);
+        } else if(artworkToPlay instanceof Array) {
+          dispatch(ACTION_TYPES.FILL_PLAY_QUEUE, artworkToPlay);
         }
         await PlayerManager.play();
         PlayerManager.addEventListener('end', () => {
-          commit(COMMIT_TYPES.STOPPED);
+          commit(COMMIT_TYPES.STOPPED, {
+            currentTrack: PlayerManager.getCurrentTrack(),
+            currentQueueIndex: PlayerManager.getCurrentPlayQueueIndex()
+          });
         });
         PlayerManager.addEventListener('play', () => {
+          console.log('play event fired', PlayerManager.getTotalDuration())
           commit(COMMIT_TYPES.PLAYING, {
             currentTrack: PlayerManager.getCurrentTrack(),
             currentQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),
@@ -203,10 +217,16 @@ export default new Store({
           });
         });
         PlayerManager.addEventListener('skipBack', () => {
-          commit(COMMIT_TYPES.STOPPED, PlayerManager.getCurrentTrack());
+          commit(COMMIT_TYPES.STOPPED, {
+            currentTrack: PlayerManager.getCurrentTrack(),
+            currentQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),
+          });
         });
         PlayerManager.addEventListener('skipForward', () => {
-          commit(COMMIT_TYPES.STOPPED, PlayerManager.getCurrentTrack());
+          commit(COMMIT_TYPES.STOPPED, {
+            currentTrack: PlayerManager.getCurrentTrack(),
+            currentQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),
+          });
         });
         commit(
           COMMIT_TYPES.PLAYING,
@@ -218,7 +238,7 @@ export default new Store({
             totalDuration: PlayerManager.getTotalDuration(),
           }
         );
-        setTimeout(() => commit(COMMIT_TYPES.TOTAL_DURATION, PlayerManager.getTotalDuration()), 100);
+        setTimeout(() => commit(COMMIT_TYPES.TOTAL_DURATION, PlayerManager.getTotalDuration()), 1000);
         timerId = setInterval(() => {
           const newDuration = PlayerManager.getCurrentDuration();
           if(state.player.currentDuration === newDuration) return;
@@ -264,13 +284,23 @@ export default new Store({
     },
     [ACTION_TYPES.STOP]({ commit }): void {
       PlayerManager.stop();
-      commit(COMMIT_TYPES.STOPPED);
+      commit(COMMIT_TYPES.STOPPED, {
+        currentTrack: PlayerManager.getCurrentTrack(),
+        currentQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),
+      });
     },
-    [ACTION_TYPES.SKIP_BACK]({ commit }): void {
-      PlayerManager.skipBack();
+    [ACTION_TYPES.SKIP_BACK]({ dispatch }): void {
+      dispatch(ACTION_TYPES.STOP);
+      const shouldSkipBack = PlayerManager.getCurrentDuration() < 6;
+      if(shouldSkipBack) {
+        PlayerManager.skipBack();
+      }
+      dispatch(ACTION_TYPES.PLAY);
     },
-    [ACTION_TYPES.SKIP_FORWARD]({ commit }): void {
+    [ACTION_TYPES.SKIP_FORWARD]({ dispatch }): void {
+      dispatch(ACTION_TYPES.STOP);
       PlayerManager.skipForward();
+      dispatch(ACTION_TYPES.PLAY);
     },
     [ACTION_TYPES.CHANGE_REPEAT]({ commit }, repeatOn: boolean): void {
       PlayerManager.repeat(repeatOn);

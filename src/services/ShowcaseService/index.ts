@@ -1,4 +1,4 @@
-import _, { orderBy } from 'lodash';
+import { orderBy } from 'lodash';
 import { HttpService } from '../HttpService';
 import { ShowcaseDetails } from '@/classes/Showcase/ShowcaseDetails';
 

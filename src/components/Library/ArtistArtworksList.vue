@@ -57,17 +57,20 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import * as _ from 'lodash';
+import { filter } from 'lodash';
 import { LibraryService } from '@/services/LibraryService';
 import { GetLibraryEntitiesByFilters } from '@/classes/Library/commands/GetLibraryEntitiesByFiltersDTO';
 import LibraryEntityRate from '@/components/Library/LibraryEntityRate.vue';
+import { Pagination } from 'swiper';
 import { Swiper } from 'swiper/types';
 import { ArtworkDetailsDTO } from '@/classes/Library/query/ArtworkDetailsDTO';
 
 export default defineComponent({
   setup() {
     const swiper = ref(null);
-    const onSwiper = (swiperInstance: Swiper) => { swiper.value = swiperInstance; };
+    const onSwiper = (swiperInstance: Swiper) => {
+      swiper.value = swiperInstance;
+    };
     return {
       onSwiper,
       swiper,
@@ -91,10 +94,10 @@ export default defineComponent({
       return this.$store.state.player.currentTrack;
     },
     albumsList() {
-      return _.filter(this.artworks, artwork => artwork.type === 'A');
+      return filter(this.artworks, artwork => artwork.type === 'A');
     },
     singleTracksList() {
-      return _.filter(this.artworks, artwork => artwork.type === 'T' && !artwork.album);
+      return filter(this.artworks, artwork => artwork.type === 'T' && !artwork.album);
     },
   },
   methods: {

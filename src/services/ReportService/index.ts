@@ -23,7 +23,7 @@ class ReportService {
 
   public async getAllOfMyReports(): Promise<ReportDetails[]> {
     try {
-      const { data } = await HttpService.get('/report/');
+      const { data } = await HttpService.get('/report/my/');
       const results = orderBy(forOwn(data, v => new ReportDetails(v)), 'createdAt', 'desc');
       return Promise.resolve(results);
     } catch(err) {

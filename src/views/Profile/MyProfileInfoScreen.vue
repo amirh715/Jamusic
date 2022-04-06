@@ -29,10 +29,16 @@
               </ion-thumbnail>
             </div>
 
-            <div style="width: 100%" class="flex flex-column justify-content-center align-items-center dir-ltr">
-              <h1>{{profile && profile.name}}</h1>
-              <number-displayer :value="profile && profile.mobile" />
-              <b>{{profile && profile.email}}</b>
+            <div v-if="profile" style="width: 100%" class="flex flex-column justify-content-center align-items-center dir-ltr">
+              <h1>{{profile.name}}</h1>
+              <number-displayer :value="profile.mobile" />
+              <b>{{profile.email}}</b>
+            </div>
+
+            <div v-else style="width: 100%" class="flex flex-column justify-content-center align-items-center dir-ltr">
+              <ion-skeleton-text style="width: 60%; height: 1.5rem;" animated />
+              <ion-skeleton-text style="width: 55%; height: 1rem;" animated />
+              <ion-skeleton-text style="width: 70%; height: 1rem;" animated />
             </div>
 
           </div>
@@ -89,12 +95,12 @@
             <span class="space-h">گزارش اشکال</span>
           </div>
         </ion-item>
-        <ion-item @click="openSupportMeDialog">
+        <!-- <ion-item @click="openSupportMeDialog">
           <div class="flex">
             <ion-icon :icon="cafeOutline" size="large"></ion-icon>
             <span class="space-h">حمایت کنید</span>
           </div>
-        </ion-item>
+        </ion-item> -->
         <ion-item @click="deleteSearchHistory">
           <div class="flex">
             <ion-icon :icon="searchOutline" size="large"></ion-icon>

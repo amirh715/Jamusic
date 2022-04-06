@@ -8,7 +8,7 @@
         ></ion-icon>
       </div>
       <div @click="titleTapped" class="flex flex-column" style="width: 80%;">
-        <text-banner :animate="currentTrack.title.length > 15">
+        <text-banner :animate="currentTrack.title.length > 35">
           <b>{{currentTrack.title}}</b>
         </text-banner>
         <small>{{currentTrack.artist.title}}</small>

@@ -58,9 +58,6 @@
   font-weight: 100;
   font-style: normal;
 }
-.range-knob-handle {
-  margin-left: 0 !important;
-}
 html, body {
   direction: rtl;
 }

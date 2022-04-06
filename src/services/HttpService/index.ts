@@ -43,7 +43,7 @@ class HttpService {
             type: 'ServerConnectionError',
             code: 0,
             description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
-            httpStatusCode: err.response.status,
+            httpStatusCode: err.request.status,
           }));
         }
         return Promise.reject(new ApiError({
@@ -51,7 +51,7 @@ class HttpService {
           type: 'ServerConnectionError',
           code: 0,
           description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
-          httpStatusCode: err.response.status,
+          httpStatusCode: err.request.status,
         }));
       }
   }
@@ -77,7 +77,7 @@ class HttpService {
               type: 'ServerConnectionError',
               code: 0,
               description: 'این خطا زمانی ارسال می شود که شما درخواستی دارید که برای شما مجاز نیست.',
-              httpStatusCode: err.response.status,
+              httpStatusCode: err.request.status,
             }));
           }
           if(err.request.status === 404) {
@@ -86,7 +86,7 @@ class HttpService {
               type: 'NotFoundError',
               code: 0,
               description: 'این ',
-              httpStatusCode: err.response.status,
+              httpStatusCode: err.request.status,
             }));
           }
           return Promise.reject(new ApiError({
@@ -94,7 +94,7 @@ class HttpService {
             type: 'ServerConnectionError',
             code: 0,
             description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
-            httpStatusCode: err.response.status,
+            httpStatusCode: err.request.status,
           }));
         }
         return Promise.reject(new ApiError({
@@ -102,7 +102,7 @@ class HttpService {
           type: 'ServerConnectionError',
           code: 0,
           description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
-          httpStatusCode: err.response.status,
+          httpStatusCode: err.request.status,
         }));
       }
   }
@@ -128,7 +128,7 @@ class HttpService {
             type: 'ServerConnectionError',
             code: 0,
             description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
-            httpStatusCode: err.response.status,
+            httpStatusCode: err.request.status,
           }));
         }
         return Promise.reject(new ApiError({
@@ -136,7 +136,7 @@ class HttpService {
           type: 'ServerConnectionError',
           code: 0,
           description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
-          httpStatusCode: err.response.status,
+          httpStatusCode: err.request.status,
         }));
       }
   }
@@ -162,7 +162,7 @@ class HttpService {
             type: 'ServerConnectionError',
             code: 0,
             description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه گزارش اشکال ثبت کنید',
-            httpStatusCode: err.response.status,
+            httpStatusCode: err.request.status,
           }));
         }
         return Promise.reject(new ApiError({
@@ -170,7 +170,7 @@ class HttpService {
           type: 'ServerConnectionError',
           code: 0,
           description: 'این خطا می تواند دلایل متعددی داشته باشد. در صورت ادامه به مدیر سیستم اطلاع بدهید',
-          httpStatusCode: err.response.status,
+          httpStatusCode: err.request.status,
         }));
       }
   }
@@ -178,8 +178,7 @@ class HttpService {
 }
 
 const INSTANCE = new HttpService({
-  // baseURL: 'https://api.jamusicapp.ir/v1',
-  baseURL: 'http://localhost:4567/v1',
+  baseURL: 'https://api.jamusicapp.ir/v1',
   timeout: 10000,
   headers: {
     'content-type': 'multipart/form-data',

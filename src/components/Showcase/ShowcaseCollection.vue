@@ -15,7 +15,7 @@
               width: size || '5rem', height: size || '5rem', maxHeight: size || '5rem',
               borderRadius: collectionBorderRadius || '4px'
             }">
-            <div v-if="!item.imageLoading" :style="{
+            <div v-if="item.image && !item.imageLoading" :style="{
               width: size || '5rem', maxHeight: size || '5rem',
               position: 'relative',
               textAlign: 'center',
@@ -23,7 +23,7 @@
                 <img
                   :src="item.image ? toObjectURL(item.image) : 'assets/images/disc.png'"
                 />
-                <h3 style="position: absolute; top: 8px; right: 16px;">Show me!!</h3>
+                <h3 style="position: absolute; top: 8px; right: 16px; color: whitesmoke;">{{item.title}}</h3>
             </div>
             <ion-skeleton-text
               v-else

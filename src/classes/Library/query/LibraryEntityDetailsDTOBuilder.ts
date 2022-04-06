@@ -7,6 +7,7 @@ class LibraryEntityDetailsDTOBuilder {
 
   public static build(_props): LibraryEntityDetailsDTO {
     let instance: LibraryEntityDetailsDTO;
+    if(!_props) return;
     switch(_props.type) {
       case 'S':
         instance = new ArtistDetailsDTO(_props);

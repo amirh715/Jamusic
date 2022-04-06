@@ -25,6 +25,7 @@
     "axios": "^0.25.0",
     "core-js": "^3.6.5",
     "dexie": "^3.2.0",
+    "firebase": "^9.6.10",
     "howler": "^2.2.3",
     "html-webpack-plugin": "4.5.2",
     "jose": "^4.5.0",

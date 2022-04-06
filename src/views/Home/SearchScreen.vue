@@ -29,8 +29,7 @@
         :title="item.title"
         :rate="item.rate"
         :imageLoading="false"
-      >
-      </library-entity-list-item>
+      />
     </ion-list>
 
     <ion-infinite-scroll
@@ -42,6 +41,16 @@
         loading-spinner="bubbles">
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
+
+    <div v-show="showLoader">
+      <div v-for="i in 7" :key="i" class="flex space-2">
+        <ion-skeleton-text animated style="width: 3rem; height: 3rem;" />
+        <div class="flex flex-column justify-content-center space-h">
+          <ion-skeleton-text animated style="width: 5rem; height: 1.4rem;" />
+          <ion-skeleton-text animated style="width: 9rem; height: 1rem;" />
+        </div>
+      </div>
+    </div>
 
     <h2 v-show="showNoResultPlaceholder" class="text-center">
       چیزی پیدا نشد :(
@@ -59,10 +68,10 @@
       </ion-list>
     </div>
 
-    <div
-      v-if="showPlaceholder"
-      style="opacity: 0.2" class="flex justify-content-center align-items-center">
-        <h1>هرچی سرچ کنی اینجاست...</h1><br/>
+    <div v-show="showPlaceholder">
+      <div style="opacity: 0.2" class="flex justify-content-center align-items-center">
+          <h1>هرچی سرچ کنی اینجاست...</h1><br/>
+      </div>
     </div>
 
   </ion-content>
@@ -91,6 +100,7 @@ export default defineComponent({
       waitingForInput: false,
       timerId: 0,
       searchHistoryItems: [],
+      showLoader: false,
       chevronForwardCircleOutline,
     }
   },
@@ -99,23 +109,29 @@ export default defineComponent({
       return this.searchTerm.length > 0 && this.fetchedItems.length > 0;
     },
     showNoResultPlaceholder() {
-      return this.searchTerm.length > 0 && this.fetchedItems.length === 0 && !this.waitingForInput;
+      return !this.showLoader && this.searchTerm.length > 0 && this.fetchedItems.length === 0 && !this.waitingForInput;
     },
     showSearchHistory() {
-      return this.searchTerm.length === 0 && this.searchHistoryItems !== 0;
+      return this.searchTerm.length === 0 && this.searchHistoryItems.length > 0;
     },
     showPlaceholder() {
-      return this.searchTerm.length === 0 && this.searchHistoryItems.length === 0;
+      return this.searchTerm.length === 0 && this.fetchedItems.length === 0 && this.searchHistoryItems.length === 0;
     },
   },
   methods: {
     async fetch() {
-      const dto = new GetLibraryEntitiesByFilters({
-        searchTerm: this.searchTerm,
-        limit: this.limit,
-        offset: this.offset,
-      });
-      this.fetchedItems.push(await LibraryService.getLibraryEntitiesByFilters(dto));
+      try {
+        this.showLoader = true;
+        const dto = new GetLibraryEntitiesByFilters({
+          searchTerm: this.searchTerm,
+          limit: this.limit,
+          offset: this.offset,
+        });
+        const fetched = await LibraryService.getLibraryEntitiesByFilters(dto);
+        this.fetchedItems.push(...fetched);
+      } finally {
+        this.showLoader = false;
+      }
     },
     async fetchMore(ev: CustomEvent) {
       this.offset += this.limit;
@@ -136,6 +152,7 @@ export default defineComponent({
       this.waitingForInput = true;
       clearTimeout(this.timerId);
       this.timerId = setTimeout(() => {
+        this.fetchedItems = [];
         this.fetch();
         clearTimeout(this.timerId);
         this.waitingForInput = false;

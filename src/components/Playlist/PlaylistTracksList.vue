@@ -122,11 +122,6 @@ export default defineComponent({
       return filter(this.selectedTracks, (item) => item instanceof TrackDetailsDTO).length;
     },
   },
-  // watch: {
-  //   selectedTracks(selectedTracks: TrackDetailsDTO[]) {
-      
-  //   },
-  // },
   methods: {
     selectedTracksChanged(track: TrackDetailsDTO, checked: boolean) {
       const isItemAlreadySelected = find(this.selectedTracks, (item: TrackDetailsDTO) => item.id === track.id);

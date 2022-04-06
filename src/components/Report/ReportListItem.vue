@@ -27,7 +27,7 @@ import {
   checkmarkOutline,
   checkmarkDoneOutline,
   informationCircleOutline,
-  hourglassOutline,
+  sadOutline,
 } from 'ionicons/icons'
 
 export default defineComponent({
@@ -46,7 +46,7 @@ export default defineComponent({
         if(this.report.status === 'PROCESSED')
           return 'پردازش شده';
       }
-      return 'منتظر باشید...';
+      return 'نامشخص';
     },
     reportStatusIcon() {
       if(this.report) {
@@ -54,10 +54,10 @@ export default defineComponent({
           return informationCircleOutline;
         if(this.report.status === 'ASSIGNED')
           return checkmarkOutline;
-        if(this.report.status === '')
+        if(this.report.status === 'PROCESSED')
           return checkmarkDoneOutline;
       }
-      return hourglassOutline;
+      return sadOutline;
     },
     reportStatusColor() {
       if(this.report) {

@@ -4,12 +4,13 @@
       @swiper="onSwiper"
       @slideChange="onSlideChange"
       :grabCursor="true"
+      :allowSlideNext="isRunningStandalone"
       dir="rtl"
       style="height: 100vh; overflow-y: hidden;"
     >
       <!-- Slide 1 -->
       <swiper-slide>
-        <div style="width: 100vw; height: 90vh;" class="flex flex-column justify-content-between space-4">
+        <div style="width: 100vw; height: 85vh;" class="flex flex-column justify-content-between space-4">
           <div>
             <h1 class="text-right">اَپلیکیشن جَم</h1>
             <p class="text-right">
@@ -26,14 +27,12 @@
             </div>
           </div>
           <div>
-            <div v-if="!isRunningStandalone">
+            <div v-if="!isRunningStandalone()">
               <ion-button v-if="!isAppInstalled" @click="install" class="space-4-v" size="large" expand="block">
                 <ion-icon :icon="phonePortraitOutline"></ion-icon>
                 <b class="space-h">نصب</b>
               </ion-button>
               <b v-else>اَپلیکیشن روی گوشی شما نصب شده است. از مرورگر خارج و وارد اَپلیکیشن شوید.</b>
-            </div>
-            <div v-else>
             </div>
           </div>
         </div>
@@ -103,34 +102,31 @@ export default defineComponent({
   data() {
     return {
       deferredPrompt: null,
+      isAppInstalled: false,
       phonePortraitOutline,
       arrowBack,
       checkmarkCircleOutline,
     }
   },
-  computed: {
-    isAppInstalled() {
-      return this.isRunningStandalone;
+  methods: {
+    async install() {
+      await this.deferredPrompt.prompt();
     },
     isRunningStandalone() {
       return window.matchMedia('(display-mode: standalone)').matches;
     },
   },
-  methods: {
-    async install() {
-      await this.deferredPrompt.prompt();
-    },
-    onSlideChange() {
-      console.log('onSlideChange');
-    },
-  },
   created() {
+    if(this.isRunningStandalone()) {
+      this.isAppInstalled = true;
+    }
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       this.deferredPrompt = e;
     });
     window.addEventListener('appinstalled', () => {
       this.deferredPrompt = null;
+      this.isAppInstalled = true;
     });
   },
 })

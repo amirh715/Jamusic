@@ -33,7 +33,7 @@ export default defineComponent({
         min = floor(this.durationInSec % 3600);
         sec = floor(this.min % 3600);
       } else {
-        return 'حداکثر مقدار قابل استفاده کمتر از ۸۶۴۰۰ ثانیه است.';
+        return '--‌ : --';
       }
 
       switch(this.writeStyle) {

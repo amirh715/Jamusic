@@ -7,7 +7,7 @@
         style="width: 5rem; height: 4rem;"
       ></ion-skeleton-text>
       <ion-thumbnail v-else slot="start">
-        <img :src="'assets/images/disc.png'">
+        <img :src="imageDataURL || 'assets/images/disc.png'">
       </ion-thumbnail>
     </div>
     <div class="space-h">
@@ -25,7 +25,6 @@
       </div>
       <div v-else class="space-v">
         <b>{{title}}</b>
-        {{rate}}
         <library-entity-rate
           :rate="rate"
           size="1rem"
@@ -56,7 +55,10 @@ export default defineComponent({
       return this.$store.state.player.currentTrack &&
         this.$store.state.player.currentTrack.id === this.id &&
         'primary';
-    }
+    },
+    imageDataURL() {
+      return this.image ? URL.createObjectURL(this.image) : '';
+    },
   },
   methods: {
     tapped() {

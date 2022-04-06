@@ -61,9 +61,9 @@
               </div>
               <div v-else>
                 <text-banner
-                  :animate="entity.title.length > 8"
+                  :animate="entity && entity.title && entity.title.length > 8"
                   animationSpeed="5s">
-                  <h1>{{entity.title}}</h1>
+                  <h1 style="white-space: nowrap;">{{entity && entity.title}}</h1>
                 </text-banner>
                 <library-entity-rate :rate="entity.rate" class="space-v" />
                 <p>
@@ -79,7 +79,7 @@
           </div>
           <!-- artwork details (rendered if entity is an artwork) -->
           <div v-if="isArtwork">
-            <artwork-details :artwork="entity" @addToPlaylist="openAddArtworkToPlaylistModal" />
+            <artwork-details :artwork="entity" @addToPlaylist="openAddArtworkToPlaylistModal" @openOptions="openArtworkOptionsModal" />
           </div>
           <!-- artist details (rendered if entity is an artist) -->
           <div v-if="isArtist && entity.instagramId" class="space-v">
@@ -121,11 +121,13 @@ import AlbumTracksList from '@/components/Library/AlbumTracksList.vue';
 import ArtistArtworksList from '@/components/Library/ArtistArtworksList.vue';
 import TrackLyrics from '@/components/Library/TrackLyrics.vue';
 import ArtworkDetails from '@/components/Library/ArtworkDetails.vue';
-import { modalController, toastController } from '@ionic/vue';
+import { actionSheetController, alertController, modalController, toastController } from '@ionic/vue';
 import SelectPlaylistModal from '@/components/Playlist/SelectPlaylistModal.vue';
 import { PlaylistDetailsDTO } from '@/classes/Library/query/PlaylistDetailsDTO';
 import { chevronForwardCircleOutline, closeCircleOutline } from 'ionicons/icons';
 import ArtistDetails from '@/components/Library/ArtistDetails.vue';
+import { EditPlaylistDTO } from '@/classes/Library/commands/EditPlaylistDTO';
+import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 
 export default defineComponent({
   components: {
@@ -168,8 +170,6 @@ export default defineComponent({
         this.entityLoading = true;
         this.entity = await LibraryService.getLibraryEntityById(this.entityId);
       } catch(err) {
-        console.log('ERROR');
-        console.log(err);
         this.$router.back();
         const toast = await toastController.create({
           message: err.message,
@@ -203,8 +203,37 @@ export default defineComponent({
       await modal.present();
       const selectedPlaylist: PlaylistDetailsDTO = (await modal.onDidDismiss()).data;
       if(selectedPlaylist) {
-        selectedPlaylist.tracks.push(this.entity);
+        try {
+          selectedPlaylist.tracks.push(this.entity);
+          const dto = new EditPlaylistDTO({
+            id: selectedPlaylist.id,
+            title: selectedPlaylist.title,
+            trackIds: selectedPlaylist.tracks.map((track) => track.id),
+          });
+          await LibraryService.editPlaylist(dto);
+          this.$store.commit(COMMIT_TYPES.APP_WAITING, true);
+        } finally {
+          this.$store.commit(COMMIT_TYPES.APP_WAITING, false);
+        }
       }
+    },
+    async openArtworkOptionsModal() {
+      const actionSheet = await actionSheetController.create({
+        header: this.entity.title,
+        buttons: [
+          {
+            text: 'برو به هنرمند',
+            handler: () => {
+              this.$router.push({ name: 'LibraryEntityDetails', query: { id: this.entity.artist.id } });
+            },
+          },
+          {
+            text: 'بیخیال',
+            role: 'cancel',
+          },
+        ],
+      });
+      actionSheet.present();
     },
   },
   mounted() {

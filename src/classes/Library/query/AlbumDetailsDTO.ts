@@ -42,7 +42,11 @@ class AlbumDetailsDTO extends ArtworkDetailsDTO {
     }[],
   }) {
     super(_props);
-    this.tracks = _props.tracks.map((track) => new TrackDetailsDTO(track));
+    this.tracks = _props.tracks.map((track) => new TrackDetailsDTO({
+      ...track,
+      artist: _props.artist,
+      album: {id: _props.id, title: _props.title},
+    }));
   }
 
 }
