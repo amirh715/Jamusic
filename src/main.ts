@@ -182,14 +182,24 @@ import { AuthService } from './services/AuthService';
 
 (async () => {
   try {
-    const app = initializeApp({});
+    const app = initializeApp({
+      apiKey: "AIzaSyC39bXdJAlAjLapfKqL3nrKPNzUXkg95xs",
+      authDomain: "jamusic-5fd24.firebaseapp.com",
+      projectId: "jamusic-5fd24",
+      storageBucket: "jamusic-5fd24.appspot.com",
+      messagingSenderId: "603123320217",
+      appId: "1:603123320217:web:ae3f3c0753e9d59af53f08",
+      measurementId: "G-5S74EZ7PD9",    
+    });
     const messaging = getMessaging(app);
-    const currentToken = await getToken(messaging, {});
+    const currentToken = await getToken(messaging, {
+      vapidKey: 'BORT7Rl_GFJE-IaNyl8nih6FRmRMQUHijKUpbNy1kIkAm1E4khGtobXs4gPhCZarcpThVsaJ9rtOkQfZymc67g0'
+    });
     if(currentToken) {
       AuthService.sendFCMToken(currentToken);
     }
-    onMessage(messaging, (payload) => console.log('onMessage(): ' + payload));
-    onBackgroundMessage(messaging, (payload) => console.log('onBackgroundMessage(): ' + payload));
+    onMessage(messaging, (payload) => alert(payload));
+    onBackgroundMessage(messaging, (payload) => alert(payload));
   } catch(err) {
     console.log(err);
   }

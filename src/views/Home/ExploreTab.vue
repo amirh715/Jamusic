@@ -37,7 +37,6 @@
             <h5 class="text-right">{{collection.title}}</h5>
           </template>
         </collection>
-        {{collections}}
 
       </div>
 

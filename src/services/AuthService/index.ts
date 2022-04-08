@@ -159,7 +159,7 @@ class AuthService {
     try {
       const data = new FormData();
       data.append('FCMToken', fcmToken);
-      await HttpService.post('', data);
+      await HttpService.post('/user/update-fcm-token', data);
     } catch(err) {
       return Promise.reject(err);
     }
