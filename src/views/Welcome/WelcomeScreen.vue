@@ -1,10 +1,9 @@
 <template>
-  <ion-content>
+  <ion-content style="background-image: url('assets/images/dark_street_background.jpg')">
     <swiper
       @swiper="onSwiper"
       @slideChange="onSlideChange"
       :grabCursor="true"
-      :allowSlideNext="isRunningStandalone"
       dir="rtl"
       style="height: 100vh; overflow-y: hidden;"
     >
@@ -90,13 +89,11 @@ import { phonePortraitOutline, arrowBack, checkmarkCircleOutline } from 'ionicon
 
 export default defineComponent({
   setup() {
-    const swiper: Ref<Swiper> = ref(null);
-    const onSwiper = (instance: Swiper) => {
-      swiper.value = instance;
+    const onSwiper = (swiper: Swiper) => {
+      console.log();
     };
     return {
       onSwiper,
-      swiper,
     }
   },
   data() {
@@ -120,6 +117,7 @@ export default defineComponent({
     if(this.isRunningStandalone()) {
       this.isAppInstalled = true;
     }
+    this.onSwiper.allowTouchMove = this.isAppInstalled;
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       this.deferredPrompt = e;

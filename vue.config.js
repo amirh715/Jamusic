@@ -1,4 +1,4 @@
-module.exports = {
+// module.exports = {
   // pwa: {
   //   name: 'My App',
   //   themeColor: '#4DBA87',
@@ -14,4 +14,4 @@ module.exports = {
   //     // ...other Workbox options...
   //   }
   // }
-}
+// }

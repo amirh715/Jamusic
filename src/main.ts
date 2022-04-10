@@ -145,6 +145,9 @@ if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./service-worker-dev.js')
     .then((registration) => console.log(registration))
     .catch(err => console.log(err));
+  navigator.serviceWorker.register('firebase-messaging-sw.js')
+    .then((registration) => console.log(registration))
+    .catch(err => console.log(err));
 }
 
 (async () => {
@@ -177,7 +180,6 @@ if('serviceWorker' in navigator) {
 
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import { onBackgroundMessage } from 'firebase/messaging/sw';
 import { AuthService } from './services/AuthService';
 
 (async () => {
@@ -198,8 +200,12 @@ import { AuthService } from './services/AuthService';
     if(currentToken) {
       AuthService.sendFCMToken(currentToken);
     }
-    onMessage(messaging, (payload) => alert(payload));
-    onBackgroundMessage(messaging, (payload) => alert(payload));
+    onMessage(messaging, (payload) => {
+      if(payload.data) {
+        const command = payload.data.COMMAND;
+        if(command === 'USER_BLOCKED') localStorage.removeItem('token');
+      }
+    });
   } catch(err) {
     console.log(err);
   }

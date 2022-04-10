@@ -16,10 +16,10 @@
         <showcase-collection
           :items="showcases"
           @tapped="showcaseItemTapped"
-          size="12rem">
-            <template v-slot:title>
+          size="15rem">
+            <!-- <template v-slot:title>
               <h2 v-show="showShowcaseTitle" class="text-right space-2">&#128142; ویترین &#128165;</h2>
-            </template>
+            </template> -->
         </showcase-collection>
 
       </div>
@@ -52,7 +52,7 @@ import { ShowcaseService } from '@/services/ShowcaseService';
 import { LibraryService } from '@/services/LibraryService';
 import { ShowcaseDetails } from '@/classes/Showcase/ShowcaseDetails';
 import ShowcaseCollection from '@/components/Showcase/ShowcaseCollection.vue';
-import { replace, startsWith } from 'lodash';
+import { startsWith } from 'lodash';
 
 export default defineComponent({
   name: 'explore-tab',
@@ -74,11 +74,14 @@ export default defineComponent({
   methods: {
     showcaseItemTapped(showcase: ShowcaseDetails) {
       ShowcaseService.itemClicked(showcase.id);
-      const isInAppRoute = startsWith(showcase.route, 'https://jamusicapp.ir/');
-      if(isInAppRoute)
-        this.$router.push({ path: replace(showcase.route, 'https://jamusicapp.ir/', '') });
-      else
-        window.open(showcase.route, '_self');
+      if(showcase.route) {
+        const isInAppRoute = startsWith(showcase.route, 'https://jamusicapp.ir/');
+        if(isInAppRoute) {
+          this.$router.push(showcase.route.replace('https://jamusicapp.ir/', '/'));
+        } else {
+          window.open(showcase.route, '_self');
+        }
+      }
     },
   },
   async mounted() {
