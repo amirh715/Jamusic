@@ -94,7 +94,6 @@ export default defineComponent({
       name: '',
       password: '',
       passwordAgain: '',
-      loading: false,
       showPasswordNotice: true,
     };
   },
@@ -110,7 +109,6 @@ export default defineComponent({
     async submit() {
       let toastOptions: ToastOptions;
       try {
-        this.loading = true;
         const dto = new SignupRequestDTO({
           mobile: this.mobile,
           name: this.name,
@@ -118,7 +116,7 @@ export default defineComponent({
         });
         await this.$store.dispatch(ACTION_TYPES.SIGNUP, dto);
         toastOptions = {
-          message: 'اکانت شما ایجاد شد.',
+          message: 'اکانت شما ایجاد شد. یک پیامک حاوی کد تایید برای شما ارسال می شود.',
           icon: checkmarkCircleOutline,
           color: 'success',
           duration: 4000,
@@ -131,7 +129,6 @@ export default defineComponent({
           duration: 4000,
         }
       } finally {
-        this.loading = false;
         const toast = await toastController.create(toastOptions);
         await toast.present();
       }

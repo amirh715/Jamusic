@@ -100,7 +100,7 @@ class AuthService {
         code,
       } = dto;
       const data = new FormData();
-      data.append('mobile', mobile);
+      data.append('mobileNo', mobile);
       data.append('code', code);
       await HttpService.put('/user/verify-account', data);
       return Promise.resolve();

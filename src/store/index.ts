@@ -173,7 +173,7 @@ export default new Store({
       try {
         const dto = new RequestAccountVerificationDTO({ mobile });
         await AuthService.requestAccountVerification(dto);
-        await router.push({ name: 'AccountVerification' });
+        await router.push({ name: 'AccountVerification', query: { mobile } });
       } catch(err) {
         return Promise.reject(err);
       }
@@ -207,7 +207,6 @@ export default new Store({
           });
         });
         PlayerManager.addEventListener('play', () => {
-          console.log('play event fired', PlayerManager.getTotalDuration())
           commit(COMMIT_TYPES.PLAYING, {
             currentTrack: PlayerManager.getCurrentTrack(),
             currentQueueIndex: PlayerManager.getCurrentPlayQueueIndex(),

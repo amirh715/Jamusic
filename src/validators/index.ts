@@ -1,5 +1,6 @@
 import { isPossiblePhoneNumber } from 'libphonenumber-js';
 import { email } from '@vuelidate/validators';
+import { isNumber } from 'lodash';
 
 const User = {
   name: (value: string) => value.length > 1 && value.length < 80,
@@ -7,7 +8,10 @@ const User = {
   password: (value: string) => value.length > 7 && value.length < 150,
   email,
   passwordResetCode: (value: number) => value > 1110 && value < 10000,
-  accountVerificationCode: (value: number) => value > 1110 && value < 10000,
+  accountVerificationCode: (value: string) => {
+    const code = Number.parseInt(value);
+    return code > 999 && code < 10000;
+  },
 };
 
 const Playlist = {
