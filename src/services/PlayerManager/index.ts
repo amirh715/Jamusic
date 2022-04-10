@@ -1,14 +1,15 @@
 import { floor, random } from 'lodash';
 import { Howl } from 'howler';
 import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
-import { LibraryService } from '../LibraryService';
 import { Timer } from '@/utils/Timer';
+import { MediaSessionActionHandlers } from './MediaSessionActionHandlers';
 
 class PlayerManager extends EventTarget {
 
   private howler: Howl;
   private soundId: number;
   private currentTrack: TrackDetailsDTO;
+  private repeatOn: boolean;
   private shuffleOn: boolean;
   private queue: TrackDetailsDTO[];
   private currentQueueIndex: number;
@@ -31,6 +32,20 @@ class PlayerManager extends EventTarget {
       this.howler.stop();
       this.howler = null;
     }
+    
+    navigator.mediaSession.setActionHandler('play', MediaSessionActionHandlers.onPlay);
+    navigator.mediaSession.setActionHandler('pause', MediaSessionActionHandlers.onPause);
+    navigator.mediaSession.setActionHandler('stop', MediaSessionActionHandlers.onStop);
+    // navigator.mediaSession.setActionHandler('seekto', MediaSessionActionHandlers.onSeek);
+    navigator.mediaSession.setActionHandler('previoustrack', MediaSessionActionHandlers.onPrevTrack);
+    navigator.mediaSession.setActionHandler('nexttrack', MediaSessionActionHandlers.onNextTrack);
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: this.currentTrack.title,
+      artist: this.currentTrack.artist.title,
+      album: (this.currentTrack.album && this.currentTrack.album.title) || '',
+      artwork: [{ src: 'assets/images/disc.png' }],
+    });
+
     this.howler = new Howl({
       src: `https://api.jamusicapp.ir/v1/library/audio/${this.currentTrack.id}`,
       format: ['mp3'],
@@ -64,6 +79,10 @@ class PlayerManager extends EventTarget {
       onend: () => {
         this.durationPlayed.reset();
         this.dispatchEvent(new CustomEvent('end'));
+        if(this.isRepeatOn()) {
+          this.play();
+          return;
+        }
         if(this.isShuffleOn()) {
           this.currentQueueIndex = random(0, this.queue.length - 1);
           this.currentTrack = this.queue[this.currentQueueIndex];
@@ -127,7 +146,7 @@ class PlayerManager extends EventTarget {
   }
 
   public repeat(repeatOn: boolean): void {
-    this.howler.loop(repeatOn, this.soundId);
+    this.repeatOn = repeatOn;
   }
 
   public setVolume(volume: number): void {
@@ -200,7 +219,7 @@ class PlayerManager extends EventTarget {
   }
 
   public isRepeatOn(): boolean {
-    return this.howler.loop(this.soundId);
+    return this.repeatOn;
   }
 
 }
