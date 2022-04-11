@@ -179,7 +179,7 @@ class HttpService {
 
 const INSTANCE = new HttpService({
   baseURL: 'https://api.jamusicapp.ir/v1',
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     'content-type': 'multipart/form-data',
   },
