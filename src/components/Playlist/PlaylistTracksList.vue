@@ -30,7 +30,7 @@
             <ion-thumbnail class="space-v">
               <img
                 v-show="!track.imageLoading"
-                :src="track.image ? URL.createObjectURL(track.image) : 'assets/images/DiscPlaceholder.png'"
+                :src="track.image ? URL.createObjectURL(track.image) : 'assets/images/disc.png'"
               />
               <ion-skeleton-text
                 v-show="track.imageLoading"
@@ -71,7 +71,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { map, find, remove, intersectionBy, filter, unionBy } from 'lodash';
+import { map, find, filter, uniqBy, differenceBy } from 'lodash';
 import { CheckboxChangeEventDetail } from '@ionic/core';
 import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 
@@ -92,9 +92,10 @@ export default defineComponent({
     // items to show on the list
     listedItems(): Array<CheckboxChangeEventDetail<TrackDetailsDTO>> {
       // tracks returned from API as a result of user search term (which are not selected)
+      const unselectedTracks = differenceBy(this.tracks, this.selectedTracks, (track: TrackDetailsDTO) => track.id);
       const tracksMarkedAsUnchecked: Array<CheckboxChangeEventDetail<TrackDetailsDTO>>
         = map(
-          this.tracks,
+          unselectedTracks,
           (track: TrackDetailsDTO) => {
             return {
               value: track,
@@ -112,7 +113,7 @@ export default defineComponent({
             } as CheckboxChangeEventDetail;
           });
       // list of selected items at the top and tracks at the bottom
-      const itemsToShow = unionBy(
+      const itemsToShow = uniqBy(
         [...selectedTracksMarkedAsChecked, ...tracksMarkedAsUnchecked],
         (item) => item.value.id
       );
@@ -127,7 +128,7 @@ export default defineComponent({
       const isItemAlreadySelected = find(this.selectedTracks, (item: TrackDetailsDTO) => item.id === track.id);
       if(isItemAlreadySelected) {
         if(!checked) {
-          this.selectedTracks = remove(this.selectedTracks, (item: TrackDetailsDTO) => item.id === track.id);
+          this.selectedTracks = filter(this.selectedTracks, (item: TrackDetailsDTO) => item.id !== track.id);
           this.$emit('selectedTracks', this.selectedTracks);
         }
       } else {
