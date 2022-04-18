@@ -1,10 +1,13 @@
 <template>
-  <ion-content style="background-image: url('assets/images/dark_street_background.jpg')">
+  <ion-content>
     <swiper
       @swiper="onSwiper"
       @slideChange="onSlideChange"
+      :pagination="showSliderPagination"
+      :clickable="true"
       :grabCursor="true"
       dir="rtl"
+      id="background-gradient"
       style="height: 100vh; overflow-y: hidden;"
     >
       <!-- Slide 1 -->
@@ -26,7 +29,7 @@
             </div>
           </div>
           <div>
-            <div v-if="!isRunningStandalone()">
+            <div v-if="showInstallButton">
               <ion-button v-if="!isAppInstalled" @click="install" class="space-4-v" size="large" expand="block">
                 <ion-icon :icon="phonePortraitOutline"></ion-icon>
                 <b class="space-h">نصب</b>
@@ -80,6 +83,11 @@
   width: 100vw;
   height: 90vh;
 }
+#background-gradient {
+  color: whitesmoke;
+  background: rgb(2,0,36);
+  background: linear-gradient(45deg, rgba(2,0,36,1) 0%, rgba(126,105,18,1) 59%, rgba(255,215,0,1) 100%, rgba(0,212,255,1) 100%);
+}
 </style>
 
 <script lang="ts">
@@ -89,21 +97,32 @@ import { phonePortraitOutline, arrowBack, checkmarkCircleOutline } from 'ionicon
 
 export default defineComponent({
   setup() {
-    const onSwiper = (swiper: Swiper) => {
-      console.log();
+    const swiper = ref(null);
+    const onSwiper = (instance: Swiper) => {
+      swiper.value = instance;
     };
     return {
       onSwiper,
+      swiper,
     }
   },
   data() {
     return {
       deferredPrompt: null,
       isAppInstalled: false,
+      pageLoaded: false,
       phonePortraitOutline,
       arrowBack,
       checkmarkCircleOutline,
     }
+  },
+  computed: {
+    showInstallButton() {
+      return !this.isAppInstalled && this.pageLoaded;
+    },
+    showSliderPagination() {
+      return true;
+    },
   },
   methods: {
     async install() {
@@ -125,6 +144,9 @@ export default defineComponent({
     window.addEventListener('appinstalled', () => {
       this.deferredPrompt = null;
       this.isAppInstalled = true;
+    });
+    window.addEventListener('load', () => {
+      this.pageLoaded = true;
     });
   },
 })

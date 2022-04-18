@@ -21,7 +21,7 @@ const Playlist = {
 
 const Report = {
   type: (value: string) => value === 'CONTENT' || value === 'TECHNICAL',
-  message: (value: string) => value.length > 20 && value.length < 400,
+  message: (value: string) => value.length > 9 && value.length < 401,
 };
 
 export {

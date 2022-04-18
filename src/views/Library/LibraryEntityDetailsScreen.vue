@@ -23,7 +23,7 @@
     <ion-card class="text-right">
       <ion-card-content>
         <div class="flex flex-column">
-          <div class="flex">
+          <div class="flex" @click="playIfArtwork">
             <div>
               <ion-skeleton-text
                 v-if="imageLoading"
@@ -128,6 +128,7 @@ import { chevronForwardCircleOutline, closeCircleOutline } from 'ionicons/icons'
 import ArtistDetails from '@/components/Library/ArtistDetails.vue';
 import { EditPlaylistDTO } from '@/classes/Library/commands/EditPlaylistDTO';
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
+import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 
 export default defineComponent({
   components: {
@@ -234,6 +235,11 @@ export default defineComponent({
         ],
       });
       actionSheet.present();
+    },
+    async playIfArtwork() {
+      if(this.isArtwork) {
+        this.$store.dispatch(ACTION_TYPES.PLAY, this.entity);
+      }
     },
   },
   mounted() {

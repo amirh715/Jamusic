@@ -141,6 +141,11 @@ app.component('IonRadio', IonRadio);
 app.component('IonLabel', IonLabel);
 app.component('IonText', IonText);
 
+import 'swiper/css/pagination';
+
+import SwiperCore, { Pagination } from 'swiper';
+SwiperCore.use([Pagination]);
+
 if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./service-worker-dev.js')
     .then((registration) => console.log(registration))

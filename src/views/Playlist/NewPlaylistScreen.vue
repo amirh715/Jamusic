@@ -19,12 +19,15 @@
 
           <div class="flex flex-column">
 
-            <div class="flex align-items-center">
-              <label class="space-2-h">عنوان</label>
-              <ion-input
-                v-model="title"
-                @change="v$.title.$touch"
-              />
+            <div>
+              <div :class="[v$.title.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+                <label class="space-2-h">عنوان</label>
+                <ion-input
+                  v-model="title"
+                  placeholder="Night walk"
+                  @change="v$.title.$touch"
+                />
+              </div>
               <error-displayer :errors="v$.title.$errors" />
             </div>
 
@@ -62,7 +65,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { map, concat, find, remove, intersectionBy, filter } from 'lodash';
+import { map, concat, find, remove, intersectionBy, filter, forOwn } from 'lodash';
 import { ToastOptions } from '@ionic/core';
 import { toastController } from '@ionic/vue';
 import { checkmarkCircleOutline, closeCircleOutline, chevronForwardCircleOutline } from 'ionicons/icons';
@@ -82,7 +85,7 @@ export default defineComponent({
   components: { PlaylistTracksList },
   validations() {
     return {
-      title: { title: helpers.withMessage(() => 'عنوان پلی لیست باید حداقل یک کاراکتر باشد.', Playlist.title) },
+      title: { title: helpers.withMessage(() => 'عنوان پلی لیست باید بین ۱ تا ۱۵۰ کاراکتر باشد.', Playlist.title) },
       selectedTracks: { selectedTracks: helpers.withMessage(() => 'هر پلی لیست می تواند حداکثر ۱۵۰ آهنگ داشته باشد.', Playlist.trackIds) }
     }
   },

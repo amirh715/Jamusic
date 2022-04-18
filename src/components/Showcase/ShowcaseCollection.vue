@@ -23,7 +23,9 @@
                 <img
                   :src="item.image ? toObjectURL(item.image) : 'assets/images/disc.png'"
                 />
-                <h3 style="position: absolute; top: 8px; right: 16px; color: whitesmoke;">{{item.title}}</h3>
+                <text-banner :animate="item.title.length > 10">
+                  <h3 style="position: absolute; top: 8px; right: 16px; color: whitesmoke;">{{item.title}}</h3>
+                </text-banner>
             </div>
             <ion-skeleton-text
               v-else

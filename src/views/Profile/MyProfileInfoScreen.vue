@@ -118,7 +118,7 @@
     </div>
 
     <div style="width: 100%; height: 3rem; position: absolute; bottom: 0">
-      <p class="text-center" style="font-size: small; opacity: 0.1">v1.0.0</p>
+      <p class="text-center" style="font-size: small; opacity: 0.1">v1.0.1</p>
     </div>
     
   </ion-content>

@@ -2,7 +2,9 @@
 
   <swiper
     :grabCursor="true"
+    :pagination="true"
     dir="rtl"
+    style="padding: 40px 0;"
   >
     <swiper-slide>
       <ion-list style="width: 100%">

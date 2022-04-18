@@ -9,7 +9,6 @@ import { LibraryEntityDetailsDTO } from '@/classes/Library/query/LibraryEntityDe
 import { LibraryEntityDetailsDTOBuilder } from '@/classes/Library/query/LibraryEntityDetailsDTOBuilder';
 import { map, orderBy } from 'lodash';
 import { RecommendedCollection } from '@/classes/Library/query/RecommendedCollection';
-import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 
 class LibraryService {
 
