@@ -1,3 +1,5 @@
+import store from '@/store';
+import { ACTION_TYPES } from '@/store/ACTION_TYPES';
 import axios, {
   AxiosRequestConfig,
   AxiosInstance,
@@ -19,6 +21,10 @@ class HttpService {
       if(localStorage.getItem('token') && config && config.headers)
         config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
       return config;
+    });
+    this.http.interceptors.response.use(response => {
+      if(response.status === 403)
+        store.dispatch(ACTION_TYPES.LOGIN);
     });
   }
 
