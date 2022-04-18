@@ -83,8 +83,7 @@
       <div class="flex justify-content-between align-items-center" style="width: 80%;">
         <ion-range ref="range"
           :value="currentSeekPosition"
-          @ionChange="seekPositionChanged"
-          @touchend="$refs.range.$el.blur()"
+          @ionKnobMoveEnd="seekPositionChanged"
           min="0" max="100">
             <ion-label slot="end" style="min-width: 50px;">
               <duration-displayer style="font-size: 1.4rem;" :durationInSec="currentDuration" />
@@ -212,16 +211,14 @@ export default defineComponent({
       await this.$store.dispatch(ACTION_TYPES.SKIP_BACK);
     },
     async seekPositionChanged(ev: CustomEvent) {
-      if(this.$refs.range.$el.hasFocus) {
-        await this.$store.dispatch(ACTION_TYPES.SEEK, ev.detail.value);
-      }
+      await this.$store.dispatch(ACTION_TYPES.SEEK, ev.detail.value);
     },
     async addToPlaylist() {
       const modal = await modalController.create({
         component: SelectPlaylistModal,
         componentProps: {
           title: `افزودن ${this.currentTrack.title} به پلی لیست`,
-          trackToAdd: this.entity,
+          artworkToAdd: this.currentTrack,
         },
         swipeToClose: true,
       });

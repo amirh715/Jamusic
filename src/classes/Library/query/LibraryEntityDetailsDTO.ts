@@ -7,7 +7,7 @@ abstract class LibraryEntityDetailsDTO {
   public monthlyPlayedCount: string;
   public totalPlayedCount: string;
   public rate: number;
-  public duration: string;
+  public duration: number;
   public image: Blob;
   public imageLoading: boolean;
 
@@ -30,7 +30,7 @@ abstract class LibraryEntityDetailsDTO {
     this.monthlyPlayedCount = _props.monthlyPlayedCount;
     this.totalPlayedCount = _props.totalPlayedCount;
     this.rate = Number(_props.rate);
-    this.duration = _props.duration;
+    this.duration = Number(_props.duration);
     this.image = _props.image;
     this.imageLoading = _props.imageLoading;
   }

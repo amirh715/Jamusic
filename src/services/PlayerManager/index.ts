@@ -183,7 +183,8 @@ class PlayerManager extends EventTarget {
   }
 
   public getTotalDuration(): number {
-    return floor(this.howler.duration()) || 0;
+    // return floor(this.howler.duration()) || 0;
+    return this.currentTrack.duration;
   }
 
   public getPlayQueue(): TrackDetailsDTO[] {

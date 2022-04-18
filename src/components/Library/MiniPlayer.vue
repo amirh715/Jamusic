@@ -43,6 +43,8 @@ export default defineComponent({
     seekPosition() {
       const currentDuration = this.$store.state.player.currentDuration;
       const totalDuration = this.$store.state.player.totalDuration;
+      if(totalDuration === Infinity)
+        return 100;
       return (currentDuration * 100) / totalDuration;
     },
     icon() {
