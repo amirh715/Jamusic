@@ -28,9 +28,9 @@
               در بالای صفحه گزارش را ثبت کنید.
             </p>
           </div>
-          <div class="flex justify-content-center align-items-center space-v">
-            <ion-label class="space-h">نوع گزارش</ion-label>
-            <ion-select
+          <div class="flex justify-content-start align-items-center space-v">
+            <!-- <ion-label class="space-h">نوع گزارش</ion-label> -->
+            <!-- <ion-select
               v-model="reportType"
               cancel-text="بیخیال"
               ok-text="برو"
@@ -43,17 +43,37 @@
                 <ion-select-option value="CONTEsNT">
                   <span>محتوایی</span>
                 </ion-select-option>
-            </ion-select>
+            </ion-select> -->
+            <ion-radio-group
+              v-model="reportType"
+              @ionChange="v$.reportType.$touch"
+              style="width: 100%;"
+            >
+              <ion-list-header>
+                <ion-label>نوع گزارش</ion-label>
+              </ion-list-header>
+              <ion-item>
+                <ion-label><span>فنی</span></ion-label>
+                <ion-radio slot="start" value="TECHNICAL"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label><span>محتوایی</span></ion-label>
+                <ion-radio slot="start" value="CONTENT"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
           </div>
-          <error-displayer :errors="v$.reportType.$errors" />
-          <label class="space-v">متن گزارش</label>
-          <ion-textarea
-            v-model="message"
-            @change="v$.message.$touch"
-            placeholder="لطفا مشکلی که با آن روبرو شده اید را دقیق و با جزئیات شرح دهید..."
-            rows="7"
-          />
-          <error-displayer :errors="v$.message.$errors" />
+          <div>
+            <div :class="[v$.message.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+              <label class="space-v">متن گزارش</label>
+              <ion-textarea
+                v-model="message"
+                @change="v$.message.$touch"
+                placeholder="لطفا مشکلی که با آن روبرو شده اید را دقیق و با جزئیات شرح دهید..."
+                rows="7"
+              />
+            </div>
+            <error-displayer :errors="v$.message.$errors" />
+          </div>
           <div>
             <ion-button @click="submit" :disabled="v$.$invalid">
               <ion-icon :icon="sendOutline"></ion-icon>
@@ -98,7 +118,7 @@ export default defineComponent({
   validations() {
     return {
       reportType: { reportType: helpers.withMessage(() => 'نوع گزارش را مشخص کنید.', Report.type) },
-      message: { message: helpers.withMessage(() => 'متن گزارش باید بین ۲۰ تا ۲۰۰ کاراکتر باشد.', Report.message)},
+      message: { message: helpers.withMessage(() => 'متن گزارش باید بین ۱۰ تا ۴۰۰ کاراکتر باشد.', Report.message)},
     };
   },
   data() {

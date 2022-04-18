@@ -9,46 +9,58 @@
       </ion-card-header>
       <ion-card-content>
         <div class="flex flex-column">
-          <div>
-            <label>شماره موبایل</label>
-            <ion-input
-              class="text-center"
-              type="tel"
-              v-model="mobile"
-              @change="v$.mobile.$touch"
-            />
+          <div class="space">
+            <div :class="[v$.mobile.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+              <label>شماره موبایل</label>
+              <ion-input
+                class="text-center"
+                type="tel"
+                v-model="mobile"
+                placeholder="09121234567"
+                @change="v$.mobile.$touch"
+              />
+            </div>
             <error-displayer :errors="v$.mobile.$errors" />
           </div>
-          <div>
-            <label>اسم شما</label>
-            <ion-input
-              class="text-center"
-              type="text"
-              v-model="name"
-              @change="v$.name.$touch"
-            />
+          <div class="space">
+            <div :class="[v$.name.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+              <label>اسم شما</label>
+              <ion-input
+                class="text-center"
+                type="text"
+                v-model="name"
+                placeholder="Armin"
+                @change="v$.name.$touch"
+              />
+            </div>
             <error-displayer :errors="v$.name.$errors" />
           </div>
           <div>
-            <label>رمز</label>
-            <ion-input
-              class="text-center"
-              type="password"
-              v-model="password"
-              @ionFocus="passwordInputFocused"
-              @change="v$.password.$touch"
-            />
+            <div :class="[v$.password.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+              <label>رمز</label>
+              <ion-input
+                class="text-center"
+                type="password"
+                v-model="password"
+                placeholder="********"
+                @ionFocus="passwordInputFocused"
+                @change="v$.password.$touch"
+              />
+            </div>
             <error-displayer :errors="v$.password.$errors" />
           </div>
           <div>
-            <label>تکرار رمز </label>
-            <ion-input
-              class="text-center"
-              type="password"
-              ref="password"
-              v-model="passwordAgain"
-              @change="v$.passwordAgain.$touch"
-            />
+            <div :class="[v$.passwordAgain.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+              <label>تکرار رمز </label>
+              <ion-input
+                class="text-center"
+                type="password"
+                placeholder="********"
+                ref="password"
+                v-model="passwordAgain"
+                @change="v$.passwordAgain.$touch"
+              />
+            </div>
             <error-displayer :errors="v$.passwordAgain.$errors" />
           </div>
           <div class="flex justify-content-center space-2-v">

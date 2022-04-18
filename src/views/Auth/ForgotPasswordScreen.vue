@@ -3,16 +3,24 @@
     <swiper @swiper="onSwiper" style="height: 100vh;" loop>
       <swiper-slide>
         <ion-card>
+          <ion-card-header>
+            <b>شماره موبایل خود را وارد کنید.</b>
+          </ion-card-header>
           <ion-card-content>
-            <label>شماره موبایل</label>
-            <ion-input
-              type="tel"
-              v-model="mobile"
-              inputmode="tel"
-              placeholder="۰۹۱۲۴۹۷۴۱۶۳"
-              @change="v$.mobile.$touch"
-            />
-            <div class="flex justify-content-center">
+            <div>
+              <div :class="[v$.mobile.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+                <label>شماره موبایل</label>
+                <ion-input
+                  type="tel"
+                  v-model="mobile"
+                  inputmode="tel"
+                  placeholder="09121234567"
+                  @change="v$.mobile.$touch"
+                />
+              </div>
+              <error-displayer :errors="v$.mobile.$errors" />
+            </div>
+            <div class="flex justify-content-center space-v">
               <ion-button @click="submitRequest" :disabled="v$.mobile.$invalid">
                 <span class="space-2-h">برو!</span>
               </ion-button>
@@ -22,29 +30,47 @@
       </swiper-slide>
       <swiper-slide>
         <ion-card>
+          <ion-card-header>
+            <b>بازنشانی رمز اکانت</b>
+          </ion-card-header>
           <ion-card-content>
-            <label>کد بازنشانی رمز</label>
-            <ion-input
-              type="number"
-              inputmode="decimal"
-              @input="(ev) => resetCode = ev.target.value"
-              @change="v$.resetCode.$touch"
-            />
-            <error-displayer :errors="v$.resetCode.$errors" />
-            <label>رمز جدید</label>
-            <ion-input
-              type="password"
-              v-model="newPassword"
-              @change="v$.newPassword.$touch"
-              @ionFocus="newPasswordFocused"
-            />
-            <error-displayer :errors="v$.newPassword.$errors" />
-            <label>تکرار رمز جدید</label>
-            <ion-input
-              type="password"
-              v-model="newPasswordAgain"
-              @change="v$.newPasswordAgain.$touch"
-            />
+            <div>
+              <div :class="[v$.resetCode.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+                <label>کد بازنشانی رمز</label>
+                <ion-input
+                  type="number"
+                  inputmode="decimal"
+                  placeholder="1234"
+                  @input="(ev) => resetCode = ev.target.value"
+                  @change="v$.resetCode.$touch"
+                />
+              </div>
+              <error-displayer :errors="v$.resetCode.$errors" />
+            </div>
+            <div>
+              <div :class="[v$.newPassword.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+                <label>رمز جدید</label>
+                <ion-input
+                  type="password"
+                  v-model="newPassword"
+                  placeholder="********"
+                  @change="v$.newPassword.$touch"
+                  @ionFocus="newPasswordFocused"
+                />
+              </div>
+              <error-displayer :errors="v$.newPassword.$errors" />
+            </div>
+            <div>
+              <div :class="[v$.newPasswordAgain.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+                <label>تکرار رمز جدید</label>
+                <ion-input
+                  type="password"
+                  v-model="newPasswordAgain"
+                  placeholder="********"
+                  @change="v$.newPasswordAgain.$touch"
+                />
+              </div>
+            </div>
             <error-displayer :errors="v$.newPasswordAgain.$errors" />
             <div class="flex justify-content-center">
               <ion-button @click="submitReset" :disabled="v$.$invalid">

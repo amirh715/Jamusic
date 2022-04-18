@@ -11,7 +11,7 @@
             type="text"
             v-model="code"
             @change="v$.code.$touch"
-            placeholder="۱۲۳۴"
+            placeholder="1234"
             class="text-center"
           />
           <error-displayer :errors="v$.code.$errors" />

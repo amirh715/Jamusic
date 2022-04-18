@@ -12,30 +12,45 @@
     <ion-card>
       <ion-card-content>
         <div class="flex flex-column">
-          <div class="flex align-items-center">
-            <label class="space-2-h">رمز فعلی</label>
-            <ion-input
-              type="password"
-              v-model="currentPassword"
-            />
+          <div>
+            <div :class="[v$.currentPassword.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+              <label class="space-2-h">رمز فعلی</label>
+              <ion-input
+                type="password"
+                placeholder="********"
+                v-model="currentPassword"
+                @change="v$.currentPassword.$touch"
+              />
+            </div>
+            <error-displayer :errors="v$.currentPassword.$errors" />
           </div>
-          <div class="flex align-items-center">
-            <label class="space-2-h">رمز جدید</label>
-            <ion-input
-              type="password"
-              v-model="newPassword"
-              @ionFocus="newPasswordFocused"
-            />
+          <div>
+            <div :class="[v$.newPassword.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+              <label class="space-2-h">رمز جدید</label>
+              <ion-input
+                type="password"
+                v-model="newPassword"
+                placeholder="********"
+                @change="v$.newPassword.$touch"
+                @ionFocus="newPasswordFocused"
+              />
+            </div>
+            <error-displayer :errors="v$.newPassword.$errors" />
           </div>
-          <div class="flex align-items-center">
-            <label class="space-2-h">تکرار رمز جدید</label>
-            <ion-input
-              type="password"
-              v-model="newPasswordAgain"
-            />
+          <div>
+            <div :class="[v$.newPasswordAgain.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+              <label class="space-2-h">تکرار رمز جدید</label>
+              <ion-input
+                type="password"
+                placeholder="********"
+                @change="v$.newPasswordAgain.$touch"
+                v-model="newPasswordAgain"
+              />
+            </div>
+            <error-displayer :errors="v$.newPasswordAgain.$errors" />
           </div>
           <div class="flex justify-content-center space-2-v">
-            <ion-button @click="submit">
+            <ion-button @click="submit" :disabled="v$.$invalid">
               <b>برو</b>
             </ion-button>
           </div>
@@ -52,8 +67,14 @@ import { alertController, toastController, ToastOptions } from '@ionic/vue';
 import { COMMIT_TYPES } from '@/store/COMMIT_TYPES';
 import { AuthService } from '@/services/AuthService';
 import { ChangePasswordRequestDTO } from '@/classes/Auth/commands/ChangePasswordRequestDTO';
+import { helpers, sameAs } from '@vuelidate/validators';
+import { User } from '@/validators';
+import useVuelidate from '@vuelidate/core';
 
 export default defineComponent({
+  setup() {
+    return { v$: useVuelidate() }
+  },
   data() {
     return {
       currentPassword: '',
@@ -61,6 +82,13 @@ export default defineComponent({
       newPasswordAgain: '',
       showPasswordNotice: true,
       chevronForwardCircleOutline,
+    }
+  },
+  validations() {
+    return {
+      currentPassword: { currentPassword: helpers.withMessage('رمز باید حداقل ۸ کاراکتر باشد.', User.password) },
+      newPassword: { newPassword: helpers.withMessage('رمز باید حداقل ۸ کاراکتر باشد.', User.password) },
+      newPasswordAgain: { newPasswordAgain: helpers.withMessage(() => 'تکرار رمز با رمز یکسان نیست.', sameAs(this.newPassword)) },
     }
   },
   methods: {

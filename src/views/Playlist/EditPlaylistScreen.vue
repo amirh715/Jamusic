@@ -14,13 +14,17 @@
 
     <ion-card>
       <ion-card-content>
-        <div class="flex align-items-center space">
-          <label class="space-h">عنوان</label>
-          <ion-input
-            type="text"
-            placeholder="عنوان پلی لیست"
-            v-model="title"
-          />
+        <div>
+          <div :class="[v$.title.$error ? 'input-box-shadow-error' : 'input-box-shadow' , 'flex align-items-center space']">
+            <label class="space-h">عنوان</label>
+            <ion-input
+              type="text"
+              placeholder="عنوان پلی لیست"
+              v-model="title"
+              @change="v$.title.$touch"
+            />
+          </div>
+          <error-displayer :errors="v$.title.$errors" />
         </div>
         <div>
           <ion-searchbar
@@ -110,7 +114,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// import PlaylistTracksList from '@/components/Playlist/PlaylistTracksList.vue';
+import { useVuelidate } from '@vuelidate/core';
 import { EditPlaylistDTO } from '@/classes/Library/commands/EditPlaylistDTO';
 import { TrackDetailsDTO } from '@/classes/Library/query/TrackDetailsDTO';
 import { LibraryService } from '@/services/LibraryService';
@@ -119,8 +123,15 @@ import { CheckboxChangeEventDetail, toastController } from '@ionic/vue';
 import { filter, find, map, unionBy } from 'lodash';
 import { closeCircleOutline, chevronForwardCircleOutline } from 'ionicons/icons';
 import { GetLibraryEntitiesByFilters } from '@/classes/Library/commands/GetLibraryEntitiesByFiltersDTO';
+import { helpers } from '@vuelidate/validators';
+import { Playlist } from '@/validators';
 
 export default defineComponent({
+  setup() {
+    return {
+      v$: useVuelidate()
+    }
+  },
   data() {
     return {
       searchTerm: '',
@@ -133,6 +144,11 @@ export default defineComponent({
       offset: 0,
       chevronForwardCircleOutline,
     };
+  },
+  validations() {
+    return {
+      title: { title: helpers.withMessage('عنوان پلی لیست باید بین ۱ تا ۱۵۰ کاراکتر باشد.', Playlist.title) }
+    }
   },
   computed: {
     // union of tracks available for selection and tracks already in the playlist

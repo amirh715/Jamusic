@@ -6,25 +6,29 @@
       </ion-card-header>
       <ion-card-content>
         <div>
-          <label>شماره موبایل</label>
-          <ion-input
-            type="tel"
-            v-model="mobile"
-            @change="v$.mobile.$touch"
-            placeholder="۰۹۱۲۱۲۳۴۵۶۷"
-            class="text-center"
-          />
+          <div :class="[v$.mobile.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+            <label>شماره موبایل</label>
+            <ion-input
+              type="tel"
+              v-model="mobile"
+              @change="v$.mobile.$touch"
+              placeholder="۰۹۱۲۱۲۳۴۵۶۷"
+              class="text-center"
+            />
+          </div>
           <error-displayer :errors="v$.mobile.$errors" />
         </div>
         <div>
-          <label>رمز</label>
-          <ion-input
-            type="password"
-            v-model="password"
-            @change="v$.password.$touch"
-            placeholder="************"
-            class="text-center"
-          />
+          <div :class="[v$.password.$error ? 'input-box-shadow-error' : 'input-box-shadow', 'flex align-items-center']">
+            <label>رمز</label>
+            <ion-input
+              type="password"
+              v-model="password"
+              @change="v$.password.$touch"
+              placeholder="************"
+              class="text-center"
+            />
+          </div>
           <error-displayer :errors="v$.password.$errors" />
         </div>
         <div class="flex justify-content-center space-2-v">
