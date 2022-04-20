@@ -34,9 +34,7 @@
           :items="collection"
         >
           <template v-slot:title>
-            <text-banner :animate="collection.title.length > 10">
-              <h5 class="text-right">{{collection.title}}</h5>
-            </text-banner>
+            <h5 class="text-right">{{collection.title}}</h5>
           </template>
         </collection>
 

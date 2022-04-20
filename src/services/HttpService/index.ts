@@ -23,8 +23,11 @@ class HttpService {
       return config;
     });
     this.http.interceptors.response.use(response => {
-      if(response.status === 403)
-        store.dispatch(ACTION_TYPES.LOGIN);
+      return response;
+    }, (error) => {
+      if(error.status === 403)
+        store.dispatch(ACTION_TYPES.LOGOUT);
+      return Promise.reject(error);
     });
   }
 

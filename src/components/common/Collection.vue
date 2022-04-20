@@ -28,7 +28,9 @@
               animated
             />
           </ion-thumbnail>
-          <p style="font-size: 0.9rem; font-weight: bold;">{{item.title}}</p>
+          <text-banner :animate="item.title.length > 10" animationSpeed="5s">
+            <span style="font-size: 0.9rem; font-weight: bold;">{{item.title}}</span>
+          </text-banner>
         </div>
     </div>
   </div>
