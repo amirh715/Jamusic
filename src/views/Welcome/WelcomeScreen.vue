@@ -1,5 +1,5 @@
 <template>
-  <ion-content>
+  <ion-content style="max-height: 100vh;">
     <swiper
       @swiper="onSwiper"
       @slideChange="onSlideChange"
@@ -7,8 +7,9 @@
       :clickable="true"
       :grabCursor="true"
       dir="rtl"
+      direction="vertical"
       id="background-gradient"
-      style="height: 100vh; overflow-y: hidden;"
+      :style="{height: isAppInstalled ? '100vh' : '100%'}"
     >
       <!-- Slide 1 -->
       <swiper-slide>
@@ -20,23 +21,12 @@
               سبک مختلف رو فراهم می کنه.<br/>
               تنها کافیه نام هنرمند، آلبوم، یا آهنگ مورد نظرت رو جستجو کنی تا به راحتی پیداش کنی.<br/>
             </p>
-            <p v-if="!isAppInstalled" class="text-right">اما قبل از هر کاری باید اَپلیکیشن رو نصب کنی :)</p>
           </div>
-          <div>
-            <div v-if="!isAppInstalled"></div>
-            <div v-else>
-              <ion-icon :icon="checkmarkCircleOutline" style="font-size: 9rem; opacity: 0.2;"></ion-icon>
-            </div>
-          </div>
-          <div>
-            <div v-if="showInstallButton">
-              <ion-button v-if="!isAppInstalled" @click="install" class="space-4-v" size="large" expand="block">
-                <ion-icon :icon="phonePortraitOutline"></ion-icon>
-                <b class="space-h">نصب</b>
-              </ion-button>
-              <b v-else>اَپلیکیشن روی گوشی شما نصب شده است. از مرورگر خارج و وارد اَپلیکیشن شوید.</b>
-            </div>
-          </div>
+          <!-- <ion-button v-if="!isAppInstalled" @click="install" class="space-4-v" size="large" expand="block">
+            <ion-icon :icon="phonePortraitOutline"></ion-icon>
+            <b class="space-h">نصب</b>
+          </ion-button> -->
+          <img class="logo-background" src="assets/icons/ios/1024.png"/>
         </div>
       </swiper-slide>
       <!-- ####### -->
@@ -44,7 +34,20 @@
       <swiper-slide>
         <div class="content flex flex-column justify-content-center space-4">
           <p class="text-right">
-            بعد از اینکه سلیقه ات دستمون اومد پیشنهاد هایی هم مخصوص خودت بهت می دیم.
+            بعد از اینکه سلیقه ات دستمون اومد پیشنهاد هایی هم مخصوص خودت بهت می دیم که توی 
+            صفحه
+            <span style="font-size: 1.5rem;">
+              <ion-icon :icon="planetOutline"></ion-icon>
+            </span>
+            می تونی اونارو ببینی.
+          </p>
+          <p class="text-right">
+            ایجاد پلی لیست های جدید و دسترسی به اونها هم بسیار آسونه و می تونی اینکارو از 
+            طریق صفحه 
+            <span style="font-size: 1.5rem;">
+              <ion-icon :icon="albumsOutline"></ion-icon>
+            </span>
+            به راحتی انجام بدی.
           </p>
         </div>
       </swiper-slide>
@@ -52,8 +55,9 @@
       <!-- Slide 3 -->
       <swiper-slide>
         <div class="content flex flex-column justify-content-center space-4">
+          <h1 class="text-right">و در آخر...</h1>
           <p class="text-right">
-            ایجاد پلی لیست های جدید و دسترسی به اونها هم بسیار آسونه.
+            یادت باشه حتما این اَپلیکیشن رو به دوستانت هم معرفی کنی :)
           </p>
         </div>
       </swiper-slide>
@@ -61,16 +65,25 @@
       <!-- Slide 4 -->
       <swiper-slide>
         <div class="content flex flex-column justify-content-between space-4">
-          <div></div>
-          <h1 class="text-right">و در آخر...</h1>
-          <p class="text-right">
-            یادت باشه حتما این اَپلیکیشن رو به دوستانت هم معرفی کنی :)
+          <p v-show="!isAppInstalled" class="text-right">
+            اما قبل از هر کاری باید اَپلیکیشن رو نصب کنید...<br/>
+            <b>
+              بعد از اینکه اینکارو کردید از مرورگر خارج شید، وارد اَپلیکیشن شید، و اکانت ایجاد کنید.
+            </b>
           </p>
-          <ion-button @click="$router.push({ name: 'Signup' })" fill="outline" class="space-2-v" size="large" expand="block">
-            <ion-icon :icon="arrowBack"></ion-icon>
+          <ion-button v-if="isAppInstalled" @click="$router.push({ name: 'Signup' })" fill="outline" class="space-2-v" size="large" expand="block">
+            <ion-icon :icon="personOutline"></ion-icon>
             <span class="space-h">ایجاد اکانت</span>
-            <ion-icon :icon="arrowBack"></ion-icon>
           </ion-button>
+          <div v-else>
+            <ion-button @click="install" class="space-2-v" size="large" expand="block">
+              <span class="space-h">نصب</span>
+              <ion-icon :icon="phonePortraitOutline"></ion-icon>
+            </ion-button>
+            <ion-button @click="$router.push({ name: 'Signup' })" v-show="showSignupButton" fill="outline" size="small">
+              <span>هیچ اتفاقی نمیوفته؟ بدون نصب استفاده کنید.</span>
+            </ion-button>
+          </div>
         </div>
       </swiper-slide>
       <!-- ####### -->
@@ -88,12 +101,26 @@
   background: rgb(2,0,36);
   background: linear-gradient(45deg, rgba(2,0,36,1) 0%, rgba(126,105,18,1) 59%, rgba(255,215,0,1) 100%, rgba(0,212,255,1) 100%);
 }
+.logo-background {
+  position: fixed;
+  z-index: -1;
+  bottom: 10px;
+  right: -120px;
+  opacity: 0.1;
+}
 </style>
 
 <script lang="ts">
 import { defineComponent, ref, Ref } from 'vue'
 import { Swiper } from 'swiper/types';
-import { phonePortraitOutline, arrowBack, checkmarkCircleOutline } from 'ionicons/icons';
+import {
+  phonePortraitOutline,
+  arrowBack,
+  checkmarkCircleOutline,
+  planetOutline,
+  albumsOutline,
+  personOutline,
+} from 'ionicons/icons';
 
 export default defineComponent({
   setup() {
@@ -110,15 +137,18 @@ export default defineComponent({
     return {
       deferredPrompt: null,
       isAppInstalled: false,
-      pageLoaded: false,
+      showSignupButton: false,
       phonePortraitOutline,
       arrowBack,
       checkmarkCircleOutline,
+      planetOutline,
+      albumsOutline,
+      personOutline
     }
   },
   computed: {
     showInstallButton() {
-      return !this.isAppInstalled && this.pageLoaded;
+      return !this.isAppInstalled;
     },
     showSliderPagination() {
       return true;
@@ -126,6 +156,9 @@ export default defineComponent({
   },
   methods: {
     async install() {
+      setTimeout(() => {
+        this.showSignupButton = true;
+      }, 2000);
       await this.deferredPrompt.prompt();
     },
     isRunningStandalone() {
@@ -136,7 +169,6 @@ export default defineComponent({
     if(this.isRunningStandalone()) {
       this.isAppInstalled = true;
     }
-    this.onSwiper.allowTouchMove = this.isAppInstalled;
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       this.deferredPrompt = e;
@@ -144,9 +176,6 @@ export default defineComponent({
     window.addEventListener('appinstalled', () => {
       this.deferredPrompt = null;
       this.isAppInstalled = true;
-    });
-    window.addEventListener('load', () => {
-      this.pageLoaded = true;
     });
   },
 })
