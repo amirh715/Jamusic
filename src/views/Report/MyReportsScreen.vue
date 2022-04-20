@@ -27,12 +27,22 @@
         </ion-card-content>
       </ion-card>
     </div>
+
     <report-list-item
       v-else
       v-for="item in myReports"
       :key="item.id"
       :report="item"
     />
+
+    <div
+      v-if="!isLoading && myReports.length === 0"
+      class="flex flex-column justify-content-center align-items-center"
+      style="height: 100%; opacity: 0.2;"
+      >
+        <h2>گزارش های شما اینجا خواهند بود...</h2>
+        <p>هنوز گزارشی ثبت نکرده اید.</p>
+    </div>
 
   </ion-content>
 

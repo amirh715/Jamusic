@@ -232,7 +232,8 @@ export default defineComponent({
     },
     async loadMore(ev) {
       this.offset += this.limit;
-      this.tracks.push(await this.searchForTracks(this.searchTerm));
+      const fetched = await this.searchForTracks(this.searchTerm);
+      this.tracks.push(...fetched);
       ev.target.complete();
     },
     goBack() {

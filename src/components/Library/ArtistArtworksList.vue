@@ -1,14 +1,15 @@
 <template>
-
   <swiper
     :grabCursor="true"
     :pagination="true"
     dir="rtl"
-    style="padding: 40px 0;"
+    style="padding: 40px 0; height: 100%;"
   >
     <swiper-slide>
-      <ion-list style="width: 100%">
-        <ion-list-header class="space-v">آلبوم ها</ion-list-header>
+      <ion-list v-if="albumsList.length > 0" style="width: 100%; height: 90%; overflow-y: scroll;">
+        <ion-list-header class="space-v">
+          {{albumsList.length > 0 ? 'آلبوم ها' : 'آلبومی ندارد...'}}
+        </ion-list-header>
         <ion-item
           v-for="item in albumsList"
           :key="item.id"
@@ -29,10 +30,16 @@
           <library-entity-rate :rate="item.rate" />
         </ion-item>
       </ion-list>
+      <div v-else class="flex flex-column text-center">
+        <h2 class="space-v">هنوز آلبومی ندارد.</h2>
+        <p style="opacity: 0.5;">به سمت راست بکشید تا تک آهنگ ها را ببینید.</p>
+      </div>
     </swiper-slide>
     <swiper-slide>
-      <ion-list style="width: 100%;">
-        <ion-list-header class="space-v">تک آهنگ ها</ion-list-header>
+      <ion-list v-if="singleTracksList.length > 0" style="width: 100%; height: 90%; overflow-y: scroll;">
+        <ion-list-header class="space-v">
+          {{singleTracksList.length > 0 ? 'تک آهنگ ها' : 'تک آهنگی ندارد'}}
+        </ion-list-header>
         <ion-item
           v-for="item in singleTracksList"
           :key="item.id"
@@ -53,6 +60,10 @@
           <library-entity-rate :rate="item.rate" />
         </ion-item>
       </ion-list>
+      <div v-else class="flex flex-column text-center">
+        <h2 class="space-v">هنوز تک آهنگی ندارد.</h2>
+        <p style="opacity: 0.5;">به سمت چپ بکشید تا آلبوم ها را ببینید.</p>
+      </div>
     </swiper-slide>
   </swiper>
 </template>
@@ -63,7 +74,6 @@ import { filter } from 'lodash';
 import { LibraryService } from '@/services/LibraryService';
 import { GetLibraryEntitiesByFilters } from '@/classes/Library/commands/GetLibraryEntitiesByFiltersDTO';
 import LibraryEntityRate from '@/components/Library/LibraryEntityRate.vue';
-import { Pagination } from 'swiper';
 import { Swiper } from 'swiper/types';
 import { ArtworkDetailsDTO } from '@/classes/Library/query/ArtworkDetailsDTO';
 
@@ -131,6 +141,8 @@ export default defineComponent({
   async mounted() {
     await this.fetchArtworks();
     await this.fetchArtworksImages();
+    console.log(this.onSwiper);
+    this.onSwiper.slideNext();
   },
 })
 </script>

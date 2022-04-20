@@ -153,6 +153,7 @@ export default defineComponent({
       clearTimeout(this.timerId);
       this.timerId = setTimeout(() => {
         this.fetchedItems = [];
+        this.offset = 0;
         this.fetch();
         clearTimeout(this.timerId);
         this.waitingForInput = false;

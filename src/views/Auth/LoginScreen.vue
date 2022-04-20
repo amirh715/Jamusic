@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-column justify-content-center align-items-center" style="height: 100vh;">
+  <div class="flex flex-column justify-content-center align-items-center meteor-background" style="height: 100vh;">
     <ion-card style="width: 70%">
       <ion-card-header>
         <h3 class="text-center">ورود</h3>
@@ -79,7 +79,7 @@ export default defineComponent({
       try {
         await this.$store.dispatch(ACTION_TYPES.LOGIN, { mobile: this.mobile, password: this.password });
         const toast = await toastController.create({
-          message: 'خوش آمدید :)',
+          message: 'خوش اومدید :)',
           duration: 3000,
           icon: checkmarkCircleOutline,
           color: 'success',
@@ -88,7 +88,7 @@ export default defineComponent({
       } catch(err) {
         const toast = await toastController.create({
           message: err.message,
-          duration: 3000,
+          duration: 4000,
           icon: warning,
           color: 'danger',
         })
