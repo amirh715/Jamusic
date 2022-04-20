@@ -40,7 +40,7 @@
           <div class="flex flex-column justify-content-center align-items-center">
             <number-displayer :value="mobile" class="space-4-v dir-ltr" />
             <div>
-              <div class="flex align-items-center">
+              <div :class="[v$.name.$error ? 'input-box-shadow-error' : 'input-box-shadow' , 'flex align-items-center space']">
                 <label class="space-2-h">اسم شما</label>
                 <ion-input
                   type="text"
@@ -51,7 +51,7 @@
               <error-displayer :errors="v$.name.$errors" />
             </div>
             <div>
-              <div class="flex align-items-center soace-4-v">
+              <div :class="[v$.email.$error ? 'input-box-shadow-error' : 'input-box-shadow' , 'flex align-items-center space']">
                 <label class="space-2-h">ایمیل</label>
                 <ion-input
                   type="text"

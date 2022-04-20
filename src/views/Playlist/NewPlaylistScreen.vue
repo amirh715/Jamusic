@@ -152,7 +152,7 @@ export default defineComponent({
           offset: this.offset + this.limit,
         });
         const loadedItems = await LibraryService.getLibraryEntitiesByFilters(dto);
-        this.tracks = concat(this.tracks, loadedItems);
+        this.tracks.push(...loadedItems);
       } finally {
         ev.target.complete();
       }
