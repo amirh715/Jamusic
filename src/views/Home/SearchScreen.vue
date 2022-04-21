@@ -149,6 +149,7 @@ export default defineComponent({
       await DatabaseManager.searchHistory.add(addToSearchHistory);
     },
     searchTermChanged() {
+      if(!this.searchTerm) return;
       this.waitingForInput = true;
       clearTimeout(this.timerId);
       this.timerId = setTimeout(() => {
